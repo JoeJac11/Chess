@@ -36,7 +36,7 @@ namespace StudentAI
                         if (i == 1)
                         {
                             //black pawn forward 2
-                            if (board[i + 2, j] == ChessPiece.Empty)
+                            if (board[i + 2, j] == ChessPiece.Empty && board[i + 1, j] == ChessPiece.Empty)
                             {
                                 move = Tuple.Create(curLocation + 10, 1);
                                 moves[curLocation].Add(move);
@@ -77,7 +77,7 @@ namespace StudentAI
         /// <returns> Returns the best chess move the player has for the given chess board</returns>
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
         {
-            throw (new NotImplementedException());
+            return ChessMove((1,1),(1,2));
         }
 
         /// <summary>
