@@ -15,12 +15,59 @@ namespace StudentAI
         public string Name
         {
 #if DEBUG
-            get { return "StudentAI (Debug)"; }
+            get { return "JEK (Debug)"; }
 #else
-            get { return "StudentAI"; }
+            get { return "JEK"; }
 #endif
         }
+        public Dictionary<int, HashSet<Tuple<int,int>>> GenMoves(ChessBoard board)
+        {
+            Dictionary<int, HashSet<Tuple<int,int>>> moves;
+            for (int i = 0; i < 7; i++)
+            {
+                for (int j = 0; i < 7; i++)
+                {
+                    int curLocation = (i * 10) + j;
+                    Tuple<int, int> move;
+                    if (board[i,j] == ChessPiece.Empty){//do nothing
+                    } 
+                    else if (board[i, j] == ChessPiece.BlackPawn)
+                    {
+                        if (i == 1)
+                        {
+                            //black pawn forward 2
+                            if (board[i + 2, j] == ChessPiece.Empty)
+                            {
+                                move = Tuple.Create(curLocation + 10, 1);
+                                moves[curLocation].Add(move);
+                            }
 
+                        }
+                        //black pawn forward 1
+                        if (board[i + 1, j] == ChessPiece.Empty)
+                        {
+                            move = Tuple.Create(curLocation + 10, 1);
+                            moves[curLocation].Add(move);
+                        }
+                        //black pawn diaganal attack right
+                        if (j + 1 <= 7 && board[i + 1, j + 1] != ChessPiece.Empty)
+                        {
+                            move = Tuple.Create(curLocation + 11, 2);
+                            moves[curLocation].Add(move);
+                        }
+                        //black pawn diaganal attack left
+                        if (j - 1 >= 0 && board[i + 1, j - 1] != ChessPiece.Empty)
+                        {
+                            int moveLocation = ((i + 1) * 10) + j - 1;
+                            move = Tuple.Create(moveLocation, 2);
+                            moves[curLocation].Add(move);
+                        }
+                    }
+                }
+            }
+
+            return moves;
+        }
         /// <summary>
         /// Evaluates the chess board and decided which move to make. This is the main method of the AI.
         /// The framework will call this method when it's your turn.
