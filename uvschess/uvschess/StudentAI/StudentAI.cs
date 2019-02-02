@@ -22,7 +22,7 @@ namespace StudentAI
         }
         public Dictionary<int, HashSet<Tuple<int,int>>> GenMoves(ChessBoard board)
         {
-            Dictionary<int, HashSet<Tuple<int,int>>> moves;
+            Dictionary<int, HashSet<Tuple<int,int>>> moves = new Dictionary<int, HashSet<Tuple<int, int>>>(); //int is the 2-digit 'from' move, tuple is 'to', 'weight'
             for (int i = 0; i < 7; i++)
             {
                 for (int j = 0; i < 7; i++)
@@ -552,7 +552,7 @@ namespace StudentAI
                             //black pawn forward 2
                             if (board[i + 2, j] == ChessPiece.Empty && board[i + 1, j] == ChessPiece.Empty)
                             {
-                                move = Tuple.Create(curLocation + 10, 1);
+                                move = Tuple.Create(curLocation + 20, 1);
                                 moves[curLocation].Add(move);
                             }
                         }
@@ -581,9 +581,9 @@ namespace StudentAI
                         if (i == 6)
                         {
                             //white pawn forward 2
-                            if (board[i - 2, j] == ChessPiece.Empty)
+                            if (board[i - 2, j] == ChessPiece.Empty && board[i-1, j] == ChessPiece.Empty)
                             {
-                                move = Tuple.Create(curLocation - 10, 1);
+                                move = Tuple.Create(curLocation - 20, 1);
                                 moves[curLocation].Add(move);
                             }
                         }
@@ -1134,7 +1134,10 @@ namespace StudentAI
         /// <returns> Returns the best chess move the player has for the given chess board</returns>
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
         {
-            return ChessMove((1,1),(1,2));
+            ChessLocation moveFrom = new ChessLocation(1, 1);
+            ChessLocation moveTo = new ChessLocation(1, 2);
+            ChessMove move = new ChessMove(moveFrom, moveTo);
+            return move;
         }
 
         /// <summary>
