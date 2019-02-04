@@ -20,7 +20,7 @@ namespace StudentAI
             get { return "JEK"; }
 #endif
         }
-        public Dictionary<int, HashSet<Tuple<int,int>>> GenMoves(ChessBoard board)
+        public Dictionary<int, HashSet<Tuple<int,int>>> GenMoves(ChessBoard board, ChessColor color)
         {
             Dictionary<int, HashSet<Tuple<int,int>>> moves = new Dictionary<int, HashSet<Tuple<int, int>>>(); //int is the 2-digit 'from' move, tuple is 'to', 'weight'
             for (int i = 0; i < 7; i++)
@@ -32,1092 +32,1098 @@ namespace StudentAI
                     if (board[i, j] == ChessPiece.Empty)
                     {//do nothing
                     }
-                    else if (board[i, j] == ChessPiece.BlackKing)
+                    if (color == ChessColor.Black)
                     {
-                        //black King down 1
-                        if ((i + 1 <= 7) && board[i + 1, j] >= ChessPiece.Empty)
+                        if (board[i, j] == ChessPiece.BlackKing)
                         {
-                            if (board[i + 1, j] > ChessPiece.Empty)
+                            //black King down 1
+                            if ((i + 1 <= 7) && board[i + 1, j] >= ChessPiece.Empty)
+                            {
+                                if (board[i + 1, j] > ChessPiece.Empty)
+                                {
+                                    move = Tuple.Create(curLocation + 10, 1);
+                                }
+                                else
+                                {
+                                    move = Tuple.Create(curLocation + 10, 2);
+                                }
+                                moves[curLocation].Add(move);
+                            }
+                            //black King up 1
+                            if ((i - 1 >= 0) && board[i - 1, j] >= ChessPiece.Empty)
+                            {
+                                if (board[i - 1, j] > ChessPiece.Empty)
+                                {
+                                    move = Tuple.Create(curLocation - 10, 1);
+                                }
+                                else
+                                {
+                                    move = Tuple.Create(curLocation - 10, 2);
+                                }
+                                moves[curLocation].Add(move);
+                            }
+                            //black King left 1
+                            if ((j - 1 >= 0) && board[i, j - 1] >= ChessPiece.Empty)
+                            {
+                                if (board[i, j - 1] > ChessPiece.Empty)
+                                {
+                                    move = Tuple.Create(curLocation - 1, 1);
+                                }
+                                else
+                                {
+                                    move = Tuple.Create(curLocation - 1, 2);
+                                }
+                                moves[curLocation].Add(move);
+                            }
+                            //black King right 1
+                            if ((j + 1 <= 7) && board[i, j + 1] >= ChessPiece.Empty)
+                            {
+                                if (board[i, j + 1] > ChessPiece.Empty)
+                                {
+                                    move = Tuple.Create(curLocation + 1, 1);
+                                }
+                                else
+                                {
+                                    move = Tuple.Create(curLocation + 1, 2);
+                                }
+                                moves[curLocation].Add(move);
+                            }
+                            //black King up and right
+                            if ((j + 1 <= 7) && (i + 1 <= 7) && board[i + 1, j + 1] >= ChessPiece.Empty)
+                            {
+                                if (board[i + 1, j + 1] > ChessPiece.Empty)
+                                {
+                                    move = Tuple.Create(curLocation + 11, 1);
+                                }
+                                else
+                                {
+                                    move = Tuple.Create(curLocation + 11, 2);
+                                }
+                                moves[curLocation].Add(move);
+                            }
+                            //black king down and right
+                            if ((j + 1 <= 7) && (i - 1 >= 0) && board[i - 1, j + 1] >= ChessPiece.Empty)
+                            {
+                                int moveLocation = ((i - 1) * 10) + (j + 1);
+                                if (board[i - 1, j + 1] > ChessPiece.Empty)
+                                {
+                                    move = Tuple.Create(moveLocation, 1);
+                                }
+                                else
+                                {
+                                    move = Tuple.Create(moveLocation, 2);
+                                }
+                                moves[curLocation].Add(move);
+                            }
+                            //black king up and left
+                            if ((j - 1 >= 0) && (i + 1 <= 7) && board[i + 1, j - 1] >= ChessPiece.Empty)
+                            {
+                                int moveLocation = ((i + 1) * 10) + (j - 1);
+                                if (board[i + 1, j - 1] > ChessPiece.Empty)
+                                {
+                                    move = Tuple.Create(moveLocation, 1);
+                                }
+                                else
+                                {
+                                    move = Tuple.Create(moveLocation, 2);
+                                }
+                                moves[curLocation].Add(move);
+                            }
+                            //black King down and left
+                            if ((j - 1 >= 0) && (i - 1 >= 0) && board[i - 1, j - 1] >= ChessPiece.Empty)
+                            {
+                                int moveLocation = ((i - 1) * 10) + (j - 1);
+                                if (board[i - 1, j - 1] > ChessPiece.Empty)
+                                {
+                                    move = Tuple.Create(moveLocation, 1);
+                                }
+                                else
+                                {
+                                    move = Tuple.Create(moveLocation, 2);
+                                }
+                                moves[curLocation].Add(move);
+                            }
+                        }
+                        else if (board[i, j] == ChessPiece.BlackQueen)
+                        {
+                            int moveLocation;
+                            //black queen down
+                            int ri = i + 1;
+                            while ((ri <= 7) && board[ri, j] == ChessPiece.Empty)
+                            {
+                                if (ri + 1 <= 7 && board[ri + 1, j] > ChessPiece.Empty)
+                                {
+                                    moveLocation = ((ri + 1) * 10 + j);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (ri * 10) + j;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                ri++;
+                            }
+                            //black queen right
+                            int rj = i + 1;
+                            while ((rj <= 7) && board[i, rj] == ChessPiece.Empty)
+                            {
+                                if (rj + 1 <= 7 && board[i, rj + 1] > ChessPiece.Empty)
+                                {
+                                    moveLocation = ((i) * 10 + rj + 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (i * 10) + rj;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                rj++;
+                            }
+                            //black queen up
+                            ri = i - 1;
+                            while ((ri >= 0) && board[ri, j] == ChessPiece.Empty)
+                            {
+                                if (ri - 1 >= 0 && board[ri - 1, j] > ChessPiece.Empty)
+                                {
+                                    moveLocation = ((ri - 1) * 10 + j);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (ri * 10) + j;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                ri--;
+                            }
+                            //black queen left
+                            rj = i - 1;
+                            while ((rj >= 0) && board[i, rj] == ChessPiece.Empty)
+                            {
+                                if (rj - 1 >= 0 && board[i, rj - 1] > ChessPiece.Empty)
+                                {
+                                    moveLocation = ((i) * 10 + rj - 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (i * 10) + rj;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                rj--;
+                            }
+                            //black queen down and right
+                            int bi = i + 1;
+                            int bj = j + 1;
+                            while ((bi <= 7) && (bj <= 7) && board[bi, bj] == ChessPiece.Empty)
+                            {
+                                if ((bi + 1 <= 7) && (bj + 1 <= 7) && board[bi + 1, bj + 1] > ChessPiece.Empty)
+                                {
+                                    moveLocation = ((bi + 1) * 10) + (bj + 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (bi * 10) + bj;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                bi++;
+                                bj++;
+                            }
+                            //black queen up and left
+                            bi = i - 1;
+                            bj = j - 1;
+                            while ((bi >= 0) && (bj >= 0) && board[bi, bj] == ChessPiece.Empty)
+                            {
+                                if ((bi - 1 >= 0) && (bj - 1 >= 0) && board[bi - 1, bj - 1] > ChessPiece.Empty)
+                                {
+                                    moveLocation = ((bi - 1) * 10) + (bj - 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (bi * 10) + bj;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                bi--;
+                                bj--;
+                            }
+                            //black queen down and left
+                            bi = i + 1;
+                            bj = j - 1;
+                            while ((bi <= 7) && (bj >= 0) && board[bi, bj] == ChessPiece.Empty)
+                            {
+                                if ((bi + 1 <= 7) && (bj - 1 >= 0) && board[bi + 1, bj - 1] > ChessPiece.Empty)
+                                {
+                                    moveLocation = ((bi + 1) * 10) + (bj - 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (bi * 10) + bj;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                bi++;
+                                bj--;
+                            }
+                            //black queen up and right
+                            bi = i - 1;
+                            bj = j + 1;
+                            while ((bi >= 0) && (bj <= 7) && board[bi, bj] == ChessPiece.Empty)
+                            {
+                                if ((bi - 1 >= 0) && (bj + 1 <= 7) && board[bi - 1, bj + 1] > ChessPiece.Empty)
+                                {
+                                    moveLocation = ((bi + 1) * 10) + (bj + 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (bi * 10) + bj;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                bi--;
+                                bj++;
+                            }
+                        }
+                        else if (board[i, j] == ChessPiece.BlackKnight)
+                        {
+                            int moveLocation;
+                            //black knight down and right
+                            if ((i + 2 <= 7) && (j + 1 <= 7) && board[i + 2, j + 1] >= ChessPiece.Empty)
+                            {
+                                if (board[i + 2, j + 1] > ChessPiece.Empty)
+                                {
+                                    moveLocation = ((i + 2) * 10) + (j + 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                else
+                                {
+                                    moveLocation = ((i + 2) * 10) + (j + 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                            }
+                            //black knight up and left
+                            if ((i - 2 >= 0) && (j - 1 >= 0) && board[i - 2, j - 1] >= ChessPiece.Empty)
+                            {
+                                if (board[i - 2, j - 1] > ChessPiece.Empty)
+                                {
+                                    moveLocation = ((i - 2) * 10) + (j - 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                else
+                                {
+                                    moveLocation = ((i - 2) * 10) + (j - 1);
+                                    move = Tuple.Create(moveLocation, 1);
+                                    moves[curLocation].Add(move);
+                                }
+                            }
+                            //black knight up and right
+                            if ((i - 2 >= 0) && (j + 1 <= 7) && board[i - 2, j + 1] >= ChessPiece.Empty)
+                            {
+                                if (board[i - 2, j + 1] > ChessPiece.Empty)
+                                {
+                                    moveLocation = ((i - 2) * 10) + (j + 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                else
+                                {
+                                    moveLocation = ((i - 2) * 10) + (j + 1);
+                                    move = Tuple.Create(moveLocation, 1);
+                                    moves[curLocation].Add(move);
+                                }
+                            }
+                            //black knight down and left
+                            if ((i + 2 <= 7) && (j - 1 >= 0) && board[i + 2, j - 1] >= ChessPiece.Empty)
+                            {
+                                if (board[i + 2, j - 1] > ChessPiece.Empty)
+                                {
+                                    moveLocation = ((i + 2) * 10) + (j - 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                else
+                                {
+                                    moveLocation = ((i + 2) * 10) + (j - 1);
+                                    move = Tuple.Create(moveLocation, 1);
+                                    moves[curLocation].Add(move);
+                                }
+                            }
+                            //black knight right and down
+                            if ((i + 1 <= 7) && (j + 2 <= 7) && board[i + 1, j + 2] >= ChessPiece.Empty)
+                            {
+                                if (board[i + 1, j + 2] > ChessPiece.Empty)
+                                {
+                                    moveLocation = ((i + 1) * 10) + (j + 2);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                else
+                                {
+                                    moveLocation = ((i + 1) * 10) + (j + 2);
+                                    move = Tuple.Create(moveLocation, 1);
+                                    moves[curLocation].Add(move);
+                                }
+                            }
+                            //black knight left and up
+                            if ((i - 1 >= 0) && (j + 2 <= 7) && board[i - 1, j + 2] >= ChessPiece.Empty)
+                            {
+                                if (board[i - 1, j + 2] > ChessPiece.Empty)
+                                {
+                                    moveLocation = ((i - 1) * 10) + (j + 2);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                else
+                                {
+                                    moveLocation = ((i - 1) * 10) + (j + 2);
+                                    move = Tuple.Create(moveLocation, 1);
+                                    moves[curLocation].Add(move);
+                                }
+                            }
+                            //black knight left and down
+                            if ((i + 1 <= 7) && (j - 2 >= 0) && board[i + 1, j - 2] >= ChessPiece.Empty)
+                            {
+                                if (board[i + 1, j - 2] > ChessPiece.Empty)
+                                {
+                                    moveLocation = ((i + 1) * 10) + (j - 2);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                else
+                                {
+                                    moveLocation = ((i + 1) * 10) + (j - 2);
+                                    move = Tuple.Create(moveLocation, 1);
+                                    moves[curLocation].Add(move);
+                                }
+                            }
+                            //black knight right and up
+                            if ((i - 1 <= 0) && (j + 2 <= 7) && board[i - 1, j + 2] >= ChessPiece.Empty)
+                            {
+                                if (board[i - 1, j + 2] > ChessPiece.Empty)
+                                {
+                                    moveLocation = ((i - 1) * 10) + (j + 2);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                else
+                                {
+                                    moveLocation = ((i - 1) * 10) + (j + 2);
+                                    move = Tuple.Create(moveLocation, 1);
+                                    moves[curLocation].Add(move);
+                                }
+                            }
+                        }
+                        else if (board[i, j] == ChessPiece.BlackBishop)
+                        {
+                            //black Bishop down and right
+                            int bi = i + 1;
+                            int bj = j + 1;
+                            while ((bi <= 7) && (bj <= 7) && board[bi, bj] == ChessPiece.Empty)
+                            {
+                                int moveLocation;
+                                if ((bi + 1 <= 7) && (bj + 1 <= 7) && board[bi + 1, bj + 1] > ChessPiece.Empty)
+                                {
+                                    moveLocation = ((bi + 1) * 10) + (bj + 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (bi * 10) + bj;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                bi++;
+                                bj++;
+                            }
+                            //black Bishop up and left
+                            bi = i - 1;
+                            bj = j - 1;
+                            while ((bi >= 0) && (bj >= 0) && board[bi, bj] == ChessPiece.Empty)
+                            {
+                                int moveLocation;
+                                if ((bi - 1 >= 0) && (bj - 1 >= 0) && board[bi - 1, bj - 1] > ChessPiece.Empty)
+                                {
+                                    moveLocation = ((bi - 1) * 10) + (bj - 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (bi * 10) + bj;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                bi--;
+                                bj--;
+                            }
+                            //black Bishop down and left
+                            bi = i + 1;
+                            bj = j - 1;
+                            while ((bi <= 7) && (bj >= 0) && board[bi, bj] == ChessPiece.Empty)
+                            {
+                                int moveLocation;
+                                if ((bi + 1 <= 7) && (bj - 1 >= 0) && board[bi + 1, bj - 1] > ChessPiece.Empty)
+                                {
+                                    moveLocation = ((bi + 1) * 10) + (bj - 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (bi * 10) + bj;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                bi++;
+                                bj--;
+                            }
+                            //black Bishop up and right
+                            bi = i - 1;
+                            bj = j + 1;
+                            while ((bi >= 0) && (bj <= 7) && board[bi, bj] == ChessPiece.Empty)
+                            {
+                                int moveLocation;
+                                if ((bi - 1 >= 0) && (bj + 1 <= 7) && board[bi - 1, bj + 1] > ChessPiece.Empty)
+                                {
+                                    moveLocation = ((bi + 1) * 10) + (bj + 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (bi * 10) + bj;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                bi--;
+                                bj++;
+                            }
+                        }
+                        else if (board[i, j] == ChessPiece.BlackRook)
+                        {
+                            int moveLocation;
+                            //black rook down
+                            int ri = i + 1;
+                            while ((ri <= 7) && board[ri, j] == ChessPiece.Empty)
+                            {
+                                if (ri + 1 <= 7 && board[ri + 1, j] > ChessPiece.Empty)
+                                {
+                                    moveLocation = ((ri + 1) * 10 + j);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (ri * 10) + j;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                ri++;
+                            }
+                            //black rook right
+                            int rj = i + 1;
+                            while ((rj <= 7) && board[i, rj] == ChessPiece.Empty)
+                            {
+                                if (rj + 1 <= 7 && board[i, rj + 1] > ChessPiece.Empty)
+                                {
+                                    moveLocation = ((i) * 10 + rj + 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (i * 10) + rj;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                rj++;
+                            }
+                            //black rook up
+                            ri = i - 1;
+                            while ((ri >= 0) && board[ri, j] == ChessPiece.Empty)
+                            {
+                                if (ri - 1 >= 0 && board[ri - 1, j] > ChessPiece.Empty)
+                                {
+                                    moveLocation = ((ri - 1) * 10 + j);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (ri * 10) + j;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                ri--;
+                            }
+                            //black rook left
+                            rj = i - 1;
+                            while ((rj >= 0) && board[i, rj] == ChessPiece.Empty)
+                            {
+                                if (rj - 1 >= 0 && board[i, rj - 1] > ChessPiece.Empty)
+                                {
+                                    moveLocation = ((i) * 10 + rj - 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (i * 10) + rj;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                rj--;
+                            }
+                        }
+                        else if (board[i, j] == ChessPiece.BlackPawn)
+                        {
+                            if (i == 1)
+                            {
+                                //black pawn forward 2
+                                if (board[i + 2, j] == ChessPiece.Empty && board[i + 1, j] == ChessPiece.Empty)
+                                {
+                                    move = Tuple.Create(curLocation + 20, 1);
+                                    moves[curLocation].Add(move);
+                                }
+                            }
+                            //black pawn forward 1
+                            if ((i + 1 <= 7) && board[i + 1, j] == ChessPiece.Empty)
                             {
                                 move = Tuple.Create(curLocation + 10, 1);
+                                moves[curLocation].Add(move);
                             }
-                            else
-                            {
-                                move = Tuple.Create(curLocation + 10, 2);
-                            }
-                            moves[curLocation].Add(move);
-                        }
-                        //black King up 1
-                        if ((i - 1 >= 0) && board[i - 1, j] >= ChessPiece.Empty)
-                        {
-                            if (board[i - 1, j] > ChessPiece.Empty)
-                            {
-                                move = Tuple.Create(curLocation - 10, 1);
-                            }
-                            else
-                            {
-                                move = Tuple.Create(curLocation - 10, 2);
-                            }
-                            moves[curLocation].Add(move);
-                        }
-                        //black King left 1
-                        if ((j - 1 >= 0) && board[i, j - 1] >= ChessPiece.Empty)
-                        {
-                            if (board[i, j - 1] > ChessPiece.Empty)
-                            {
-                                move = Tuple.Create(curLocation - 1, 1);
-                            }
-                            else
-                            {
-                                move = Tuple.Create(curLocation - 1, 2);
-                            }
-                            moves[curLocation].Add(move);
-                        }
-                        //black King right 1
-                        if ((j + 1 <= 7) && board[i, j + 1] >= ChessPiece.Empty)
-                        {
-                            if (board[i, j + 1] > ChessPiece.Empty)
-                            {
-                                move = Tuple.Create(curLocation + 1, 1);
-                            }
-                            else
-                            {
-                                move = Tuple.Create(curLocation + 1, 2);
-                            }
-                            moves[curLocation].Add(move);
-                        }
-                        //black King up and right
-                        if ((j + 1 <= 7) && (i + 1 <= 7) && board[i + 1, j + 1] >= ChessPiece.Empty)
-                        {
-                            if (board[i + 1, j + 1] > ChessPiece.Empty)
-                            {
-                                move = Tuple.Create(curLocation + 11, 1);
-                            }
-                            else
+                            //black pawn diaganal attack right
+                            if ((i + 1 <= 7) && (j + 1 <= 7) && board[i + 1, j + 1] > ChessPiece.Empty)
                             {
                                 move = Tuple.Create(curLocation + 11, 2);
+                                moves[curLocation].Add(move);
                             }
-                            moves[curLocation].Add(move);
-                        }
-                        //black king down and right
-                        if ((j + 1 <= 7) && (i - 1 >= 0) && board[i - 1, j + 1] >= ChessPiece.Empty)
-                        {
-                            int moveLocation = ((i - 1) * 10) + (j + 1);
-                            if (board[i - 1, j + 1] > ChessPiece.Empty)
+                            //black pawn diaganal attack left
+                            if ((i + 1 <= 7) && (j - 1 >= 0) && board[i + 1, j - 1] > ChessPiece.Empty)
                             {
-                                move = Tuple.Create(moveLocation, 1);
-                            }
-                            else
-                            {
+                                int moveLocation = ((i + 1) * 10) + j - 1;
                                 move = Tuple.Create(moveLocation, 2);
-                            }
-                            moves[curLocation].Add(move);
-                        }
-                        //black king up and left
-                        if ((j - 1 >= 0) && (i + 1 <= 7) && board[i + 1, j - 1] >= ChessPiece.Empty)
-                        {
-                            int moveLocation = ((i + 1) * 10) + (j - 1);
-                            if (board[i + 1, j - 1] > ChessPiece.Empty)
-                            {
-                                move = Tuple.Create(moveLocation, 1);
-                            }
-                            else
-                            {
-                                move = Tuple.Create(moveLocation, 2);
-                            }
-                            moves[curLocation].Add(move);
-                        }
-                        //black King down and left
-                        if ((j - 1 >= 0) && (i - 1 >= 0) && board[i - 1, j - 1] >= ChessPiece.Empty)
-                        {
-                            int moveLocation = ((i - 1) * 10) + (j - 1);
-                            if (board[i - 1, j - 1] > ChessPiece.Empty)
-                            {
-                                move = Tuple.Create(moveLocation, 1);
-                            }
-                            else
-                            {
-                                move = Tuple.Create(moveLocation, 2);
-                            }
-                            moves[curLocation].Add(move);
-                        }
-                    }
-                    else if (board[i, j] == ChessPiece.BlackQueen)
-                    {
-                        int moveLocation;
-                        //black queen down
-                        int ri = i + 1;
-                        while ((ri <= 7) && board[ri, j] == ChessPiece.Empty)
-                        {
-                            if (ri + 1 <= 7 && board[ri + 1, j] > ChessPiece.Empty)
-                            {
-                                moveLocation = ((ri + 1) * 10 + j);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (ri * 10) + j;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            ri++;
-                        }
-                        //black queen right
-                        int rj = i + 1;
-                        while ((rj <= 7) && board[i, rj] == ChessPiece.Empty)
-                        {
-                            if (rj + 1 <= 7 && board[i, rj + 1] > ChessPiece.Empty)
-                            {
-                                moveLocation = ((i) * 10 + rj + 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (i * 10) + rj;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            rj++;
-                        }
-                        //black queen up
-                        ri = i - 1;
-                        while ((ri >= 0) && board[ri, j] == ChessPiece.Empty)
-                        {
-                            if (ri - 1 >= 0 && board[ri - 1, j] > ChessPiece.Empty)
-                            {
-                                moveLocation = ((ri - 1) * 10 + j);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (ri * 10) + j;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            ri--;
-                        }
-                        //black queen left
-                        rj = i - 1;
-                        while ((rj >= 0) && board[i, rj] == ChessPiece.Empty)
-                        {
-                            if (rj - 1 >= 0 && board[i, rj - 1] > ChessPiece.Empty)
-                            {
-                                moveLocation = ((i) * 10 + rj - 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (i * 10) + rj;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            rj--;
-                        }
-                        //black queen down and right
-                        int bi = i + 1;
-                        int bj = j + 1;
-                        while ((bi <= 7) && (bj <= 7) && board[bi, bj] == ChessPiece.Empty)
-                        {
-                            if ((bi + 1 <= 7) && (bj + 1 <= 7) && board[bi + 1, bj + 1] > ChessPiece.Empty)
-                            {
-                                moveLocation = ((bi + 1) * 10) + (bj + 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (bi * 10) + bj;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            bi++;
-                            bj++;
-                        }
-                        //black queen up and left
-                        bi = i - 1;
-                        bj = j - 1;
-                        while ((bi >= 0) && (bj >= 0) && board[bi, bj] == ChessPiece.Empty)
-                        {
-                            if ((bi - 1 >= 0) && (bj - 1 >= 0) && board[bi - 1, bj - 1] > ChessPiece.Empty)
-                            {
-                                moveLocation = ((bi - 1) * 10) + (bj - 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (bi * 10) + bj;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            bi--;
-                            bj--;
-                        }
-                        //black queen down and left
-                        bi = i + 1;
-                        bj = j - 1;
-                        while ((bi <= 7) && (bj >= 0) && board[bi, bj] == ChessPiece.Empty)
-                        {
-                            if ((bi + 1 <= 7) && (bj - 1 >= 0) && board[bi + 1, bj - 1] > ChessPiece.Empty)
-                            {
-                                moveLocation = ((bi + 1) * 10) + (bj - 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (bi * 10) + bj;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            bi++;
-                            bj--;
-                        }
-                        //black queen up and right
-                        bi = i - 1;
-                        bj = j + 1;
-                        while ((bi >= 0) && (bj <= 7) && board[bi, bj] == ChessPiece.Empty)
-                        {
-                            if ((bi - 1 >= 0) && (bj + 1 <= 7) && board[bi - 1, bj + 1] > ChessPiece.Empty)
-                            {
-                                moveLocation = ((bi + 1) * 10) + (bj + 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (bi * 10) + bj;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            bi--;
-                            bj++;
-                        }
-                    }
-                    else if (board[i, j] == ChessPiece.BlackKnight)
-                    {
-                        int moveLocation;
-                        //black knight down and right
-                        if ((i + 2 <= 7) && (j + 1 <= 7) && board[i + 2, j + 1] >= ChessPiece.Empty)
-                        {
-                            if (board[i + 2, j + 1] > ChessPiece.Empty)
-                            {
-                                moveLocation = ((i + 2) * 10) + (j + 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            else
-                            {
-                                moveLocation = ((i + 2) * 10) + (j + 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                        }
-                        //black knight up and left
-                        if ((i - 2 >= 0) && (j - 1 >= 0) && board[i - 2, j - 1] >= ChessPiece.Empty)
-                        {
-                            if (board[i - 2, j - 1] > ChessPiece.Empty)
-                            {
-                                moveLocation = ((i - 2) * 10) + (j - 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            else
-                            {
-                                moveLocation = ((i - 2) * 10) + (j - 1);
-                                move = Tuple.Create(moveLocation, 1);
-                                moves[curLocation].Add(move);
-                            }
-                        }
-                        //black knight up and right
-                        if ((i - 2 >= 0) && (j + 1 <= 7) && board[i - 2, j + 1] >= ChessPiece.Empty)
-                        {
-                            if (board[i - 2, j + 1] > ChessPiece.Empty)
-                            {
-                                moveLocation = ((i - 2) * 10) + (j + 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            else
-                            {
-                                moveLocation = ((i - 2) * 10) + (j + 1);
-                                move = Tuple.Create(moveLocation, 1);
-                                moves[curLocation].Add(move);
-                            }
-                        }
-                        //black knight down and left
-                        if ((i + 2 <= 7) && (j - 1 >= 0) && board[i + 2, j - 1] >= ChessPiece.Empty)
-                        {
-                            if (board[i + 2, j - 1] > ChessPiece.Empty)
-                            {
-                                moveLocation = ((i + 2) * 10) + (j - 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            else
-                            {
-                                moveLocation = ((i + 2) * 10) + (j - 1);
-                                move = Tuple.Create(moveLocation, 1);
-                                moves[curLocation].Add(move);
-                            }
-                        }
-                        //black knight right and down
-                        if ((i + 1 <= 7) && (j + 2 <= 7) && board[i + 1, j +2] >= ChessPiece.Empty)
-                        {
-                            if (board[i + 1, j + 2] > ChessPiece.Empty)
-                            {
-                                moveLocation = ((i + 1) * 10) + (j + 2);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            else
-                            {
-                                moveLocation = ((i + 1) * 10) + (j + 2);
-                                move = Tuple.Create(moveLocation, 1);
-                                moves[curLocation].Add(move);
-                            }
-                        }
-                        //black knight left and up
-                        if ((i - 1 >= 0) && (j + 2 <= 7) && board[i - 1, j + 2] >= ChessPiece.Empty)
-                        {
-                            if (board[i - 1, j + 2] > ChessPiece.Empty)
-                            {
-                                moveLocation = ((i - 1) * 10) + (j + 2);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            else
-                            {
-                                moveLocation = ((i - 1) * 10) + (j + 2);
-                                move = Tuple.Create(moveLocation, 1);
-                                moves[curLocation].Add(move);
-                            }
-                        }
-                        //black knight left and down
-                        if ((i + 1 <= 7) && (j - 2 >= 0) && board[i + 1, j - 2] >= ChessPiece.Empty)
-                        {
-                            if (board[i + 1, j - 2] > ChessPiece.Empty)
-                            {
-                                moveLocation = ((i + 1) * 10) + (j - 2);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            else
-                            {
-                                moveLocation = ((i + 1) * 10) + (j - 2);
-                                move = Tuple.Create(moveLocation, 1);
-                                moves[curLocation].Add(move);
-                            }
-                        }
-                        //black knight right and up
-                        if ((i - 1 <= 0) && (j + 2 <= 7) && board[i - 1, j + 2] >= ChessPiece.Empty)
-                        {
-                            if (board[i - 1, j + 2] > ChessPiece.Empty)
-                            {
-                                moveLocation = ((i - 1) * 10) + (j + 2);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            else
-                            {
-                                moveLocation = ((i - 1) * 10) + (j + 2);
-                                move = Tuple.Create(moveLocation, 1);
                                 moves[curLocation].Add(move);
                             }
                         }
                     }
-                    else if (board[i, j] == ChessPiece.BlackBishop)
+                    else
                     {
-                        //black Bishop down and right
-                        int bi = i + 1;
-                        int bj = j + 1;
-                        while ((bi <= 7) && (bj <= 7) && board[bi, bj] == ChessPiece.Empty)
+                        if (board[i, j] == ChessPiece.WhitePawn)
                         {
-                            int moveLocation;
-                            if ((bi + 1 <= 7) && (bj + 1 <= 7) && board[bi + 1, bj + 1] > ChessPiece.Empty)
+                            if (i == 6)
                             {
-                                moveLocation = ((bi + 1) * 10) + (bj + 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
+                                //white pawn forward 2
+                                if (board[i - 2, j] == ChessPiece.Empty && board[i - 1, j] == ChessPiece.Empty)
+                                {
+                                    move = Tuple.Create(curLocation - 20, 1);
+                                    moves[curLocation].Add(move);
+                                }
                             }
-                            moveLocation = (bi * 10) + bj;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            bi++;
-                            bj++;
-                        }
-                        //black Bishop up and left
-                        bi = i - 1;
-                        bj = j - 1;
-                        while ((bi >= 0) && (bj >= 0) && board[bi, bj] == ChessPiece.Empty)
-                        {
-                            int moveLocation;
-                            if ((bi - 1 >= 0) && (bj - 1 >= 0) && board[bi - 1, bj - 1] > ChessPiece.Empty)
-                            {
-                                moveLocation = ((bi - 1) * 10) + (bj - 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (bi * 10) + bj;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            bi--;
-                            bj--;
-                        }
-                        //black Bishop down and left
-                        bi = i + 1;
-                        bj = j - 1;
-                        while ((bi <= 7) && (bj >= 0) && board[bi, bj] == ChessPiece.Empty)
-                        {
-                            int moveLocation;
-                            if ((bi + 1 <= 7) && (bj - 1 >= 0) && board[bi + 1, bj - 1] > ChessPiece.Empty)
-                            {
-                                moveLocation = ((bi + 1) * 10) + (bj - 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (bi * 10) + bj;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            bi++;
-                            bj--;
-                        }
-                        //black Bishop up and right
-                        bi = i - 1;
-                        bj = j + 1;
-                        while ((bi >= 0) && (bj <= 7) && board[bi, bj] == ChessPiece.Empty)
-                        {
-                            int moveLocation;
-                            if ((bi - 1 >= 0) && (bj + 1 <= 7) && board[bi - 1, bj + 1] > ChessPiece.Empty)
-                            {
-                                moveLocation = ((bi + 1) * 10) + (bj + 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (bi * 10) + bj;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            bi--;
-                            bj++;
-                        }
-                    }
-                    else if (board[i, j] == ChessPiece.BlackRook)
-                    {
-                        int moveLocation;
-                        //black rook down
-                        int ri = i + 1;
-                        while ((ri <= 7) && board[ri, j] == ChessPiece.Empty)
-                        {
-                            if (ri + 1 <= 7 && board[ri + 1, j] > ChessPiece.Empty)
-                            {
-                                moveLocation = ((ri + 1) * 10 + j);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (ri * 10) + j;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            ri++;
-                        }
-                        //black rook right
-                        int rj = i + 1;
-                        while ((rj <= 7) && board[i, rj] == ChessPiece.Empty)
-                        {
-                            if (rj + 1 <= 7 && board[i, rj + 1] > ChessPiece.Empty)
-                            {
-                                moveLocation = ((i) * 10 + rj + 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (i * 10) + rj;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            rj++;
-                        }
-                        //black rook up
-                        ri = i - 1;
-                        while ((ri >= 0) && board[ri, j] == ChessPiece.Empty)
-                        {
-                            if (ri - 1 >= 0 && board[ri - 1, j] > ChessPiece.Empty)
-                            {
-                                moveLocation = ((ri - 1) * 10 + j);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (ri * 10) + j;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            ri--;
-                        }
-                        //black rook left
-                        rj = i - 1;
-                        while ((rj >= 0) && board[i, rj] == ChessPiece.Empty)
-                        {
-                            if (rj - 1 >= 0 && board[i, rj - 1] > ChessPiece.Empty)
-                            {
-                                moveLocation = ((i) * 10 + rj - 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (i * 10) + rj;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            rj--;
-                        }
-                    }
-                    else if (board[i, j] == ChessPiece.BlackPawn)
-                    {
-                        if (i == 1)
-                        {
-                            //black pawn forward 2
-                            if (board[i + 2, j] == ChessPiece.Empty && board[i + 1, j] == ChessPiece.Empty)
-                            {
-                                move = Tuple.Create(curLocation + 20, 1);
-                                moves[curLocation].Add(move);
-                            }
-                        }
-                        //black pawn forward 1
-                        if ((i + 1 <= 7) && board[i + 1, j] == ChessPiece.Empty)
-                        {
-                            move = Tuple.Create(curLocation + 10, 1);
-                            moves[curLocation].Add(move);
-                        }
-                        //black pawn diaganal attack right
-                        if ((i + 1 <= 7) && (j + 1 <= 7) && board[i + 1, j + 1] > ChessPiece.Empty)
-                        {
-                            move = Tuple.Create(curLocation + 11, 2);
-                            moves[curLocation].Add(move);
-                        }
-                        //black pawn diaganal attack left
-                        if ((i + 1 <= 7) && (j - 1 >= 0) && board[i + 1, j - 1] > ChessPiece.Empty)
-                        {
-                            int moveLocation = ((i + 1) * 10) + j - 1;
-                            move = Tuple.Create(moveLocation, 2);
-                            moves[curLocation].Add(move);
-                        }
-                    }
-                    else if (board[i, j] == ChessPiece.WhitePawn)
-                    {
-                        if (i == 6)
-                        {
-                            //white pawn forward 2
-                            if (board[i - 2, j] == ChessPiece.Empty && board[i-1, j] == ChessPiece.Empty)
-                            {
-                                move = Tuple.Create(curLocation - 20, 1);
-                                moves[curLocation].Add(move);
-                            }
-                        }
-                        //white pawn forward 1
-                        if ((i - 1 >= 0) && board[i - 1, j] == ChessPiece.Empty)
-                        {
-                            move = Tuple.Create(curLocation - 10, 1);
-                            moves[curLocation].Add(move);
-                        }
-                        //white pawn diaganal attack right
-                        if ((j + 1 <= 7) && (i - 1 >= 0) && board[i - 1, j + 1] < ChessPiece.Empty)
-                        {
-                            move = Tuple.Create(curLocation + 11, 2);
-                            moves[curLocation].Add(move);
-                        }
-                        //white pawn diaganal attack left
-                        if ((j - 1 >= 0) && (i - 1 >= 0) && board[i - 1, j - 1] < ChessPiece.Empty)
-                        {
-                            int moveLocation = ((i + 1) * 10) + j - 1;
-                            move = Tuple.Create(moveLocation, 2);
-                            moves[curLocation].Add(move);
-                        }
-                    }
-                    else if (board[i, j] == ChessPiece.WhiteBishop)
-                    {
-                        //white Bishop down and right
-                        int bi = i + 1;
-                        int bj = j + 1;
-                        while ((bi <= 7) && (bj <= 7) && board[bi, bj] == ChessPiece.Empty)
-                        {
-                            int moveLocation;
-                            if ((bi + 1 <= 7) && (bj + 1 <= 7) && board[bi + 1, bj + 1] < ChessPiece.Empty)
-                            {
-                                moveLocation = ((bi + 1) * 10) + (bj + 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (bi * 10) + bj;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            bi++;
-                            bj++;
-                        }
-                        //white Bishop up and left
-                        bi = i - 1;
-                        bj = j - 1;
-                        while ((bi >= 0) && (bj >= 0) && board[bi, bj] == ChessPiece.Empty)
-                        {
-                            int moveLocation;
-                            if ((bi - 1 >= 0) && (bj - 1 >= 0) && board[bi - 1, bj - 1] < ChessPiece.Empty)
-                            {
-                                moveLocation = ((bi - 1) * 10) + (bj - 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (bi * 10) + bj;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            bi--;
-                            bj--;
-                        }
-                        //white Bishop down and left
-                        bi = i + 1;
-                        bj = j - 1;
-                        while ((bi <= 7) && (bj >= 0) && board[bi, bj] == ChessPiece.Empty)
-                        {
-                            int moveLocation;
-                            if ((bi + 1 <= 7) && (bj - 1 >= 0) && board[bi + 1, bj - 1] < ChessPiece.Empty)
-                            {
-                                moveLocation = ((bi + 1) * 10) + (bj - 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (bi * 10) + bj;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            bi++;
-                            bj--;
-                        }
-                        //white Bishop up and right
-                        bi = i - 1;
-                        bj = j + 1;
-                        while ((bi >= 0) && (bj <= 7) && board[bi, bj] == ChessPiece.Empty)
-                        {
-                            int moveLocation;
-                            if ((bi - 1 >= 0) && (bj + 1 <= 7) && board[bi - 1, bj + 1] < ChessPiece.Empty)
-                            {
-                                moveLocation = ((bi * 1) * 10) + (bj + 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (bi * 10) + bj;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            bi--;
-                            bj++;
-                        }
-                    }
-                    else if (board[i, j] == ChessPiece.WhiteKnight)
-                    {
-                        int moveLocation;
-                        //White knight down and right
-                        if ((i + 2 <= 7) && (j + 1 <= 7) && board[i + 2, j + 1] <= ChessPiece.Empty)
-                        {
-                            if (board[i + 2, j + 1] < ChessPiece.Empty)
-                            {
-                                moveLocation = ((i + 2) * 10) + (j + 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            else
-                            {
-                                moveLocation = ((i + 2) * 10) + (j + 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                        }
-                        //White knight up and left
-                        if ((i - 2 >= 0) && (j - 1 >= 0) && board[i - 2, j - 1] <= ChessPiece.Empty)
-                        {
-                            if (board[i - 2, j - 1] < ChessPiece.Empty)
-                            {
-                                moveLocation = ((i - 2) * 10) + (j - 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            else
-                            {
-                                moveLocation = ((i - 2) * 10) + (j - 1);
-                                move = Tuple.Create(moveLocation, 1);
-                                moves[curLocation].Add(move);
-                            }
-                        }
-                        //White knight up and right
-                        if ((i - 2 >= 0) && (j + 1 <= 7) && board[i - 2, j + 1] <= ChessPiece.Empty)
-                        {
-                            if (board[i - 2, j + 1] < ChessPiece.Empty)
-                            {
-                                moveLocation = ((i - 2) * 10) + (j + 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            else
-                            {
-                                moveLocation = ((i - 2) * 10) + (j + 1);
-                                move = Tuple.Create(moveLocation, 1);
-                                moves[curLocation].Add(move);
-                            }
-                        }
-                        //White knight down and left
-                        if ((i + 2 <= 7) && (j - 1 >= 0) && board[i + 2, j - 1] <= ChessPiece.Empty)
-                        {
-                            if (board[i + 2, j - 1] < ChessPiece.Empty)
-                            {
-                                moveLocation = ((i + 2) * 10) + (j - 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            else
-                            {
-                                moveLocation = ((i + 2) * 10) + (j - 1);
-                                move = Tuple.Create(moveLocation, 1);
-                                moves[curLocation].Add(move);
-                            }
-                        }
-                        //White knight right and down
-                        if ((i + 1 <= 7) && (j + 2 <= 7) && board[i + 1, j + 2] <= ChessPiece.Empty)
-                        {
-                            if (board[i + 1, j + 2] < ChessPiece.Empty)
-                            {
-                                moveLocation = ((i + 1) * 10) + (j + 2);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            else
-                            {
-                                moveLocation = ((i + 1) * 10) + (j + 2);
-                                move = Tuple.Create(moveLocation, 1);
-                                moves[curLocation].Add(move);
-                            }
-                        }
-                        //White knight left and up
-                        if ((i - 1 >= 0) && (j + 2 <= 7) && board[i - 1, j + 2] <= ChessPiece.Empty)
-                        {
-                            if (board[i - 1, j + 2] < ChessPiece.Empty)
-                            {
-                                moveLocation = ((i - 1) * 10) + (j + 2);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            else
-                            {
-                                moveLocation = ((i - 1) * 10) + (j + 2);
-                                move = Tuple.Create(moveLocation, 1);
-                                moves[curLocation].Add(move);
-                            }
-                        }
-                        //White knight left and down
-                        if ((i + 1 <= 7) && (j - 2 >= 0) && board[i + 1, j - 2] <= ChessPiece.Empty)
-                        {
-                            if (board[i + 1, j - 2] < ChessPiece.Empty)
-                            {
-                                moveLocation = ((i + 1) * 10) + (j - 2);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            else
-                            {
-                                moveLocation = ((i + 1) * 10) + (j - 2);
-                                move = Tuple.Create(moveLocation, 1);
-                                moves[curLocation].Add(move);
-                            }
-                        }
-                        //White knight right and up
-                        if ((i - 1 <= 0) && (j + 2 <= 7) && board[i - 1, j + 2] <= ChessPiece.Empty)
-                        {
-                            if (board[i - 1, j + 2] < ChessPiece.Empty)
-                            {
-                                moveLocation = ((i - 1) * 10) + (j + 2);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            else
-                            {
-                                moveLocation = ((i - 1) * 10) + (j + 2);
-                                move = Tuple.Create(moveLocation, 1);
-                                moves[curLocation].Add(move);
-                            }
-                        }
-                    }
-                    else if (board[i, j] == ChessPiece.BlackQueen)
-                    {
-                        int moveLocation;
-                        //white queen down
-                        int ri = i + 1;
-                        while ((ri <= 7) && board[ri, j] == ChessPiece.Empty)
-                        {
-                            if (ri + 1 <= 7 && board[ri + 1, j] < ChessPiece.Empty)
-                            {
-                                moveLocation = ((ri + 1) * 10 + j);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (ri * 10) + j;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            ri++;
-                        }
-                        //white queen right
-                        int rj = i + 1;
-                        while ((rj <= 7) && board[i, rj] == ChessPiece.Empty)
-                        {
-                            if (rj + 1 <= 7 && board[i, rj + 1] < ChessPiece.Empty)
-                            {
-                                moveLocation = ((i) * 10 + rj + 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (i * 10) + rj;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            rj++;
-                        }
-                        //white queen up
-                        ri = i - 1;
-                        while ((ri >= 0) && board[ri, j] == ChessPiece.Empty)
-                        {
-                            if (ri - 1 >= 0 && board[ri - 1, j] < ChessPiece.Empty)
-                            {
-                                moveLocation = ((ri - 1) * 10 + j);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (ri * 10) + j;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            ri--;
-                        }
-                        //white queen left
-                        rj = i - 1;
-                        while ((rj >= 0) && board[i, rj] == ChessPiece.Empty)
-                        {
-                            if (rj - 1 >= 0 && board[i, rj - 1] < ChessPiece.Empty)
-                            {
-                                moveLocation = ((i) * 10 + rj - 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (i * 10) + rj;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            rj--;
-                        }
-                        //white queen down and right
-                        int bi = i + 1;
-                        int bj = j + 1;
-                        while ((bi <= 7) && (bj <= 7) && board[bi, bj] == ChessPiece.Empty)
-                        {
-                            if ((bi + 1 <= 7) && (bj + 1 <= 7) && board[bi + 1, bj + 1] < ChessPiece.Empty)
-                            {
-                                moveLocation = ((bi + 1) * 10) + (bj + 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (bi * 10) + bj;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            bi++;
-                            bj++;
-                        }
-                        //white queen up and left
-                        bi = i - 1;
-                        bj = j - 1;
-                        while ((bi >= 0) && (bj >= 0) && board[bi, bj] == ChessPiece.Empty)
-                        {
-                            if ((bi - 1 >= 0) && (bj - 1 >= 0) && board[bi - 1, bj - 1] < ChessPiece.Empty)
-                            {
-                                moveLocation = ((bi - 1) * 10) + (bj - 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (bi * 10) + bj;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            bi--;
-                            bj--;
-                        }
-                        //white queen down and left
-                        bi = i + 1;
-                        bj = j - 1;
-                        while ((bi <= 7) && (bj >= 0) && board[bi, bj] == ChessPiece.Empty)
-                        {
-                            if ((bi + 1 <= 7) && (bj - 1 >= 0) && board[bi + 1, bj - 1] < ChessPiece.Empty)
-                            {
-                                moveLocation = ((bi + 1) * 10) + (bj - 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (bi * 10) + bj;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            bi++;
-                            bj--;
-                        }
-                        //white queen up and right
-                        bi = i - 1;
-                        bj = j + 1;
-                        while ((bi >= 0) && (bj <= 7) && board[bi, bj] == ChessPiece.Empty)
-                        {
-                            if ((bi - 1 >= 0) && (bj + 1 <= 7) && board[bi - 1, bj + 1] < ChessPiece.Empty)
-                            {
-                                moveLocation = ((bi + 1) * 10) + (bj + 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (bi * 10) + bj;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            bi--;
-                            bj++;
-                        }
-                    }
-                    else if (board[i, j] == ChessPiece.WhiteRook)
-                    {
-                        int moveLocation;
-                        //white rook down
-                        int ri = i + 1;
-                        while ((ri <= 7) && board[ri, j] == ChessPiece.Empty)
-                        {
-                            if (ri + 1 <= 7 && board[ri + 1, j] < ChessPiece.Empty)
-                            {
-                                moveLocation = ((ri + 1) * 10 + j);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (ri * 10) + j;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            ri++;
-                        }
-                        //white rook right
-                        int rj = i + 1;
-                        while ((rj <= 7) && board[i, rj] == ChessPiece.Empty)
-                        {
-                            if (rj + 1 <= 7 && board[i, rj + 1] < ChessPiece.Empty)
-                            {
-                                moveLocation = ((i) * 10 + rj + 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (i * 10) + rj;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            rj++;
-                        }
-                        //white rook up
-                        ri = i - 1;
-                        while ((ri >= 0) && board[ri, j] == ChessPiece.Empty)
-                        {
-                            if (ri - 1 >= 0 && board[ri - 1, j] < ChessPiece.Empty)
-                            {
-                                moveLocation = ((ri - 1) * 10 + j);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (ri * 10) + j;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            ri--;
-                        }
-                        //white rook left
-                        rj = i - 1;
-                        while ((rj >= 0) && board[i, rj] == ChessPiece.Empty)
-                        {
-                            if (rj - 1 >= 0 && board[i, rj - 1] < ChessPiece.Empty)
-                            {
-                                moveLocation = ((i) * 10 + rj - 1);
-                                move = Tuple.Create(moveLocation, 2);
-                                moves[curLocation].Add(move);
-                            }
-                            moveLocation = (i * 10) + rj;
-                            move = Tuple.Create(moveLocation, 1);
-                            moves[curLocation].Add(move);
-                            rj--;
-                        }
-                    }
-                    else if (board[i, j] == ChessPiece.WhiteKing)
-                    {
-                        //whiteKing down 1
-                        if ((i + 1 <= 7) && board[i + 1, j] <= ChessPiece.Empty)
-                        {
-                            if (board[i + 1, j] < ChessPiece.Empty)
-                            {
-                                move = Tuple.Create(curLocation + 10, 1);
-                            }
-                            else
-                            {
-                                move = Tuple.Create(curLocation + 10, 2);
-                            }
-                            moves[curLocation].Add(move);
-                        }
-                        //whiteKing up 1
-                        if ((i - 1 >= 0) && board[i - 1, j] <= ChessPiece.Empty)
-                        {
-                            if (board[i - 1, j] < ChessPiece.Empty)
+                            //white pawn forward 1
+                            if ((i - 1 >= 0) && board[i - 1, j] == ChessPiece.Empty)
                             {
                                 move = Tuple.Create(curLocation - 10, 1);
+                                moves[curLocation].Add(move);
                             }
-                            else
-                            {
-                                move = Tuple.Create(curLocation - 10, 2);
-                            }
-                            moves[curLocation].Add(move);
-                        }
-                        //whiteKing left 1
-                        if ((j - 1 >= 0) && board[i, j - 1] <= ChessPiece.Empty)
-                        {
-                            if (board[i, j - 1] < ChessPiece.Empty)
-                            {
-                                move = Tuple.Create(curLocation - 1, 1);
-                            }
-                            else
-                            {
-                                move = Tuple.Create(curLocation - 1, 2);
-                            }
-                            moves[curLocation].Add(move);
-                        }
-                        //whiteKing right 1
-                        if ((j + 1 <= 7) && board[i, j + 1] <= ChessPiece.Empty)
-                        {
-                            if (board[i, j + 1] < ChessPiece.Empty)
-                            {
-                                move = Tuple.Create(curLocation + 1, 1);
-                            }
-                            else
-                            {
-                                move = Tuple.Create(curLocation + 1, 2);
-                            }
-                            moves[curLocation].Add(move);
-                        }
-                        //whiteKing up and right
-                        if ((j + 1 <= 7) && (i + 1 <= 7) && board[i + 1, j + 1] <= ChessPiece.Empty)
-                        {
-                            if (board[i + 1, j + 1] < ChessPiece.Empty)
-                            {
-                                move = Tuple.Create(curLocation + 11, 1);
-                            }
-                            else
+                            //white pawn diaganal attack right
+                            if ((j + 1 <= 7) && (i - 1 >= 0) && board[i - 1, j + 1] < ChessPiece.Empty)
                             {
                                 move = Tuple.Create(curLocation + 11, 2);
+                                moves[curLocation].Add(move);
                             }
-                            moves[curLocation].Add(move);
-                        }
-                        //whiteking down and right
-                        if ((j + 1 <= 7) && (i - 1 >= 0) && board[i - 1, j + 1] <= ChessPiece.Empty)
-                        {
-                            int moveLocation = ((i - 1) * 10) + (j + 1);
-                            if (board[i - 1, j + 1] < ChessPiece.Empty)
+                            //white pawn diaganal attack left
+                            if ((j - 1 >= 0) && (i - 1 >= 0) && board[i - 1, j - 1] < ChessPiece.Empty)
                             {
-                                move = Tuple.Create(moveLocation, 1);
-                            }
-                            else
-                            {
+                                int moveLocation = ((i + 1) * 10) + j - 1;
                                 move = Tuple.Create(moveLocation, 2);
+                                moves[curLocation].Add(move);
                             }
-                            moves[curLocation].Add(move);
                         }
-                        //whiteking up and left
-                        if ((j - 1 >= 0) && (i + 1 <= 7) && board[i + 1, j - 1] <= ChessPiece.Empty)
+                        else if (board[i, j] == ChessPiece.WhiteBishop)
                         {
-                            int moveLocation = ((i + 1) * 10) + (j - 1);
-                            if (board[i + 1, j - 1] < ChessPiece.Empty)
+                            //white Bishop down and right
+                            int bi = i + 1;
+                            int bj = j + 1;
+                            while ((bi <= 7) && (bj <= 7) && board[bi, bj] == ChessPiece.Empty)
                             {
+                                int moveLocation;
+                                if ((bi + 1 <= 7) && (bj + 1 <= 7) && board[bi + 1, bj + 1] < ChessPiece.Empty)
+                                {
+                                    moveLocation = ((bi + 1) * 10) + (bj + 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (bi * 10) + bj;
                                 move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                bi++;
+                                bj++;
                             }
-                            else
+                            //white Bishop up and left
+                            bi = i - 1;
+                            bj = j - 1;
+                            while ((bi >= 0) && (bj >= 0) && board[bi, bj] == ChessPiece.Empty)
                             {
-                                move = Tuple.Create(moveLocation, 2);
+                                int moveLocation;
+                                if ((bi - 1 >= 0) && (bj - 1 >= 0) && board[bi - 1, bj - 1] < ChessPiece.Empty)
+                                {
+                                    moveLocation = ((bi - 1) * 10) + (bj - 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (bi * 10) + bj;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                bi--;
+                                bj--;
                             }
-                            moves[curLocation].Add(move);
+                            //white Bishop down and left
+                            bi = i + 1;
+                            bj = j - 1;
+                            while ((bi <= 7) && (bj >= 0) && board[bi, bj] == ChessPiece.Empty)
+                            {
+                                int moveLocation;
+                                if ((bi + 1 <= 7) && (bj - 1 >= 0) && board[bi + 1, bj - 1] < ChessPiece.Empty)
+                                {
+                                    moveLocation = ((bi + 1) * 10) + (bj - 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (bi * 10) + bj;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                bi++;
+                                bj--;
+                            }
+                            //white Bishop up and right
+                            bi = i - 1;
+                            bj = j + 1;
+                            while ((bi >= 0) && (bj <= 7) && board[bi, bj] == ChessPiece.Empty)
+                            {
+                                int moveLocation;
+                                if ((bi - 1 >= 0) && (bj + 1 <= 7) && board[bi - 1, bj + 1] < ChessPiece.Empty)
+                                {
+                                    moveLocation = ((bi * 1) * 10) + (bj + 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (bi * 10) + bj;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                bi--;
+                                bj++;
+                            }
                         }
-                        //whiteKing down and left
-                        if ((j - 1 >= 0) && (i - 1 >= 0) && board[i - 1, j - 1] <= ChessPiece.Empty)
+                        else if (board[i, j] == ChessPiece.WhiteKnight)
                         {
-                            int moveLocation = ((i - 1) * 10) + (j - 1);
-                            if (board[i - 1, j - 1] < ChessPiece.Empty)
+                            int moveLocation;
+                            //White knight down and right
+                            if ((i + 2 <= 7) && (j + 1 <= 7) && board[i + 2, j + 1] <= ChessPiece.Empty)
                             {
+                                if (board[i + 2, j + 1] < ChessPiece.Empty)
+                                {
+                                    moveLocation = ((i + 2) * 10) + (j + 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                else
+                                {
+                                    moveLocation = ((i + 2) * 10) + (j + 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                            }
+                            //White knight up and left
+                            if ((i - 2 >= 0) && (j - 1 >= 0) && board[i - 2, j - 1] <= ChessPiece.Empty)
+                            {
+                                if (board[i - 2, j - 1] < ChessPiece.Empty)
+                                {
+                                    moveLocation = ((i - 2) * 10) + (j - 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                else
+                                {
+                                    moveLocation = ((i - 2) * 10) + (j - 1);
+                                    move = Tuple.Create(moveLocation, 1);
+                                    moves[curLocation].Add(move);
+                                }
+                            }
+                            //White knight up and right
+                            if ((i - 2 >= 0) && (j + 1 <= 7) && board[i - 2, j + 1] <= ChessPiece.Empty)
+                            {
+                                if (board[i - 2, j + 1] < ChessPiece.Empty)
+                                {
+                                    moveLocation = ((i - 2) * 10) + (j + 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                else
+                                {
+                                    moveLocation = ((i - 2) * 10) + (j + 1);
+                                    move = Tuple.Create(moveLocation, 1);
+                                    moves[curLocation].Add(move);
+                                }
+                            }
+                            //White knight down and left
+                            if ((i + 2 <= 7) && (j - 1 >= 0) && board[i + 2, j - 1] <= ChessPiece.Empty)
+                            {
+                                if (board[i + 2, j - 1] < ChessPiece.Empty)
+                                {
+                                    moveLocation = ((i + 2) * 10) + (j - 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                else
+                                {
+                                    moveLocation = ((i + 2) * 10) + (j - 1);
+                                    move = Tuple.Create(moveLocation, 1);
+                                    moves[curLocation].Add(move);
+                                }
+                            }
+                            //White knight right and down
+                            if ((i + 1 <= 7) && (j + 2 <= 7) && board[i + 1, j + 2] <= ChessPiece.Empty)
+                            {
+                                if (board[i + 1, j + 2] < ChessPiece.Empty)
+                                {
+                                    moveLocation = ((i + 1) * 10) + (j + 2);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                else
+                                {
+                                    moveLocation = ((i + 1) * 10) + (j + 2);
+                                    move = Tuple.Create(moveLocation, 1);
+                                    moves[curLocation].Add(move);
+                                }
+                            }
+                            //White knight left and up
+                            if ((i - 1 >= 0) && (j + 2 <= 7) && board[i - 1, j + 2] <= ChessPiece.Empty)
+                            {
+                                if (board[i - 1, j + 2] < ChessPiece.Empty)
+                                {
+                                    moveLocation = ((i - 1) * 10) + (j + 2);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                else
+                                {
+                                    moveLocation = ((i - 1) * 10) + (j + 2);
+                                    move = Tuple.Create(moveLocation, 1);
+                                    moves[curLocation].Add(move);
+                                }
+                            }
+                            //White knight left and down
+                            if ((i + 1 <= 7) && (j - 2 >= 0) && board[i + 1, j - 2] <= ChessPiece.Empty)
+                            {
+                                if (board[i + 1, j - 2] < ChessPiece.Empty)
+                                {
+                                    moveLocation = ((i + 1) * 10) + (j - 2);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                else
+                                {
+                                    moveLocation = ((i + 1) * 10) + (j - 2);
+                                    move = Tuple.Create(moveLocation, 1);
+                                    moves[curLocation].Add(move);
+                                }
+                            }
+                            //White knight right and up
+                            if ((i - 1 <= 0) && (j + 2 <= 7) && board[i - 1, j + 2] <= ChessPiece.Empty)
+                            {
+                                if (board[i - 1, j + 2] < ChessPiece.Empty)
+                                {
+                                    moveLocation = ((i - 1) * 10) + (j + 2);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                else
+                                {
+                                    moveLocation = ((i - 1) * 10) + (j + 2);
+                                    move = Tuple.Create(moveLocation, 1);
+                                    moves[curLocation].Add(move);
+                                }
+                            }
+                        }
+                        else if (board[i, j] == ChessPiece.BlackQueen)
+                        {
+                            int moveLocation;
+                            //white queen down
+                            int ri = i + 1;
+                            while ((ri <= 7) && board[ri, j] == ChessPiece.Empty)
+                            {
+                                if (ri + 1 <= 7 && board[ri + 1, j] < ChessPiece.Empty)
+                                {
+                                    moveLocation = ((ri + 1) * 10 + j);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (ri * 10) + j;
                                 move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                ri++;
                             }
-                            else
+                            //white queen right
+                            int rj = i + 1;
+                            while ((rj <= 7) && board[i, rj] == ChessPiece.Empty)
                             {
-                                move = Tuple.Create(moveLocation, 2);
+                                if (rj + 1 <= 7 && board[i, rj + 1] < ChessPiece.Empty)
+                                {
+                                    moveLocation = ((i) * 10 + rj + 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (i * 10) + rj;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                rj++;
                             }
-                            moves[curLocation].Add(move);
+                            //white queen up
+                            ri = i - 1;
+                            while ((ri >= 0) && board[ri, j] == ChessPiece.Empty)
+                            {
+                                if (ri - 1 >= 0 && board[ri - 1, j] < ChessPiece.Empty)
+                                {
+                                    moveLocation = ((ri - 1) * 10 + j);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (ri * 10) + j;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                ri--;
+                            }
+                            //white queen left
+                            rj = i - 1;
+                            while ((rj >= 0) && board[i, rj] == ChessPiece.Empty)
+                            {
+                                if (rj - 1 >= 0 && board[i, rj - 1] < ChessPiece.Empty)
+                                {
+                                    moveLocation = ((i) * 10 + rj - 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (i * 10) + rj;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                rj--;
+                            }
+                            //white queen down and right
+                            int bi = i + 1;
+                            int bj = j + 1;
+                            while ((bi <= 7) && (bj <= 7) && board[bi, bj] == ChessPiece.Empty)
+                            {
+                                if ((bi + 1 <= 7) && (bj + 1 <= 7) && board[bi + 1, bj + 1] < ChessPiece.Empty)
+                                {
+                                    moveLocation = ((bi + 1) * 10) + (bj + 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (bi * 10) + bj;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                bi++;
+                                bj++;
+                            }
+                            //white queen up and left
+                            bi = i - 1;
+                            bj = j - 1;
+                            while ((bi >= 0) && (bj >= 0) && board[bi, bj] == ChessPiece.Empty)
+                            {
+                                if ((bi - 1 >= 0) && (bj - 1 >= 0) && board[bi - 1, bj - 1] < ChessPiece.Empty)
+                                {
+                                    moveLocation = ((bi - 1) * 10) + (bj - 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (bi * 10) + bj;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                bi--;
+                                bj--;
+                            }
+                            //white queen down and left
+                            bi = i + 1;
+                            bj = j - 1;
+                            while ((bi <= 7) && (bj >= 0) && board[bi, bj] == ChessPiece.Empty)
+                            {
+                                if ((bi + 1 <= 7) && (bj - 1 >= 0) && board[bi + 1, bj - 1] < ChessPiece.Empty)
+                                {
+                                    moveLocation = ((bi + 1) * 10) + (bj - 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (bi * 10) + bj;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                bi++;
+                                bj--;
+                            }
+                            //white queen up and right
+                            bi = i - 1;
+                            bj = j + 1;
+                            while ((bi >= 0) && (bj <= 7) && board[bi, bj] == ChessPiece.Empty)
+                            {
+                                if ((bi - 1 >= 0) && (bj + 1 <= 7) && board[bi - 1, bj + 1] < ChessPiece.Empty)
+                                {
+                                    moveLocation = ((bi + 1) * 10) + (bj + 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (bi * 10) + bj;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                bi--;
+                                bj++;
+                            }
+                        }
+                        else if (board[i, j] == ChessPiece.WhiteRook)
+                        {
+                            int moveLocation;
+                            //white rook down
+                            int ri = i + 1;
+                            while ((ri <= 7) && board[ri, j] == ChessPiece.Empty)
+                            {
+                                if (ri + 1 <= 7 && board[ri + 1, j] < ChessPiece.Empty)
+                                {
+                                    moveLocation = ((ri + 1) * 10 + j);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (ri * 10) + j;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                ri++;
+                            }
+                            //white rook right
+                            int rj = i + 1;
+                            while ((rj <= 7) && board[i, rj] == ChessPiece.Empty)
+                            {
+                                if (rj + 1 <= 7 && board[i, rj + 1] < ChessPiece.Empty)
+                                {
+                                    moveLocation = ((i) * 10 + rj + 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (i * 10) + rj;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                rj++;
+                            }
+                            //white rook up
+                            ri = i - 1;
+                            while ((ri >= 0) && board[ri, j] == ChessPiece.Empty)
+                            {
+                                if (ri - 1 >= 0 && board[ri - 1, j] < ChessPiece.Empty)
+                                {
+                                    moveLocation = ((ri - 1) * 10 + j);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (ri * 10) + j;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                ri--;
+                            }
+                            //white rook left
+                            rj = i - 1;
+                            while ((rj >= 0) && board[i, rj] == ChessPiece.Empty)
+                            {
+                                if (rj - 1 >= 0 && board[i, rj - 1] < ChessPiece.Empty)
+                                {
+                                    moveLocation = ((i) * 10 + rj - 1);
+                                    move = Tuple.Create(moveLocation, 2);
+                                    moves[curLocation].Add(move);
+                                }
+                                moveLocation = (i * 10) + rj;
+                                move = Tuple.Create(moveLocation, 1);
+                                moves[curLocation].Add(move);
+                                rj--;
+                            }
+                        }
+                        else if (board[i, j] == ChessPiece.WhiteKing)
+                        {
+                            //whiteKing down 1
+                            if ((i + 1 <= 7) && board[i + 1, j] <= ChessPiece.Empty)
+                            {
+                                if (board[i + 1, j] < ChessPiece.Empty)
+                                {
+                                    move = Tuple.Create(curLocation + 10, 1);
+                                }
+                                else
+                                {
+                                    move = Tuple.Create(curLocation + 10, 2);
+                                }
+                                moves[curLocation].Add(move);
+                            }
+                            //whiteKing up 1
+                            if ((i - 1 >= 0) && board[i - 1, j] <= ChessPiece.Empty)
+                            {
+                                if (board[i - 1, j] < ChessPiece.Empty)
+                                {
+                                    move = Tuple.Create(curLocation - 10, 1);
+                                }
+                                else
+                                {
+                                    move = Tuple.Create(curLocation - 10, 2);
+                                }
+                                moves[curLocation].Add(move);
+                            }
+                            //whiteKing left 1
+                            if ((j - 1 >= 0) && board[i, j - 1] <= ChessPiece.Empty)
+                            {
+                                if (board[i, j - 1] < ChessPiece.Empty)
+                                {
+                                    move = Tuple.Create(curLocation - 1, 1);
+                                }
+                                else
+                                {
+                                    move = Tuple.Create(curLocation - 1, 2);
+                                }
+                                moves[curLocation].Add(move);
+                            }
+                            //whiteKing right 1
+                            if ((j + 1 <= 7) && board[i, j + 1] <= ChessPiece.Empty)
+                            {
+                                if (board[i, j + 1] < ChessPiece.Empty)
+                                {
+                                    move = Tuple.Create(curLocation + 1, 1);
+                                }
+                                else
+                                {
+                                    move = Tuple.Create(curLocation + 1, 2);
+                                }
+                                moves[curLocation].Add(move);
+                            }
+                            //whiteKing up and right
+                            if ((j + 1 <= 7) && (i + 1 <= 7) && board[i + 1, j + 1] <= ChessPiece.Empty)
+                            {
+                                if (board[i + 1, j + 1] < ChessPiece.Empty)
+                                {
+                                    move = Tuple.Create(curLocation + 11, 1);
+                                }
+                                else
+                                {
+                                    move = Tuple.Create(curLocation + 11, 2);
+                                }
+                                moves[curLocation].Add(move);
+                            }
+                            //whiteking down and right
+                            if ((j + 1 <= 7) && (i - 1 >= 0) && board[i - 1, j + 1] <= ChessPiece.Empty)
+                            {
+                                int moveLocation = ((i - 1) * 10) + (j + 1);
+                                if (board[i - 1, j + 1] < ChessPiece.Empty)
+                                {
+                                    move = Tuple.Create(moveLocation, 1);
+                                }
+                                else
+                                {
+                                    move = Tuple.Create(moveLocation, 2);
+                                }
+                                moves[curLocation].Add(move);
+                            }
+                            //whiteking up and left
+                            if ((j - 1 >= 0) && (i + 1 <= 7) && board[i + 1, j - 1] <= ChessPiece.Empty)
+                            {
+                                int moveLocation = ((i + 1) * 10) + (j - 1);
+                                if (board[i + 1, j - 1] < ChessPiece.Empty)
+                                {
+                                    move = Tuple.Create(moveLocation, 1);
+                                }
+                                else
+                                {
+                                    move = Tuple.Create(moveLocation, 2);
+                                }
+                                moves[curLocation].Add(move);
+                            }
+                            //whiteKing down and left
+                            if ((j - 1 >= 0) && (i - 1 >= 0) && board[i - 1, j - 1] <= ChessPiece.Empty)
+                            {
+                                int moveLocation = ((i - 1) * 10) + (j - 1);
+                                if (board[i - 1, j - 1] < ChessPiece.Empty)
+                                {
+                                    move = Tuple.Create(moveLocation, 1);
+                                }
+                                else
+                                {
+                                    move = Tuple.Create(moveLocation, 2);
+                                }
+                                moves[curLocation].Add(move);
+                            }
                         }
                     }
                 }
