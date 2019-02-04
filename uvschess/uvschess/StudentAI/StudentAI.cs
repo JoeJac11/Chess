@@ -1122,9 +1122,45 @@ namespace StudentAI
                     }
                 }
             }
-
             return moves;
         }
+        public ChessMove logic(Dictionary<int, HashSet<Tuple<int,int>>> validMoves, ChessColor myColor) {
+            Tuple<int,int> bestMoves = new Tuple<int, int>(); //create dictionary for each 'from' with best move choice
+            Tuple<int,int> chosenMove;
+            int start = 0;
+            int multiplier = 0;
+            int score;
+            if(myColor == 0) //my color is white
+            {
+                start = 0;
+                multiplier = 1;
+
+            }
+            else  //my color is black
+            {
+                start = 7;
+                multiplier = -1;
+            }
+            for(int i = start; i< i+7; ++i)
+            {
+                foreach(Tuple t in validMoves[i].value)
+                {
+                    score = t[i].Item2.max() * multiplier;
+                    bestMoves.Add(validMove[i].Key, score);
+                }
+            }
+            foreach(Tuple<int,int> t in bestMoves)
+            {
+                chosenMove = (t.Item1, t.Item2.max());
+            }
+            ChessLocation moveFrom = new ChessLocation(chosenMove.Item1/10, chosenMove.Item1%10);
+            ChessLocation moveTo = new ChessLocation(chosenMove.Item2/10, chosenMove.Item2%10);
+            ChessMove move = new ChessMove(moveFrom, moveTo);
+            return move;
+        }
+
+
+
         /// <summary>
         /// Evaluates the chess board and decided which move to make. This is the main method of the AI.
         /// The framework will call this method when it's your turn.
@@ -1134,10 +1170,9 @@ namespace StudentAI
         /// <returns> Returns the best chess move the player has for the given chess board</returns>
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
         {
-            ChessLocation moveFrom = new ChessLocation(1, 1);
-            ChessLocation moveTo = new ChessLocation(1, 2);
-            ChessMove move = new ChessMove(moveFrom, moveTo);
-            return move;
+            Dictionary<int, HashSet<Tuple<int,int>>> moves = GenMoves(board);
+            ChessMove chosenMove = logic(moves, myColor);
+            return chosenMove;
         }
 
         /// <summary>
@@ -1149,7 +1184,7 @@ namespace StudentAI
         /// <returns>Returns true if the move was valid</returns>
         public bool IsValidMove(ChessBoard boardBeforeMove, ChessMove moveToCheck, ChessColor colorOfPlayerMoving)
         {
-            throw (new NotImplementedException());
+            return true;
         }
 
         #endregion

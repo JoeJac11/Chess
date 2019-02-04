@@ -1,0 +1,12 @@
+{
+  "version": "0.2.1",
+  "defaults": {},
+  "configurations": [
+    {
+      "type": "dll",
+      "exe": "",
+      "project": "uvschess\\uvschess\\StudentAI\\StudentAI.csproj",
+      "name": "StudentAI.csproj"
+    }
+  ]
+}

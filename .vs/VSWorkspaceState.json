@@ -3,8 +3,9 @@
     "",
     "\\uvschess",
     "\\uvschess\\uvschess",
-    "\\uvschess\\uvschess\\Framework"
+    "\\uvschess\\uvschess\\Framework",
+    "\\uvschess\\uvschess\\StudentAI"
   ],
-  "SelectedNode": "\\uvschess\\uvschess\\UvsChess.sln",
+  "SelectedNode": "\\uvschess\\uvschess\\StudentAI\\StudentAI.csproj",
   "PreviewInSolutionExplorer": false
 }
