@@ -1134,19 +1134,19 @@ namespace StudentAI
         public ChessMove Logic(List<ChessMove> validMoves, ChessBoard board, ChessColor myColor)
             {
             Dictionary<ChessPiece, int> values = new Dictionary<ChessPiece, int>(); //create array for values of pieces
-            values[ChessPiece.WhitePawn] = 1;
-            values[ChessPiece.WhiteRook] = 5;
-            values[ChessPiece.WhiteKnight] = 3;
-            values[ChessPiece.WhiteBishop] = 3;
-            values[ChessPiece.WhiteQueen] = 10;
-            values[ChessPiece.WhiteKing] = 1000;
-            values[ChessPiece.BlackPawn] = 1;
-            values[ChessPiece.BlackRook] = 5;
-            values[ChessPiece.BlackKnight] = 3;
-            values[ChessPiece.BlackBishop] = 3;
-            values[ChessPiece.BlackQueen] = 10;
-            values[ChessPiece.BlackKing] = 1000;
-            values[ChessPiece.Empty] = 0;
+            values.Add(ChessPiece.WhitePawn, 1);
+            values.Add(ChessPiece.WhiteRook, 5);
+            values.Add(ChessPiece.WhiteKnight, 3);
+            values.Add(ChessPiece.WhiteBishop, 3);
+            values.Add(ChessPiece.WhiteQueen, 10);
+            values.Add(ChessPiece.WhiteKing, 1000);
+            values.Add(ChessPiece.BlackPawn, 1);
+            values.Add(ChessPiece.BlackRook, 5);
+            values.Add(ChessPiece.BlackKnight, 3);
+            values.Add(ChessPiece.BlackBishop, 3);
+            values.Add(ChessPiece.BlackQueen, 10);
+            values.Add(ChessPiece.BlackKing, 1000);
+            values.Add(ChessPiece.Empty, 0);
             const int TEN = 10;
 
             Dictionary<int, List<Tuple<int, int>>> scores = new Dictionary<int, List<Tuple<int, int>>>(); //create dictionary ('from', move values)
