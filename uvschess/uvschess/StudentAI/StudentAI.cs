@@ -307,7 +307,7 @@ namespace StudentAI
                             validMoves.Add(move);
                         }
                         //black knight up 2 left 1
-                        if ((i - 1 <= 0) && (j - 2 <= 7) && board[i - 1, j - 2] >= ChessPiece.Empty)
+                        if ((i - 1 >= 0) && (j - 2 >=0) && board[i - 1, j - 2] >= ChessPiece.Empty)
                         {
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(i - 1, j - 2);
