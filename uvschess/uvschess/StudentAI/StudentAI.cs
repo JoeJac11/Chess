@@ -980,6 +980,41 @@ namespace StudentAI
                 }
                 return validMoves;
             }
+        //returns true if the move will put the king of the test color in check
+        public bool InCheck(ChessMove move, ChessBoard board, ChessColor testColor)
+        {
+
+            if (testColor == ChessColor.White)
+            {
+                ChessBoard tempBoard = new ChessBoard();
+                tempBoard = board;
+                tempBoard.MakeMove(move);
+
+                foreach (ChessMove tempMove in GenMoves(tempBoard, ChessColor.Black))
+                {
+                    if (tempBoard[tempMove.To] == ChessPiece.WhiteKing)
+                    {
+                        return true;
+                    }
+                }
+            }
+            else if (testColor == ChessColor.Black)
+            {
+                ChessBoard tempBoard = new ChessBoard();
+                tempBoard = board;
+                tempBoard.MakeMove(move);
+
+                foreach (ChessMove tempMove in GenMoves(tempBoard, ChessColor.White))
+                {
+                    if (tempBoard[tempMove.To] == ChessPiece.BlackKing)
+                    {
+                        return true;
+                    }
+                }
+
+            }
+            return false;
+        }
         //public ChessMove Logic(Dictionary<int, List<Tuple<int, int>>> validMoves, ChessBoard board, ChessColor myColor)
         public ChessMove Logic(List<ChessMove> validMoves, ChessBoard board, ChessColor myColor)
             {
