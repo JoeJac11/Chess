@@ -41,7 +41,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(i, j + 1);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                         }
                         //black King up 1 row
                         if ((j - 1 >= 0) && board[i, j - 1] >= ChessPiece.Empty)
@@ -49,7 +52,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(i, j - 1);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                         }
                         //black King left 1 col
                         if ((i - 1 >= 0) && board[i - 1, j] >= ChessPiece.Empty)
@@ -65,7 +71,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(i + 1, j);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                         }
                         //black King up (row) and right (col)
                         if ((j - 1 >= 0) && (i + 1 <= 7) && board[i + 1, j - 1] >= ChessPiece.Empty)
@@ -73,7 +82,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(i + 1, j - 1);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                         }
                         //black king down (row) and right (col)
                         if ((j + 1 <= 7) && (i + 1 <= 7) && board[i + 1, j + 1] >= ChessPiece.Empty)
@@ -81,7 +93,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(i + 1, j + 1);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                         }
                         //black king up (row) and left (col)
                         if ((j - 1 >= 0) && (i - 1 >= 0) && board[i - 1, j - 1] >= ChessPiece.Empty)
@@ -89,7 +104,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(i - 1, j - 1);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                         }
                         //black King down (row) and left (col)
                         if ((j + 1 <= 7) && (i - 1 >= 0) && board[i - 1, j + 1] >= ChessPiece.Empty)
@@ -97,7 +115,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(i - 1, j + 1);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                         }
                     }
                     else if (board[i, j] == ChessPiece.BlackQueen)
@@ -109,7 +130,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(i, rj + 1);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                             rj++;
                         }
                         if ((rj + 1 <= 7) && board[i, rj + 1] > ChessPiece.Empty)
@@ -117,7 +141,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(i, rj + 1);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                         }
                         //black queen right (col)
                         int ri = i;
@@ -126,7 +153,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(ri + 1, j);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                             ri++;
                         }
                         if (ri + 1 <= 7 && board[ri + 1, j] > ChessPiece.Empty)
@@ -134,7 +164,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(ri + 1, j);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                         }
                         //black queen up (row)
                         rj = j;
@@ -143,7 +176,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(i, rj - 1);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                             rj--;
                         }
                         if (rj - 1 >= 0 && board[i, rj - 1] > ChessPiece.Empty)
@@ -151,7 +187,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(i, rj - 1);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                         }
                         //black queen left (col)
                         ri = i;
@@ -160,7 +199,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(ri - 1, j);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                             ri--;
                         }
                         if (rj - 1 >= 0 && board[ri - 1, j] > ChessPiece.Empty)
@@ -168,7 +210,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(ri - 1, j);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                         }
                         //black queen down and right (+row)(+col)
                         int bi = i;
@@ -178,7 +223,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(bi + 1, bj + 1);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                             bi++;
                             bj++;
                         }
@@ -187,7 +235,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(bi + 1, bj + 1);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                         }
                         //black queen up and left (-row)(-col)
                         bi = i;
@@ -197,7 +248,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(bi - 1, bj - 1);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                             bi--;
                             bj--;
                         }
@@ -206,8 +260,11 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(bi - 1, bj - 1);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
-                        }
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
+                            }
                         //black queen down and left (+row)(-col)
                         bi = i;
                         bj = j;
@@ -216,7 +273,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(bi - 1, bj + 1);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                             bi--;
                             bj++;
                         }
@@ -225,8 +285,11 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(bi - 1, bj + 1);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
-                        }
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
+                            }
                         //black queen up and right (-row)(+col)
                         bi = i;
                         bj = j;
@@ -235,7 +298,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(bi + 1, bj - 1);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                             bi++;
                             bj--;
                         }
@@ -244,7 +310,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(bi + 1, bj - 1);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                         }
                     }
                     else if (board[i, j] == ChessPiece.BlackKnight)
@@ -256,7 +325,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i + 2, j + 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                         }
                         //black knight left 2 up 1
                         if ((i - 2 >= 0) && (j - 1 >= 0) && board[i - 2, j - 1] >= ChessPiece.Empty)
@@ -264,7 +336,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(i - 2, j - 1);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                         }
                         //black knight left 2 down 1
                         if ((i - 2 >= 0) && (j + 1 <= 7) && board[i - 2, j + 1] >= ChessPiece.Empty)
@@ -272,7 +347,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(i - 2, j + 1);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                         }
                         //black knight right 2 up 1
                         if ((i + 2 <= 7) && (j - 1 >= 0) && board[i + 2, j - 1] >= ChessPiece.Empty)
@@ -280,7 +358,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(i + 2, j - 1);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                         }
                         //black knight down 2 right 1
                         if ((i + 1 <= 7) && (j + 2 <= 7) && board[i + 1, j + 2] >= ChessPiece.Empty)
@@ -288,7 +369,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(i + 1, j + 2);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                         }
                         //black knight down 2 left 1
                         if ((i - 1 >= 0) && (j + 2 <= 7) && board[i - 1, j + 2] >= ChessPiece.Empty)
@@ -296,7 +380,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(i - 1, j + 2);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                         }
                         //black knight up 2 right 1
                         if ((i + 1 <= 7) && (j - 2 >= 0) && board[i + 1, j - 2] >= ChessPiece.Empty)
@@ -304,96 +391,126 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(i + 1, j - 2);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
-                        }
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
+                            }
                         //black knight up 2 left 1
                         if ((i - 1 <= 0) && (j - 2 <= 7) && board[i - 1, j - 2] >= ChessPiece.Empty)
                         {
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(i - 1, j - 2);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                         }
                     }
                     else if (board[i, j] == ChessPiece.BlackBishop)
+                    {
+                        //black Bishop down and right
+                        int bi = i;
+                        int bj = j;
+                        while ((bi + 1 <= 7) && (bj + 1 <= 7) && board[bi + 1, bj + 1] == ChessPiece.Empty)
                         {
-                            //black Bishop down and right
-                            int bi = i;
-                            int bj = j;
-                            while ((bi + 1 <= 7) && (bj + 1 <= 7) && board[bi + 1, bj + 1] == ChessPiece.Empty)
+                            ChessLocation from = new ChessLocation(i, j);
+                            ChessLocation to = new ChessLocation(bi + 1, bj + 1);
+                            ChessMove move = new ChessMove(from, to);
+                            if (!InCheck(move, board, color))
                             {
-                                ChessLocation from = new ChessLocation(i, j);
-                                ChessLocation to = new ChessLocation(bi + 1, bj + 1);
-                                ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
-                                bi++;
-                                bj++;
-                            }
-                            if ((bi + 1 <= 7) && (bj + 1 <= 7) && board[bi + 1, bj + 1] > ChessPiece.Empty)
-                            {
-                                ChessLocation from = new ChessLocation(i, j);
-                                ChessLocation to = new ChessLocation(bi + 1, bj + 1);
-                                ChessMove move = new ChessMove(from, to);
                                 validMoves.Add(move);
                             }
-                            //black Bishop up and left
-                            bi = i;
-                            bj = j;
-                            while ((bi - 1 >= 0) && (bj - 1 >= 0) && board[bi - 1, bj - 1] == ChessPiece.Empty)
+                            bi++;
+                            bj++;
+                        }
+                        if ((bi + 1 <= 7) && (bj + 1 <= 7) && board[bi + 1, bj + 1] > ChessPiece.Empty)
+                        {
+                            ChessLocation from = new ChessLocation(i, j);
+                            ChessLocation to = new ChessLocation(bi + 1, bj + 1);
+                            ChessMove move = new ChessMove(from, to);
+                            if (!InCheck(move, board, color))
                             {
-                                ChessLocation from = new ChessLocation(i, j);
-                                ChessLocation to = new ChessLocation(bi - 1, bj - 1);
-                                ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
-                                bi--;
-                                bj--;
-                            }
-                            if ((bi - 1 >= 0) && (bj - 1 >= 0) && board[bi - 1, bj - 1] > ChessPiece.Empty)
-                            {
-                                ChessLocation from = new ChessLocation(i, j);
-                                ChessLocation to = new ChessLocation(bi - 1, bj - 1);
-                                ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
-                            }
-                            //black Bishop down and left
-                            bi = i;
-                            bj = j;
-                            while ((bi - 1 >= 0) && (bj + 1 <= 7) && board[bi - 1, bj + 1] == ChessPiece.Empty)
-                            {
-                                ChessLocation from = new ChessLocation(i, j);
-                                ChessLocation to = new ChessLocation(bi - 1, bj + 1);
-                                ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
-                                bi--;
-                                bj++;
-                            }
-                            if ((bi - 1 >= 0) && (bj + 1 <= 7) && board[bi - 1, bj + 1] > ChessPiece.Empty)
-                            {
-                                ChessLocation from = new ChessLocation(i, j);
-                                ChessLocation to = new ChessLocation(bi - 1, bj + 1);
-                                ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
-                            }
-                            //black Bishop up and right
-                            bi = i;
-                            bj = j;
-                            while ((bi + 1 >= 0) && (bj - 1 <= 7) && board[bi + 1, bj - 1] == ChessPiece.Empty)
-                            {
-                                ChessLocation from = new ChessLocation(i, j);
-                                ChessLocation to = new ChessLocation(bi + 1, bj - 1);
-                                ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
-                                bi++;
-                                bj--;
-                            }
-                            if ((bi + 1 >= 0) && (bj - 1 <= 7) && board[bi + 1, bj - 1] > ChessPiece.Empty)
-                            {
-                                ChessLocation from = new ChessLocation(i, j);
-                                ChessLocation to = new ChessLocation(bi + 1, bj - 1);
-                                ChessMove move = new ChessMove(from, to);
                                 validMoves.Add(move);
                             }
                         }
+                        //black Bishop up and left
+                        bi = i;
+                        bj = j;
+                        while ((bi - 1 >= 0) && (bj - 1 >= 0) && board[bi - 1, bj - 1] == ChessPiece.Empty)
+                        {
+                            ChessLocation from = new ChessLocation(i, j);
+                            ChessLocation to = new ChessLocation(bi - 1, bj - 1);
+                            ChessMove move = new ChessMove(from, to);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
+                            bi--;
+                            bj--;
+                        }
+                        if ((bi - 1 >= 0) && (bj - 1 >= 0) && board[bi - 1, bj - 1] > ChessPiece.Empty)
+                        {
+                            ChessLocation from = new ChessLocation(i, j);
+                            ChessLocation to = new ChessLocation(bi - 1, bj - 1);
+                            ChessMove move = new ChessMove(from, to);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
+                        }
+                        //black Bishop down and left
+                        bi = i;
+                        bj = j;
+                        while ((bi - 1 >= 0) && (bj + 1 <= 7) && board[bi - 1, bj + 1] == ChessPiece.Empty)
+                        {
+                            ChessLocation from = new ChessLocation(i, j);
+                            ChessLocation to = new ChessLocation(bi - 1, bj + 1);
+                            ChessMove move = new ChessMove(from, to);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
+                            bi--;
+                            bj++;
+                        }
+                        if ((bi - 1 >= 0) && (bj + 1 <= 7) && board[bi - 1, bj + 1] > ChessPiece.Empty)
+                        {
+                            ChessLocation from = new ChessLocation(i, j);
+                            ChessLocation to = new ChessLocation(bi - 1, bj + 1);
+                            ChessMove move = new ChessMove(from, to);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
+                        }
+                        //black Bishop up and right
+                        bi = i;
+                        bj = j;
+                        while ((bi + 1 >= 0) && (bj - 1 <= 7) && board[bi + 1, bj - 1] == ChessPiece.Empty)
+                        {
+                            ChessLocation from = new ChessLocation(i, j);
+                            ChessLocation to = new ChessLocation(bi + 1, bj - 1);
+                            ChessMove move = new ChessMove(from, to);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
+                            bi++;
+                            bj--;
+                        }
+                        if ((bi + 1 >= 0) && (bj - 1 <= 7) && board[bi + 1, bj - 1] > ChessPiece.Empty)
+                        {
+                            ChessLocation from = new ChessLocation(i, j);
+                            ChessLocation to = new ChessLocation(bi + 1, bj - 1);
+                            ChessMove move = new ChessMove(from, to);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
+                        }
+                    }
                     else if (board[i, j] == ChessPiece.BlackRook)
                     {
                         //black rook down
@@ -403,7 +520,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(i, rj + 1);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                             rj++;
                         }
                         if ((rj + 1 <= 7) && board[i, rj + 1] > ChessPiece.Empty)
@@ -411,8 +531,11 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(i, rj + 1);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
-                        }
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
+                            }
                         //black rook right
                         int ri = i;
                         while ((ri + 1 <= 7) && board[ri + 1, j] == ChessPiece.Empty)
@@ -420,7 +543,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(ri + 1, j);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                             ri++;
                         }
                         if (ri + 1 <= 7 && board[ri + 1, j] > ChessPiece.Empty)
@@ -428,8 +554,11 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(ri + 1, j);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
-                        }
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
+                            }
                         //black rook up
                         rj = j;
                         while ((rj - 1 >= 0) && board[i, rj - 1] == ChessPiece.Empty)
@@ -437,7 +566,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(i, rj - 1);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                             rj--;
                         }
                         if (rj - 1 >= 0 && board[i, rj - 1] > ChessPiece.Empty)
@@ -445,7 +577,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(i, rj - 1);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                         }
                         //black rook left
                         ri = i;
@@ -454,7 +589,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(ri - 1, j);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                             ri--;
                         }
                         if (rj - 1 >= 0 && board[ri - 1, j] > ChessPiece.Empty)
@@ -462,7 +600,10 @@ namespace StudentAI
                             ChessLocation from = new ChessLocation(i, j);
                             ChessLocation to = new ChessLocation(ri - 1, j);
                             ChessMove move = new ChessMove(from, to);
-                            validMoves.Add(move);
+                            if (!InCheck(move, board, color))
+                            {
+                                validMoves.Add(move);
+                            }
                         }
                     }
                     else if (board[i, j] == ChessPiece.BlackPawn)
@@ -475,8 +616,11 @@ namespace StudentAI
                                     ChessLocation from = new ChessLocation(i, j);
                                     ChessLocation to = new ChessLocation(i, j + 2);
                                     ChessMove move = new ChessMove(from, to);
-                                    validMoves.Add(move);
+                                    if (!InCheck(move, board, color))
+                                    {
+                                        validMoves.Add(move);
                                     }
+                                }
                                 }
                             //black pawn down 1
                             if (j + 1 <= 7 && board[i, j + 1] == ChessPiece.Empty)
@@ -484,7 +628,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i, j + 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //black pawn diagonal attack down/left (+row)(-col)
                             if ((j + 1 <= 7) && (i - 1 >= 0) && board[i - 1, j + 1] > ChessPiece.Empty)
@@ -492,15 +639,21 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i - 1, j + 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
-                                                            }
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
+                            }
                             //black pawn diagonal attack down/right
                             if ((j + 1 <= 7) && (i + 1 <= 7) && board[i + 1, j + 1] > ChessPiece.Empty)
                             {
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i + 1, j + 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                         }
                         }
@@ -516,7 +669,10 @@ namespace StudentAI
                                     ChessLocation from = new ChessLocation(i, j);
                                     ChessLocation to = new ChessLocation(i, j - 2);
                                     ChessMove move = new ChessMove(from, to);
-                                    validMoves.Add(move);
+                                    if (!InCheck(move, board, color))
+                                    {
+                                        validMoves.Add(move);
+                                    }
                                 }
                             }
                             //white pawn up 1
@@ -525,7 +681,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i, j - 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //white pawn diagonal attack up/left
                             if ((j - 1 >= 0) && (i - 1 >= 0) && board[i - 1, j - 1] < ChessPiece.Empty)
@@ -533,7 +692,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i - 1, j - 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //white pawn diagonal attack up/right
                             if ((j - 1 >= 0) && (i + 1 <= 7) && board[i + 1, j - 1] < ChessPiece.Empty)
@@ -541,7 +703,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i + 1, j - 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                         }
                         else if (board[i, j] == ChessPiece.WhiteBishop)
@@ -554,7 +719,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(bi + 1, bj + 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                                 bi++;
                                 bj++;
                             }
@@ -563,7 +731,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(bi + 1, bj + 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //white Bishop up and left
                             bi = i;
@@ -573,7 +744,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(bi - 1, bj - 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                                 bi--;
                                 bj--;
                             }
@@ -582,7 +756,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(bi - 1, bj - 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //white Bishop down and left
                             bi = i;
@@ -592,7 +769,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(bi - 1, bj + 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                                 bi--;
                                 bj++;
                             }
@@ -601,7 +781,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(bi - 1, bj + 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //white Bishop up and right
                             bi = i;
@@ -611,7 +794,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(bi + 1, bj - 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                                 bi++;
                                 bj--;
                             }
@@ -620,7 +806,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(bi + 1, bj - 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                         }
                         else if (board[i, j] == ChessPiece.WhiteKnight)
@@ -628,10 +817,13 @@ namespace StudentAI
                             //white knight right 2 down 1
                             if ((i + 2 <= 7) && (j + 1 <= 7) && board[i + 2, j + 1] >= ChessPiece.Empty)
                             {
-                                    ChessLocation from = new ChessLocation(i, j);
-                                    ChessLocation to = new ChessLocation(i + 2, j + 1);
-                                    ChessMove move = new ChessMove(from, to);
+                                ChessLocation from = new ChessLocation(i, j);
+                                ChessLocation to = new ChessLocation(i + 2, j + 1);
+                                ChessMove move = new ChessMove(from, to);
+                                if (!InCheck(move, board, color))
+                                {
                                     validMoves.Add(move);
+                                }
                             }
                             //white knight left 2 up 1
                             if ((i - 2 >= 0) && (j - 1 >= 0) && board[i - 2, j - 1] >= ChessPiece.Empty)
@@ -639,7 +831,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i - 2, j - 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //white knight left 2 down 1
                             if ((i - 2 >= 0) && (j + 1 <= 7) && board[i - 2, j + 1] >= ChessPiece.Empty)
@@ -647,7 +842,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i - 2, j - 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //white knight right 2 up 1
                             if ((i + 2 <= 7) && (j - 1 >= 0) && board[i + 2, j - 1] >= ChessPiece.Empty)
@@ -655,7 +853,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i + 2, j - 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //white knight down 2 right 1
                             if ((i + 1 <= 7) && (j + 2 <= 7) && board[i + 1, j + 2] >= ChessPiece.Empty)
@@ -663,7 +864,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i + 1, j + 2);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //white knight down 2 left 1
                             if ((i - 1 >= 0) && (j + 2 <= 7) && board[i - 1, j + 2] >= ChessPiece.Empty)
@@ -671,7 +875,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i - 1, j + 2);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //white knight up 2 right 1
                             if ((i + 1 <= 7) && (j - 2 >= 0) && board[i + 1, j - 2] >= ChessPiece.Empty)
@@ -679,7 +886,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i + 1, j - 2);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //white knight up 2 left 1
                             if ((i - 1 <= 0) && (j - 2 <= 7) && board[i - 1, j - 2] >= ChessPiece.Empty)
@@ -687,7 +897,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i - 1, j - 2);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                         }
                         else if (board[i, j] == ChessPiece.WhiteQueen)
@@ -699,7 +912,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i, rj + 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                                 rj++;
                             }
                             if ((rj + 1 <= 7) && board[i, rj + 1] > ChessPiece.Empty)
@@ -707,7 +923,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i, rj + 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //white queen right (col)
                             int ri = i;
@@ -716,7 +935,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(ri + 1, j);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                                 ri++;
                             }
                             if (ri + 1 <= 7 && board[ri + 1, j] > ChessPiece.Empty)
@@ -724,7 +946,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(ri + 1, j);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //white queen up (row)
                             rj = j;
@@ -733,7 +958,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i, rj - 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                                 rj--;
                             }
                             if (rj - 1 >= 0 && board[i, rj - 1] > ChessPiece.Empty)
@@ -741,7 +969,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i, rj - 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //white queen left (col)
                             ri = i;
@@ -750,7 +981,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(ri - 1, j);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                                 ri--;
                             }
                             if (rj - 1 >= 0 && board[ri - 1, j] > ChessPiece.Empty)
@@ -758,7 +992,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(ri - 1, j);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //white queen down and right (+row)(+col)
                             int bi = i;
@@ -768,7 +1005,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(bi + 1, bj + 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                                 bi++;
                                 bj++;
                             }
@@ -777,7 +1017,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(bi + 1, bj + 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //white queen up and left (-row)(-col)
                             bi = i;
@@ -787,7 +1030,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(bi - 1, bj - 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                                 bi--;
                                 bj--;
                             }
@@ -796,7 +1042,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(bi - 1, bj - 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //white queen down and left (+row)(-col)
                             bi = i;
@@ -806,7 +1055,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(bi - 1, bj + 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                                 bi--;
                                 bj++;
                             }
@@ -815,7 +1067,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(bi - 1, bj + 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //white queen up and right (-row)(+col)
                             bi = i;
@@ -825,7 +1080,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(bi + 1, bj - 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                                 bi++;
                                 bj--;
                             }
@@ -834,7 +1092,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(bi + 1, bj - 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                         }
                         else if (board[i, j] == ChessPiece.WhiteRook)
@@ -846,7 +1107,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i, rj + 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                                 rj++;
                             }
                             if ((rj + 1 <= 7) && board[i, rj + 1] > ChessPiece.Empty)
@@ -854,7 +1118,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i, rj + 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //white rook right
                             int ri = i;
@@ -863,7 +1130,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(ri + 1, j);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                                 ri++;
                             }
                             if (ri + 1 <= 7 && board[ri + 1, j] > ChessPiece.Empty)
@@ -871,7 +1141,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(ri + 1, j);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //white rook up
                             rj = j;
@@ -880,7 +1153,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i, rj - 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                                 rj--;
                             }
                             if (rj - 1 >= 0 && board[i, rj - 1] > ChessPiece.Empty)
@@ -888,7 +1164,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i, rj - 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //white rook left
                             ri = i;
@@ -897,7 +1176,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(ri - 1, j);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                                 ri--;
                             }
                             if (rj - 1 >= 0 && board[ri - 1, j] > ChessPiece.Empty)
@@ -905,7 +1187,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(ri - 1, j);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                         }
                         else if (board[i, j] == ChessPiece.WhiteKing)
@@ -916,7 +1201,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i, j + 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //White King up 1 row
                             if ((j - 1 >= 0) && board[i, j - 1] >= ChessPiece.Empty)
@@ -924,7 +1212,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i, j - 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //White King left 1 col
                             if ((i - 1 >= 0) && board[i - 1, j] >= ChessPiece.Empty)
@@ -932,7 +1223,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i - 1, j);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //White King right 1 col
                             if ((i + 1 <= 7) && board[i + 1, j] >= ChessPiece.Empty)
@@ -940,7 +1234,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i + 1, j);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //White King up (row) and right (col)
                             if ((j - 1 >= 0) && (i + 1 <= 7) && board[i + 1, j - 1] >= ChessPiece.Empty)
@@ -948,7 +1245,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i + 1, j - 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //White king down (row) and right (col)
                             if ((j + 1 <= 7) && (i + 1 <= 7) && board[i + 1, j + 1] >= ChessPiece.Empty)
@@ -956,7 +1256,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i + 1, j + 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //White king up (row) and left (col)
                             if ((j - 1 >= 0) && (i - 1 >= 0) && board[i - 1, j - 1] >= ChessPiece.Empty)
@@ -964,7 +1267,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i - 1, j - 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                             //White King down (row) and left (col)
                             if ((j + 1 <= 7) && (i - 1 >= 0) && board[i - 1, j + 1] >= ChessPiece.Empty)
@@ -972,7 +1278,10 @@ namespace StudentAI
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(i - 1, j + 1);
                                 ChessMove move = new ChessMove(from, to);
-                                validMoves.Add(move);
+                                if (!InCheck(move, board, color))
+                                {
+                                    validMoves.Add(move);
+                                }
                             }
                         }
                     }
