@@ -1294,7 +1294,7 @@ namespace StudentAI
                 if (testColor == ChessColor.White)
                 {
                     ChessBoard tempBoard = new ChessBoard();
-                    tempBoard = board;
+                    tempBoard = board.Clone();
                     tempBoard.MakeMove(move);
 
                     foreach (ChessMove tempMove in GenMoves(tempBoard, ChessColor.Black))
@@ -1308,7 +1308,7 @@ namespace StudentAI
                 else if (testColor == ChessColor.Black)
                 {
                     ChessBoard tempBoard = new ChessBoard();
-                    tempBoard = board;
+                    tempBoard = board.Clone();
                     tempBoard.MakeMove(move);
 
                     foreach (ChessMove tempMove in GenMoves(tempBoard, ChessColor.White))
