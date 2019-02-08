@@ -1051,7 +1051,7 @@ namespace StudentAI
             List<ChessMove> oppMoves = GenMoves(board, oppColor);
             foreach (ChessMove m in oppMoves)
                 {
-                int isCheck = InCheck(m, board, myColor ,false);
+                int isCheck = InCheck(m, board, myColor , false);
                 if (isCheck == 1) //in check not mate
                 {
                     List<ChessMove> checkValidMoves = new List<ChessMove>();
