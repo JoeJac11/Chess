@@ -985,63 +985,63 @@ namespace StudentAI
         //returns 0 for no check 1 for check 2 for checkMate
         public int InCheck(ChessMove move, ChessBoard board, ChessColor testColor, bool checkMate)//is white in check
         {
-            if (testColor == ChessColor.White)
-            {
-                ChessBoard tempBoard = new ChessBoard();
-                tempBoard = board.Clone();
-                tempBoard.MakeMove(move);
+            //if (testColor == ChessColor.White)
+            //{
+            //    ChessBoard tempBoard = new ChessBoard();
+            //    tempBoard = board.Clone();
+            //    tempBoard.MakeMove(move);
 
-                foreach (ChessMove tempMove in GenMoves(tempBoard, ChessColor.Black))
-                {
-                    if (tempBoard[tempMove.To] == ChessPiece.WhiteKing)
-                    {
-                        if (checkMate)
-                        {
-                            return 1;
-                        }
-                        foreach (ChessMove kMove in GenMoves(tempBoard, ChessColor.White))// can you make a move that will get you out of check
-                        {
-                            if (InCheck(kMove, tempBoard, ChessColor.White, true) == 0)
-                            {
-                                return 1;//check not mate
-                            }
-                        }
-                        return 2;//check mate
-                    }
-                }
-            }
-            else if (testColor == ChessColor.Black)//is black in check
-            {
-                Console.WriteLine("here");
-                ChessBoard tempBoard = new ChessBoard();
-                tempBoard = board.Clone();
-                tempBoard.MakeMove(move);
-                foreach (ChessMove tempMove in GenMoves(tempBoard, ChessColor.White))
-                {
-                    if (tempBoard[tempMove.To] == ChessPiece.BlackKing)
-                    {
-                        if (checkMate)
-                        {
-                            return 1;
-                        }
-                        foreach (ChessMove kMove in GenMoves(tempBoard, ChessColor.Black))// can you make a move that will get you out of check
-                        {
-                            if (InCheck(kMove, tempBoard, ChessColor.Black, true) == 0)
-                            {
-                                return 1;//check not mate
-                            }
-                        }
-                        return 2;//check mate
-                    }
-                }   
-
-            }
-            return 0;//not in check
+            //    foreach (ChessMove tempMove in GenMoves(tempBoard, ChessColor.Black))
+            //    {
+            //        if (tempBoard[tempMove.To] == ChessPiece.WhiteKing)
+            //        {
+            //            if (checkMate)
+            //            {
+            //                return 1;
+            //            }
+            //            foreach (ChessMove kMove in GenMoves(tempBoard, ChessColor.White))// can you make a move that will get you out of check
+            //            {
+            //                if (InCheck(kMove, tempBoard, ChessColor.White, true) == 0)
+            //                {
+            //                    return 1;//check not mate
+            //                }
+            //            }
+            //            return 2;//check mate
+            //        }
+            //    }
+            //}
+            //else if (testColor == ChessColor.Black)//is black in check
+            //                                       {
+            //    Console.WriteLine("here");
+            //    ChessBoard tempBoard = new ChessBoard();
+            //    tempBoard = board.Clone();
+            //    tempBoard.MakeMove(move);
+            //    foreach (ChessMove tempMove in GenMoves(tempBoard, ChessColor.White))
+            //    {
+            //        if (tempBoard[tempMove.To] == ChessPiece.BlackKing)
+            //        {
+            //            if (checkMate)
+            //            {
+            //                return 1;
+            //            }
+            //            foreach (ChessMove kMove in GenMoves(tempBoard, ChessColor.Black))// can you make a move that will get you out of check
+            //            {
+            //                if (InCheck(kMove, tempBoard, ChessColor.Black, true) == 0)
+            //                {
+            //                    return 1;//check not mate
+            //                }
+            //            }
+            //            return 2;//check mate
+            //        }
+            //    }
+            //}
+                return 0;//not in check
         }
         
 
         public ChessMove Logic(List<ChessMove> validMoves, ChessBoard board, ChessColor myColor)
             {
+
             ChessColor oppColor;
             if (myColor == ChessColor.White)
             {
@@ -1051,20 +1051,20 @@ namespace StudentAI
             {
                 oppColor = ChessColor.White;
             }
-            ChessMove chosenMove = null;
             //generate next moves for opposing player
             List<ChessMove> oppMoves = GenMoves(board, oppColor);
             foreach (ChessMove m in oppMoves)
                 {
                 int isCheck = InCheck(m, board, myColor ,true);
-                if (isCheck == 0 && validMoves.Count == 0) //stalemate
+                //if (isCheck == 0 && validMoves.Count == 0) //stalemate
+                //{
+                //    ChessFlag myflag = ChessFlag.Stalemate;
+                //    return chosenMove;
+                //}
+                /*else */if (isCheck == 1) //in check not mate
                 {
-                    chosenMove.Flag = ChessFlag.Stalemate;
-                    return chosenMove;
-                }
-                else if (isCheck == 1) //in check not mate
-                {
-                    foreach (ChessMove mn in validMoves)
+                    List<ChessMove> checkValidMoves = validMoves;
+                    foreach (ChessMove mn in checkValidMoves)
                     {
                         if (InCheck(mn, board, myColor, true) == 1)
                         {
@@ -1091,6 +1091,7 @@ namespace StudentAI
 
             List<ChessMove> maxMoves = new List<ChessMove>();
             int max = 0;
+            ChessFlag flag = ChessFlag.NoFlag;
             foreach(ChessMove m in validMoves) //find the max score of moves
             {
                 if (values[board[m.To]] > max)
@@ -1098,7 +1099,7 @@ namespace StudentAI
                     max = values[board[m.To]];
                     if(max == 1000)
                     {
-                        chosenMove.Flag = ChessFlag.Check;
+                        flag = ChessFlag.Check;
                     }
                 }
             }
@@ -1110,18 +1111,19 @@ namespace StudentAI
                 }
             }
             Random rand = new Random();
-
             int index = rand.Next(maxMoves.Count);
-            chosenMove = maxMoves[index];
-            int check = InCheck(chosenMove, board, oppColor, true);
+            //chosenMove = maxMoves[index];
+            int check = InCheck(maxMoves[index], board, oppColor, true);
             if (check == 1)
             {
-                chosenMove.Flag = ChessFlag.Check;
+                flag = ChessFlag.Check;
             }
             else if (check == 2)
             {
-                chosenMove.Flag = ChessFlag.Checkmate;
+                flag = ChessFlag.Checkmate;
             }
+            ChessMove chosenMove = maxMoves[index];
+            chosenMove.Flag = flag;
             return chosenMove;
         }
        
@@ -1154,10 +1156,6 @@ namespace StudentAI
             var moves = GenMoves(boardBeforeMove, colorOfPlayerMoving);
             if (moves.Contains(moveToCheck))
             {
-                //if(InCheck(moveToCheck, boardBeforeMove, colorOfPlayerMoving) == 1)
-                //{
-                //    moveToCheck.Flag = ChessFlag.Check;
-                //}
                 return true;
             }
             return false;
