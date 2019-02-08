@@ -1020,6 +1020,10 @@ namespace StudentAI
                 {
                     if (tempBoard[tempMove.To] == ChessPiece.BlackKing)
                     {
+                        if (checkMate)
+                        {
+                            return 1;
+                        }
                         foreach (ChessMove kMove in GenMoves(tempBoard, ChessColor.Black))// can you make a move that will get you out of check
                         {
                             if (InCheck(kMove, tempBoard, ChessColor.Black, true) == 0)
