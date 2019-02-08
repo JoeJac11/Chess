@@ -1128,9 +1128,23 @@ namespace StudentAI
         /// <param name="yourColor">Your color</param>
         /// <returns> Returns the best chess move the player has for the given chess board</returns>
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
+        {
+            ChessMove chosenMove = null;
+            try
             {
-            List<ChessMove> validMoves = GenMoves(board, myColor);
-            ChessMove chosenMove = Logic(validMoves, board, myColor);
+                List<ChessMove> validMoves = GenMoves(board, myColor);
+                chosenMove = Logic(validMoves, board, myColor);
+            }
+            catch (IndexOutOfRangeException e)
+            {
+                System.Console.WriteLine(e);
+                Console.ReadLine();
+            }
+            if (chosenMove == null)
+            {
+                System.Console.WriteLine("Move is null");
+                Console.ReadLine();
+            }
             return chosenMove;
             }
 
