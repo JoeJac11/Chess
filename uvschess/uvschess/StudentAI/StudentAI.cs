@@ -985,34 +985,37 @@ namespace StudentAI
         //returns 0 for no check 1 for check 2 for checkMate
         public int InCheck(ChessMove move, ChessBoard board, ChessColor testColor)//is white in check
         {
-                if (testColor == ChessColor.White)
-                {
-                    ChessBoard tempBoard = new ChessBoard();
-                    tempBoard = board.Clone();
-                    tempBoard.MakeMove(move);
 
-                    foreach (ChessMove tempMove in GenMoves(tempBoard, ChessColor.Black))
+            if (testColor == ChessColor.White)
+            {
+                ChessBoard tempBoard = new ChessBoard();
+                tempBoard = board.Clone();
+                tempBoard.MakeMove(move);
+
+                foreach (ChessMove tempMove in GenMoves(tempBoard, ChessColor.Black))
+                {
+                    if (tempBoard[tempMove.To] == ChessPiece.WhiteKing)
                     {
-                        if (tempBoard[tempMove.To] == ChessPiece.WhiteKing)
+                        foreach (ChessMove kMove in GenMoves(tempBoard, ChessColor.White))// can you make a move that will get you out of check
                         {
-                            foreach (ChessMove kMove in GenMoves(tempBoard, ChessColor.White))// can you make a move that will get you out of check
+                            if (InCheck(kMove, tempBoard, ChessColor.White) == 0)
                             {
-                                if (InCheck(kMove, tempBoard, ChessColor.White) == 0)
-                                {
-                                    return 1;//check not mate
-                                }
+                                return 1;//check not mate
                             }
-                            return 2;//check mate
                         }
+                        return 2;//check mate
                     }
                 }
-                else if (testColor == ChessColor.Black)//is black in check
+            }
+            else if (testColor == ChessColor.Black)//is black in check
+            {
+                Console.WriteLine("here");
+                ChessBoard tempBoard = new ChessBoard();
+                tempBoard = board.Clone();
+                tempBoard.MakeMove(move);
+                foreach (ChessMove tempMove in GenMoves(tempBoard, ChessColor.White))
                 {
-                    ChessBoard tempBoard = new ChessBoard();
-                    tempBoard = board.Clone();
-                    tempBoard.MakeMove(move);
-
-                    foreach (ChessMove tempMove in GenMoves(tempBoard, ChessColor.White))
+                    if (tempBoard[tempMove.To] == ChessPiece.BlackKing)
                     {
                         foreach (ChessMove kMove in GenMoves(tempBoard, ChessColor.Black))// can you make a move that will get you out of check
                         {
@@ -1022,11 +1025,12 @@ namespace StudentAI
                             }
                         }
                         return 2;//check mate
-                    }   
+                    }
+                }   
 
-                }
-                return 0;//not in check
             }
+            return 0;//not in check
+        }
         
 
         public ChessMove Logic(List<ChessMove> validMoves, ChessBoard board, ChessColor myColor)
@@ -1074,7 +1078,7 @@ namespace StudentAI
             int max = 0;
             foreach(ChessMove m in validMoves) //find the max score of moves
             {
-                if(values[board[m.To]] > max)
+                if (values[board[m.To]] > max)
                 {
                     max = values[board[m.To]];
                     if(max == 1000)
@@ -1083,7 +1087,7 @@ namespace StudentAI
                     }
                 }
             }
-            foreach(ChessMove m in validMoves) //get all the moves that have a max score
+            foreach (ChessMove m in validMoves) //get all the moves that have a max score
             {
                 if(values[board[m.To]] == max)
                 {
