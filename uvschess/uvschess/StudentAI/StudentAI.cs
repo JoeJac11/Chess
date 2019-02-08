@@ -22,6 +22,7 @@ namespace StudentAI
             }
         public List<ChessMove> GenMoves(ChessBoard board, ChessColor color)
             {
+            Console.WriteLine("GenMoves()");
             List<ChessMove> validMoves = new List<ChessMove>();
             for (int i = 0; i <= 7; i++) //columns
                 {
@@ -163,7 +164,7 @@ namespace StudentAI
                                 validMoves.Add(move);
                                 ri--;
                             }
-                            if (rj - 1 >= 0 && board[ri - 1, j] > ChessPiece.Empty)
+                            if (ri - 1 >= 0 && board[ri - 1, j] > ChessPiece.Empty)
                             {
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(ri - 1, j);
@@ -456,7 +457,7 @@ namespace StudentAI
                                 validMoves.Add(move);
                                 ri--;
                             }
-                            if (rj - 1 >= 0 && board[ri - 1, j] > ChessPiece.Empty)
+                            if (ri - 1 >= 0 && board[ri - 1, j] > ChessPiece.Empty)
                             {
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(ri - 1, j);
@@ -753,7 +754,7 @@ namespace StudentAI
                                     validMoves.Add(move);
                                 ri--;
                             }
-                            if (rj - 1 >= 0 && board[ri - 1, j] < ChessPiece.Empty)
+                            if (ri - 1 >= 0 && board[ri - 1, j] < ChessPiece.Empty)
                             {
                                 ChessLocation from = new ChessLocation(i, j);
                                 ChessLocation to = new ChessLocation(ri - 1, j);
@@ -985,12 +986,11 @@ namespace StudentAI
         //returns 0 for no check 1 for check 2 for checkMate
         public int InCheck(ChessMove move, ChessBoard board, ChessColor testColor, bool checkMate)//is white in check
         {
+            ChessBoard tempBoard = board.Clone();
+            tempBoard.MakeMove(move);
+
             if (testColor == ChessColor.White)
             {
-                ChessBoard tempBoard = new ChessBoard();
-                tempBoard = board.Clone();
-                tempBoard.MakeMove(move);
-
                 foreach (ChessMove tempMove in GenMoves(tempBoard, ChessColor.Black))
                 {
                     if (tempBoard[tempMove.To] == ChessPiece.WhiteKing)
@@ -1012,8 +1012,6 @@ namespace StudentAI
             }
             else if (testColor == ChessColor.Black)//is black in check
             {
-                ChessBoard tempBoard = board.Clone();
-                tempBoard.MakeMove(move);
                 foreach (ChessMove tempMove in GenMoves(tempBoard, ChessColor.White))
                 {
                     if (tempBoard[tempMove.To] == ChessPiece.BlackKing)
@@ -1032,7 +1030,6 @@ namespace StudentAI
                         return 2;//check mate
                     }
                 }   
-
             }
             return 0;//not in check
         }
