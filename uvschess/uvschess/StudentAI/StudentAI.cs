@@ -983,7 +983,7 @@ namespace StudentAI
         }
 
         //returns 0 for no check 1 for check 2 for checkMate
-        public int InCheck(ChessMove move, ChessBoard board, ChessColor testColor, bool mateCheck)//is white in check
+        public int InCheck(ChessMove move, ChessBoard board, ChessColor testColor)//is white in check
         {
             Console.WriteLine("in check");
             if (testColor == ChessColor.White)
@@ -999,11 +999,7 @@ namespace StudentAI
                         Console.WriteLine("White is in check");
                         foreach (ChessMove kMove in GenMoves(tempBoard, ChessColor.White))// can you make a move that will get you out of check
                         {
-                            if (mateCheck)
-                            {
-                                return 1;
-                            }
-                            if (InCheck(kMove, tempBoard, ChessColor.White, true) == 0)
+                            if (InCheck(kMove, tempBoard, ChessColor.White) == 0)
                             {
                                 Console.WriteLine("white not in mate");
                                 return 1;//check not mate
@@ -1026,11 +1022,7 @@ namespace StudentAI
                         Console.WriteLine("black is in check");
                         foreach (ChessMove kMove in GenMoves(tempBoard, ChessColor.Black))// can you make a move that will get you out of check
                         {  
-                            if (mateCheck)
-                            {
-                                return 1;
-                            }
-                            if (InCheck(kMove, tempBoard, ChessColor.Black, true) == 0)
+                            if (InCheck(kMove, tempBoard, ChessColor.Black) == 0)
                             {
                                 Console.WriteLine("black is not in Mate");
                                 return 1;//check not mate
@@ -1065,7 +1057,7 @@ namespace StudentAI
                 //see if my king matches To position for any of those moves
                 foreach(ChessMove m in oppMoves)
                 {
-                    if(InCheck(m, board, myColor, false) == 0)
+                    if(InCheck(m, board, myColor) == 0)
                     {
                         chosenMove.Flag = ChessFlag.Stalemate;
                         return chosenMove;
@@ -1111,7 +1103,7 @@ namespace StudentAI
             int index = rand.Next(maxMoves.Count);
             chosenMove = maxMoves[index];
             Console.WriteLine("before Check");
-            int check = InCheck(chosenMove, board, oppColor, false);
+            int check = InCheck(chosenMove, board, oppColor);
             Console.WriteLine("we made it throught check");
             if (check == 1)
             {
