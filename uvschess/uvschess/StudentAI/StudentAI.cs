@@ -1129,9 +1129,9 @@ namespace StudentAI
         /// <returns> Returns the best chess move the player has for the given chess board</returns>
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
         {
-                List<ChessMove> validMoves = GenMoves(board, myColor);
-                ChessMove chosenMove = Logic(validMoves, board, myColor);
-                return chosenMove;
+            List<ChessMove> validMoves = GenMoves(board, myColor);
+            ChessMove chosenMove = Logic(validMoves, board, myColor);
+            return chosenMove;
         }
 
         /// <summary>
@@ -1146,6 +1146,10 @@ namespace StudentAI
             var moves = GenMoves(boardBeforeMove, colorOfPlayerMoving);
             if (moves.Contains(moveToCheck))
             {
+                //if(InCheck(moveToCheck, boardBeforeMove, colorOfPlayerMoving) == 1)
+                //{
+                //    moveToCheck.Flag = ChessFlag.Check;
+                //}
                 return true;
             }
             return false;
