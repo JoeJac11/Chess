@@ -983,7 +983,7 @@ namespace StudentAI
         }
 
         //returns 0 for no check 1 for check 2 for checkMate
-        public int InCheck(ChessMove move, ChessBoard board, ChessColor testColor)//is white in check
+        public int InCheck(ChessMove move, ChessBoard board, ChessColor testColor, bool checkMate)//is white in check
         {
             if (testColor == ChessColor.White)
             {
@@ -995,9 +995,13 @@ namespace StudentAI
                 {
                     if (tempBoard[tempMove.To] == ChessPiece.WhiteKing)
                     {
+                        if (checkMate)
+                        {
+                            return 1;
+                        }
                         foreach (ChessMove kMove in GenMoves(tempBoard, ChessColor.White))// can you make a move that will get you out of check
                         {
-                            if (InCheck(kMove, tempBoard, ChessColor.White) == 0)
+                            if (InCheck(kMove, tempBoard, ChessColor.White, true) == 0)
                             {
                                 return 1;//check not mate
                             }
@@ -1018,7 +1022,7 @@ namespace StudentAI
                     {
                         foreach (ChessMove kMove in GenMoves(tempBoard, ChessColor.Black))// can you make a move that will get you out of check
                         {
-                            if (InCheck(kMove, tempBoard, ChessColor.Black) == 0)
+                            if (InCheck(kMove, tempBoard, ChessColor.Black, true) == 0)
                             {
                                 return 1;//check not mate
                             }
@@ -1048,7 +1052,7 @@ namespace StudentAI
             List<ChessMove> oppMoves = GenMoves(board, oppColor);
             foreach (ChessMove m in oppMoves)
                 {
-                int isCheck = InCheck(m, board, myColor);
+                int isCheck = InCheck(m, board, myColor ,true);
                 if (isCheck == 0 && validMoves.Count == 0) //stalemate
                 {
                     chosenMove.Flag = ChessFlag.Stalemate;
@@ -1058,7 +1062,7 @@ namespace StudentAI
                 {
                     foreach (ChessMove mn in validMoves)
                     {
-                        if (InCheck(mn, board, myColor) == 1)
+                        if (InCheck(mn, board, myColor, true) == 1)
                         {
                             validMoves.Remove(mn);
                         }
@@ -1105,7 +1109,7 @@ namespace StudentAI
 
             int index = rand.Next(maxMoves.Count);
             chosenMove = maxMoves[index];
-            int check = InCheck(chosenMove, board, oppColor);
+            int check = InCheck(chosenMove, board, oppColor, true);
             if (check == 1)
             {
                 chosenMove.Flag = ChessFlag.Check;
