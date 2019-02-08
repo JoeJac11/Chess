@@ -1051,7 +1051,7 @@ namespace StudentAI
             List<ChessMove> oppMoves = GenMoves(board, oppColor);
             foreach (ChessMove m in oppMoves)
                 {
-                int isCheck = InCheck(m, board, myColor ,true);
+                int isCheck = InCheck(m, board, myColor ,false);
                 if (isCheck == 1) //in check not mate
                 {
                     List<ChessMove> checkValidMoves = new List<ChessMove>();
@@ -1062,7 +1062,7 @@ namespace StudentAI
                     validMoves.Clear();
                     foreach (ChessMove mn in checkValidMoves)
                     {
-                        if (InCheck(mn, board, myColor, true) == 0)
+                        if (InCheck(mn, board, myColor, false) == 0)
                         {
                             validMoves.Add(mn);
                         }
