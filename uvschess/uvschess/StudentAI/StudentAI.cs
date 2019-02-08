@@ -1093,10 +1093,15 @@ namespace StudentAI
             Random rand = new Random();
             int index = rand.Next(maxMoves.Count);
             chosenMove = maxMoves[index];
-            if (InCheck(chosenMove, board, oppColor) != 0)
-                {
+            int check = InCheck(chosenMove, board, oppColor);
+            if (check == 1)
+            {
                 chosenMove.Flag = ChessFlag.Check;
-                }
+            }
+            else if (check == 2)
+            {
+                chosenMove.Flag = ChessFlag.Checkmate;
+            }
             return chosenMove;
         }
        
