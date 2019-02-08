@@ -1101,7 +1101,7 @@ namespace StudentAI
             }
             foreach (ChessMove m in validMoves) //get all the moves that have a max score
             {
-                if(values[board[m.To]] == max)
+                if (values[board[m.To]] == max)
                 {
                     maxMoves.Add(m);
                 }
