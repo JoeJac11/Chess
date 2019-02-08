@@ -985,7 +985,6 @@ namespace StudentAI
         //returns 0 for no check 1 for check 2 for checkMate
         public int InCheck(ChessMove move, ChessBoard board, ChessColor testColor)//is white in check
         {
-
             if (testColor == ChessColor.White)
             {
                 ChessBoard tempBoard = new ChessBoard();
@@ -1045,22 +1044,28 @@ namespace StudentAI
                 oppColor = ChessColor.White;
             }
             ChessMove chosenMove = null;
-            if(validMoves.Count == 0) //check for stalemate
-            {
-                //for debugging
-                Console.ReadLine();
-                //generate next moves for opposing player
-                List<ChessMove> oppMoves = GenMoves(board, oppColor);
-                //see if my king matches To position for any of those moves
-                foreach(ChessMove m in oppMoves)
+            //generate next moves for opposing player
+            List<ChessMove> oppMoves = GenMoves(board, oppColor);
+            foreach (ChessMove m in oppMoves)
                 {
-                    if(InCheck(m, board, myColor) == 0)
+                int isCheck = InCheck(m, board, myColor);
+                if (isCheck == 0 && validMoves.Count == 0) //stalemate
+                {
+                    chosenMove.Flag = ChessFlag.Stalemate;
+                    return chosenMove;
+                }
+                else if (isCheck == 1) //in check not mate
+                {
+                    foreach (ChessMove mn in validMoves)
                     {
-                        chosenMove.Flag = ChessFlag.Stalemate;
-                        return chosenMove;
+                        if (InCheck(mn, board, myColor) == 1)
+                        {
+                            validMoves.Remove(mn);
+                        }
                     }
                 }
             }
+
             Dictionary<ChessPiece, int> values = new Dictionary<ChessPiece, int>(); //create dictionary for values of pieces
             values.Add(ChessPiece.WhitePawn, 1);
             values.Add(ChessPiece.WhiteRook, 5);
@@ -1098,11 +1103,6 @@ namespace StudentAI
             }
             Random rand = new Random();
 
-            //for debugging
-            if(maxMoves.Count == 0)
-            {
-                Console.ReadLine();
-            }
             int index = rand.Next(maxMoves.Count);
             chosenMove = maxMoves[index];
             int check = InCheck(chosenMove, board, oppColor);
