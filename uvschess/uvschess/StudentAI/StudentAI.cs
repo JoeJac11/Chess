@@ -1032,6 +1032,8 @@ namespace StudentAI
             ChessMove chosenMove = null;
             if(validMoves.Count == 0) //check for stalemate
             {
+                //for debugging
+                Console.ReadLine();
                 //generate next moves for opposing player
                 List<ChessMove> oppMoves = GenMoves(board, oppColor);
                 //see if my king matches To position for any of those moves
@@ -1080,6 +1082,12 @@ namespace StudentAI
                 }
             }
             Random rand = new Random();
+
+            //for debugging
+            if(maxMoves.Count == 0)
+            {
+                Console.ReadLine();
+            }
             int index = rand.Next(maxMoves.Count);
             chosenMove = maxMoves[index];
             if (InCheck(chosenMove, board, oppColor))
@@ -1115,7 +1123,8 @@ namespace StudentAI
         /// <returns>Returns true if the move was valid</returns>
         public bool IsValidMove(ChessBoard boardBeforeMove, ChessMove moveToCheck, ChessColor colorOfPlayerMoving)
         {
-            if (GenMoves(boardBeforeMove, colorOfPlayerMoving).Contains(moveToCheck))
+            var moves = GenMoves(boardBeforeMove, colorOfPlayerMoving);
+            if (moves.Contains(moveToCheck))
             {
                 return true;
             }
