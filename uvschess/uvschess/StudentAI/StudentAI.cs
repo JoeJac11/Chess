@@ -1154,9 +1154,17 @@ namespace StudentAI
         /// <returns>Returns true if the move was valid</returns>
         public bool IsValidMove(ChessBoard boardBeforeMove, ChessMove moveToCheck, ChessColor colorOfPlayerMoving)
         {
-            
-                return true;
-           
+            //var moves = GenMoves(boardBeforeMove, colorOfPlayerMoving);
+            //if (InCheck(moveToCheck, boardBeforeMove, colorOfPlayerMoving, false) == 1)
+            //{
+            //    moveToCheck.Flag = ChessFlag.Check;
+            //}
+            //if (moves.Contains(moveToCheck))
+            //{
+            //    return true;
+            //}
+            //return false;
+            return true;
         }
 
         #endregion
