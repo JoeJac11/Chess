@@ -982,8 +982,8 @@ namespace StudentAI
             return validMoves;
         }
 
-        //returns true if the move will put the king of the test color in check
-        public bool InCheck(ChessMove move, ChessBoard board, ChessColor testColor)
+        //returns 0 for no check 1 for check 2 for checkMate
+        public int InCheck(ChessMove move, ChessBoard board, ChessColor testColor)//is white in check
         {
                 if (testColor == ChessColor.White)
                 {
@@ -995,11 +995,18 @@ namespace StudentAI
                     {
                         if (tempBoard[tempMove.To] == ChessPiece.WhiteKing)
                         {
-                            return true;
+                            foreach (ChessMove kMove in GenMoves(tempBoard, ChessColor.White))// can you make a move that will get you out of check
+                            {
+                                if (InCheck(kMove, tempBoard, ChessColor.White) == 0)
+                                {
+                                    return 1;//check not mate
+                                }
+                            }
+                            return 2;//check mate
                         }
                     }
                 }
-                else if (testColor == ChessColor.Black)
+                else if (testColor == ChessColor.Black)//is black in check
                 {
                     ChessBoard tempBoard = new ChessBoard();
                     tempBoard = board.Clone();
@@ -1007,14 +1014,18 @@ namespace StudentAI
 
                     foreach (ChessMove tempMove in GenMoves(tempBoard, ChessColor.White))
                     {
-                        if (tempBoard[tempMove.To] == ChessPiece.BlackKing)
+                        foreach (ChessMove kMove in GenMoves(tempBoard, ChessColor.Black))// can you make a move that will get you out of check
                         {
-                            return true;
+                            if (InCheck(kMove, tempBoard, ChessColor.Black) == 0)
+                            {
+                                return 1;//check not mate
+                            }
                         }
-                    }
+                        return 2;//check mate
+                    }   
 
                 }
-                return false;
+                return 0;//not in check
             }
         
 
@@ -1037,7 +1048,7 @@ namespace StudentAI
                 //see if my king matches To position for any of those moves
                 foreach(ChessMove m in oppMoves)
                 {
-                    if(!InCheck(m, board, myColor))
+                    if(InCheck(m, board, myColor) == 0)
                     {
                         chosenMove.Flag = ChessFlag.Stalemate;
                         return chosenMove;
@@ -1082,7 +1093,7 @@ namespace StudentAI
             Random rand = new Random();
             int index = rand.Next(maxMoves.Count);
             chosenMove = maxMoves[index];
-            if (InCheck(chosenMove, board, oppColor))
+            if (InCheck(chosenMove, board, oppColor) != 0)
                 {
                 chosenMove.Flag = ChessFlag.Check;
                 }
