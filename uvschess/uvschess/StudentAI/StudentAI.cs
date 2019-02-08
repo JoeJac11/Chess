@@ -1052,8 +1052,9 @@ namespace StudentAI
             ChessMove chosenMove = null;
             //generate next moves for opposing player
             List<ChessMove> oppMoves = GenMoves(board, oppColor);
+
             foreach (ChessMove m in oppMoves)
-                {
+            {
                 int isCheck = InCheck(m, board, myColor ,true);
                 if (isCheck == 0 && validMoves.Count == 0) //stalemate
                 {
@@ -1071,7 +1072,6 @@ namespace StudentAI
                     }
                 }
             }
-
             Dictionary<ChessPiece, int> values = new Dictionary<ChessPiece, int>(); //create dictionary for values of pieces
             values.Add(ChessPiece.WhitePawn, 1);
             values.Add(ChessPiece.WhiteRook, 5);
@@ -1089,7 +1089,7 @@ namespace StudentAI
 
             List<ChessMove> maxMoves = new List<ChessMove>();
             int max = 0;
-            foreach(ChessMove m in validMoves) //find the max score of moves
+            foreach (ChessMove m in validMoves) //find the max score of moves
             {
                 if (values[board[m.To]] > max)
                 {
@@ -1102,7 +1102,7 @@ namespace StudentAI
             }
             foreach (ChessMove m in validMoves) //get all the moves that have a max score
             {
-                if(values[board[m.To]] == max)
+                if (values[board[m.To]] == max)
                 {
                     maxMoves.Add(m);
                 }
