@@ -983,23 +983,29 @@ namespace StudentAI
         }
 
         //returns 0 for no check 1 for check 2 for checkMate
-        public int InCheck(ChessMove move, ChessBoard board, ChessColor testColor)//is white in check
+        public int InCheck(ChessMove move, ChessBoard board, ChessColor testColor, bool mateCheck)//is white in check
         {
-
+            Console.WriteLine("in check");
             if (testColor == ChessColor.White)
             {
-                ChessBoard tempBoard = new ChessBoard();
-                tempBoard = board.Clone();
+                Console.WriteLine("white");
+                ChessBoard tempBoard = board.Clone();
                 tempBoard.MakeMove(move);
 
                 foreach (ChessMove tempMove in GenMoves(tempBoard, ChessColor.Black))
                 {
                     if (tempBoard[tempMove.To] == ChessPiece.WhiteKing)
                     {
+                        Console.WriteLine("White is in check");
                         foreach (ChessMove kMove in GenMoves(tempBoard, ChessColor.White))// can you make a move that will get you out of check
                         {
-                            if (InCheck(kMove, tempBoard, ChessColor.White) == 0)
+                            if (mateCheck)
                             {
+                                return 1;
+                            }
+                            if (InCheck(kMove, tempBoard, ChessColor.White, true) == 0)
+                            {
+                                Console.WriteLine("white not in mate");
                                 return 1;//check not mate
                             }
                         }
@@ -1009,18 +1015,24 @@ namespace StudentAI
             }
             else if (testColor == ChessColor.Black)//is black in check
             {
+                Console.WriteLine("black");
+                ChessBoard tempBoard = board.Clone();
                 Console.WriteLine("here");
-                ChessBoard tempBoard = new ChessBoard();
-                tempBoard = board.Clone();
                 tempBoard.MakeMove(move);
                 foreach (ChessMove tempMove in GenMoves(tempBoard, ChessColor.White))
                 {
                     if (tempBoard[tempMove.To] == ChessPiece.BlackKing)
                     {
+                        Console.WriteLine("black is in check");
                         foreach (ChessMove kMove in GenMoves(tempBoard, ChessColor.Black))// can you make a move that will get you out of check
-                        {
-                            if (InCheck(kMove, tempBoard, ChessColor.Black) == 0)
+                        {  
+                            if (mateCheck)
                             {
+                                return 1;
+                            }
+                            if (InCheck(kMove, tempBoard, ChessColor.Black, true) == 0)
+                            {
+                                Console.WriteLine("black is not in Mate");
                                 return 1;//check not mate
                             }
                         }
@@ -1029,6 +1041,7 @@ namespace StudentAI
                 }   
 
             }
+            Console.WriteLine("not in check");
             return 0;//not in check
         }
         
@@ -1052,7 +1065,7 @@ namespace StudentAI
                 //see if my king matches To position for any of those moves
                 foreach(ChessMove m in oppMoves)
                 {
-                    if(InCheck(m, board, myColor) == 0)
+                    if(InCheck(m, board, myColor, false) == 0)
                     {
                         chosenMove.Flag = ChessFlag.Stalemate;
                         return chosenMove;
@@ -1097,7 +1110,9 @@ namespace StudentAI
             Random rand = new Random();
             int index = rand.Next(maxMoves.Count);
             chosenMove = maxMoves[index];
-            int check = InCheck(chosenMove, board, oppColor);
+            Console.WriteLine("before Check");
+            int check = InCheck(chosenMove, board, oppColor, false);
+            Console.WriteLine("we made it throught check");
             if (check == 1)
             {
                 chosenMove.Flag = ChessFlag.Check;
@@ -1121,6 +1136,7 @@ namespace StudentAI
         /// <returns> Returns the best chess move the player has for the given chess board</returns>
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
             {
+            Console.WriteLine("starting move");
             List<ChessMove> validMoves = GenMoves(board, myColor);
             ChessMove chosenMove = Logic(validMoves, board, myColor);
             return chosenMove;
