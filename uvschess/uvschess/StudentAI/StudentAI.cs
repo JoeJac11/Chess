@@ -1012,9 +1012,7 @@ namespace StudentAI
             }
             else if (testColor == ChessColor.Black)//is black in check
             {
-                Console.WriteLine("here");
-                ChessBoard tempBoard = new ChessBoard();
-                tempBoard = board.Clone();
+                ChessBoard tempBoard = board.Clone();
                 tempBoard.MakeMove(move);
                 foreach (ChessMove tempMove in GenMoves(tempBoard, ChessColor.White))
                 {
