@@ -1052,19 +1052,19 @@ namespace StudentAI
             foreach (ChessMove m in oppMoves)
                 {
                 int isCheck = InCheck(m, board, myColor ,true);
-                //if (isCheck == 0 && validMoves.Count == 0) //stalemate
-                //{
-                //    ChessFlag myflag = ChessFlag.Stalemate;
-                //    return chosenMove;
-                //}
-                /*else */if (isCheck == 1) //in check not mate
+                if (isCheck == 1) //in check not mate
                 {
-                    List<ChessMove> checkValidMoves = validMoves;
+                    List<ChessMove> checkValidMoves = new List<ChessMove>();
+                    foreach(ChessMove mn in validMoves)
+                    {
+                        checkValidMoves.Add(mn.Clone());
+                    }
+                    validMoves.Clear();
                     foreach (ChessMove mn in checkValidMoves)
                     {
-                        if (InCheck(mn, board, myColor, true) == 1)
+                        if (InCheck(mn, board, myColor, true) == 0)
                         {
-                            validMoves.Remove(mn);
+                            validMoves.Add(mn);
                         }
                     }
                 }
@@ -1150,6 +1150,10 @@ namespace StudentAI
         public bool IsValidMove(ChessBoard boardBeforeMove, ChessMove moveToCheck, ChessColor colorOfPlayerMoving)
         {
             var moves = GenMoves(boardBeforeMove, colorOfPlayerMoving);
+            if (InCheck(moveToCheck, boardBeforeMove, colorOfPlayerMoving, false) == 1)
+            {
+                moveToCheck.Flag = ChessFlag.Check;
+            }
             if (moves.Contains(moveToCheck))
             {
                 return true;
