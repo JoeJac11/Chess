@@ -42,9 +42,9 @@ namespace UvsChess.Gui
         private const string GRACEPERIOD = "graceperiod";
 		private const string CHECKMOVE = "checkmove";
 		
-        private static int time_default = 50000;
-        private static int grace_default = 10000;
-		private static int checkMove_default = 10000;
+        private static int time_default = 5000000;
+        private static int grace_default = 1000000;
+		private static int checkMove_default = 1000000;
 
         private static int _time = 5000;
         private static int _grace = 1000;

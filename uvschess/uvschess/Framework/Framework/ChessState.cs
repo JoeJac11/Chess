@@ -34,7 +34,7 @@ namespace UvsChess.Framework
     {
         #region Members
         public const string FenStartState = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-        //public const string FenStartState = "rnbqkbnr/1ppppppp/8/p7/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 2";
+        //public const string FenStartState = "k7/3QR3/8/8/8/8/8/8 w KQkq - 0 2";
         private ChessBoard _currentBoard;
         private ChessBoard _previousBoard;
         private ChessMove _previousMove;
