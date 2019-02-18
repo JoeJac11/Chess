@@ -814,18 +814,9 @@ namespace StudentAI
         {
             ChessBoard tempBoard = board.Clone();
             tempBoard.MakeMove(move);
-            ChessColor oppColor;
-            ChessPiece myKing;
-            if (testColor == ChessColor.White)
-            {
-                oppColor = ChessColor.Black;
-                myKing = ChessPiece.WhiteKing;
-            }
-            else
-            {
-                oppColor = ChessColor.White;
-                myKing = ChessPiece.BlackKing;
-            }
+            ChessPiece myKing = (testColor == ChessColor.White ? ChessPiece.WhiteKing : ChessPiece.BlackKing);
+            ChessColor oppColor = (testColor == ChessColor.White ? ChessColor.Black : ChessColor.White);
+            
             foreach (ChessMove tempMove in GetAllMoves(tempBoard, oppColor))  //what moves can opposition make?
             {
                 if (tempBoard[tempMove.To] == myKing)
@@ -849,70 +840,81 @@ namespace StudentAI
 
         public ChessMove Logic(List<ChessMove> validMoves, ChessBoard board, ChessColor myColor)
         {
-            ChessColor oppColor;
-            if (myColor == ChessColor.White)
+            ChessColor oppColor = (myColor == ChessColor.White ? ChessColor.Black : ChessColor.White);
+            foreach (ChessMove m in validMoves) //set values for each move
             {
-                oppColor = ChessColor.Black;
-            }
-            else
-            {
-                oppColor = ChessColor.White;
-            }
-            Dictionary<ChessPiece, int> values = new Dictionary<ChessPiece, int>(); //create dictionary for values of pieces
-            values.Add(ChessPiece.WhitePawn, 1);
-            values.Add(ChessPiece.WhiteRook, 5);
-            values.Add(ChessPiece.WhiteKnight, 3);
-            values.Add(ChessPiece.WhiteBishop, 3);
-            values.Add(ChessPiece.WhiteQueen, 10);
-            values.Add(ChessPiece.WhiteKing, 1000);
-            values.Add(ChessPiece.BlackPawn, 1);
-            values.Add(ChessPiece.BlackRook, 5);
-            values.Add(ChessPiece.BlackKnight, 3);
-            values.Add(ChessPiece.BlackBishop, 3);
-            values.Add(ChessPiece.BlackQueen, 10);
-            values.Add(ChessPiece.BlackKing, 1000);
-            values.Add(ChessPiece.Empty, 0);
-
-            List<ChessMove> maxMoves = new List<ChessMove>();
-            int max = 0;
-            ChessFlag flag = ChessFlag.NoFlag;
-            foreach (ChessMove m in validMoves) //find the max score of moves
-            {
-                if (values[board[m.To]] > max)
+                switch (board[m.To])
                 {
-                    max = values[board[m.To]];
+                    case ChessPiece.WhitePawn:
+                        m.ValueOfMove = 1;
+                        break;
+                    case ChessPiece.WhiteRook:
+                        m.ValueOfMove = 5;
+                        break;
+                    case ChessPiece.WhiteKnight:
+                        m.ValueOfMove = 3;
+                        break;
+                    case ChessPiece.WhiteBishop:
+                        m.ValueOfMove = 3;
+                        break;
+                    case ChessPiece.WhiteQueen:
+                        m.ValueOfMove = 9;
+                        break;
+                    case ChessPiece.WhiteKing:
+                        m.ValueOfMove = 1000;
+                        break;
+                    case ChessPiece.BlackPawn:
+                        m.ValueOfMove = 1;
+                        break;
+                    case ChessPiece.BlackRook:
+                        m.ValueOfMove = 5;
+                        break;
+                    case ChessPiece.BlackKnight:
+                        m.ValueOfMove = 3;
+                        break;
+                    case ChessPiece.BlackBishop:
+                        m.ValueOfMove = 3;
+                        break;
+                    case ChessPiece.BlackQueen:
+                        m.ValueOfMove = 9;
+                        break;
+                    case ChessPiece.BlackKing:
+                        m.ValueOfMove = 1000;
+                        break;
+                    case ChessPiece.Empty:
+                        m.ValueOfMove = 0;
+                        break;
                 }
             }
-            foreach (ChessMove m in validMoves) //get all the moves that have a max score
+            List<ChessMove> maxMoves = new List<ChessMove>();
+            int max = 0;
+            foreach (ChessMove m in validMoves) //find the max score of moves
             {
                 if (InCheck(m, board, oppColor, false) == 2)
                 {
                     max = 1500;
-                    maxMoves.Add(m);
+                    m.ValueOfMove = 1500;
                 }
                 else if (InCheck(m, board, oppColor, false) == 1)
                 {
                     max = 1000;
-                    maxMoves.Add(m);
+                    m.ValueOfMove = 1000;
                 }
-                else if (values[board[m.To]] == max)
+                else if (m.ValueOfMove > max)
+                {
+                    max = m.ValueOfMove;
+                }
+            }
+            foreach (ChessMove m in validMoves) //add max moves to list
+            { 
+                if (m.ValueOfMove == max)
                 {
                     maxMoves.Add(m);
                 }
             }
             Random rand = new Random();
             int index = rand.Next(maxMoves.Count);
-            int check = InCheck(maxMoves[index], board, oppColor, false);
-            if (check == 1)
-            {
-                flag = ChessFlag.Check;
-            }
-            else if (check == 2)
-            {
-                flag = ChessFlag.Checkmate;
-            }
             ChessMove chosenMove = maxMoves[index];
-            chosenMove.Flag = flag;
             return chosenMove;
         }
 
