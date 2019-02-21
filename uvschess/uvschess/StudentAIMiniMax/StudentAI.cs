@@ -22,7 +22,6 @@ namespace StudentAI
         }
         public List<ChessMove> GetAllMoves(ChessBoard board, ChessColor color)
         {
-            Console.WriteLine("GetAllMoves()");
             List<ChessMove> allMoves = new List<ChessMove>();
             for (int i = 0; i <= 7; i++) //columns
             {
@@ -902,19 +901,36 @@ namespace StudentAI
             return sum;
         }
 
+
         public ChessMove minimax(ChessMove m, int depthLimit, ChessBoard board, ChessColor color)
         {
-            return maxMove(m, depthLimit, 0, board, color);
+            System.Console.WriteLine("minimax");
+            ChessMove bestMove = null;
+            ChessMove goodMove = null;
+            ChessMove move = null;
+            List<ChessMove> moves = GetAllMoves(board, color);
+            foreach (ChessMove mv in setFlags(moves, board, color))
+            {
+                move = minMove(mv, depthLimit, 1, board, color);
+                if (bestMove == null || evaluateBoard(move, board, color) > evaluateBoard(bestMove, board, color))
+                {
+                    goodMove = move;
+                    bestMove = mv;
+                }
+            }
+            return bestMove;
         }
 
         public ChessMove minMove(ChessMove m, int depthLimit, int currDepth, ChessBoard board, ChessColor color)
         {
+            System.Console.WriteLine("minMove");
             ChessMove bestMove = null;
             ChessMove goodMove = null;
             ChessMove move = null;
             if (currDepth == depthLimit)
             {
-                return bestMove;
+                System.Console.WriteLine(bestMove);
+                return m;
             }
             List<ChessMove> moves = GetAllMoves(board, color);
             foreach (ChessMove mv in setFlags(moves, board, color))
@@ -936,11 +952,13 @@ namespace StudentAI
 
         public ChessMove maxMove(ChessMove m, int depthLimit, int currDepth, ChessBoard board, ChessColor color)
         {
+            System.Console.WriteLine("maxMove");
             ChessMove bestMove = null;
             ChessMove goodMove = null;
             ChessMove move = null;
             if (currDepth == depthLimit)
             {
+                System.Console.WriteLine(m);
                 return m;
             }
             else
@@ -974,10 +992,12 @@ namespace StudentAI
         /// <returns> Returns the best chess move the player has for the given chess board</returns>
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
         {
+
             List<ChessMove> moves = GetAllMoves(board, myColor);
             List<ChessMove> validMoves = setFlags(moves, board, myColor);
             ChessMove chosenMove = minimax(validMoves[0], 3, board, myColor);
             prevMoves.Add(chosenMove);
+
             return chosenMove;
         }
 
