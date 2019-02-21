@@ -931,21 +931,6 @@ namespace StudentAI
             {
                 return move;
             }
-            System.Console.WriteLine("minimax");
-            ChessMove bestMove = null;
-            ChessMove goodMove = null;
-            ChessMove move = null;
-            List<ChessMove> moves = GetAllMoves(board, color);
-            foreach (ChessMove mv in setFlags(moves, board, color))
-            {
-                move = minMove(mv, depthLimit, 1, board, color);
-                if (bestMove == null || evaluateBoard(move, board, color) > evaluateBoard(bestMove, board, color))
-                {
-                    goodMove = move;
-                    bestMove = mv;
-                }
-            }
-            return bestMove;
         }
 
         public ChessMove minMove(ChessMove m, int depthLimit, int currDepth, int alpha, int beta, ChessBoard board, ChessColor color)
@@ -955,7 +940,6 @@ namespace StudentAI
             ChessMove move = null;
             if (currDepth == depthLimit)
             {
-                System.Console.WriteLine(bestMove);
                 return m;
             }
             List<ChessMove> moves = GetAllMoves(board, color);
@@ -995,13 +979,11 @@ namespace StudentAI
 
         public ChessMove maxMove(ChessMove m, int depthLimit, int currDepth, int alpha, int beta, ChessBoard board, ChessColor color)
         {
-            System.Console.WriteLine("maxMove");
             ChessMove bestMove = null;
             ChessMove goodMove = null;
             ChessMove move = null;
             if (currDepth == depthLimit)
             {
-                System.Console.WriteLine(m);
                 return m;
             }
             else
@@ -1055,7 +1037,7 @@ namespace StudentAI
 
             List<ChessMove> moves = GetAllMoves(board, myColor);
             List<ChessMove> validMoves = setFlags(moves, board, myColor);
-            ChessMove chosenMove = minimax(validMoves[0], 3, board, myColor);
+            ChessMove chosenMove = minimax(validMoves[0], 4, board, myColor);
             prevMoves.Add(chosenMove);
 
             return chosenMove;
