@@ -798,7 +798,7 @@ namespace StudentAI
                         {
                             move.Flag = ChessFlag.Check;
                         }
-                        else if (InCheck(move, board, oppColor, true) == 2) //set flag if I put opp in checkmate
+                        else if (InCheck(move, board, oppColor, false) == 2) //set flag if I put opp in checkmate
                         {
                             move.Flag = ChessFlag.Checkmate;
                         }
@@ -819,7 +819,7 @@ namespace StudentAI
             
             foreach (ChessMove tempMove in GetAllMoves(tempBoard, oppColor))  //what moves can opposition make?
             {
-                if (tempBoard[tempMove.To] == myKing) //but we don't want to move right next to the king. How to fix?
+                if (tempBoard[tempMove.To] == myKing)
                 {
                     if (ckMate)
                     {
@@ -838,7 +838,7 @@ namespace StudentAI
             return 0;
         }
 
-        public ChessMove Logic(List<ChessMove> validMoves, ChessBoard board, ChessColor myColor)
+        public void setMoveValues(List<ChessMove> validMoves, ChessBoard board, ChessColor myColor)
         {
             ChessColor oppColor = (myColor == ChessColor.White ? ChessColor.Black : ChessColor.White);
             foreach (ChessMove m in validMoves) //set values for each move
@@ -884,8 +884,13 @@ namespace StudentAI
                     case ChessPiece.Empty:
                         m.ValueOfMove = 0;
                         break;
-                }
+                }   
             }
+        }
+        public ChessMove chooseMove(List<ChessMove> validMoves, ChessBoard board, ChessColor myColor)
+        {
+            ChessColor oppColor = (myColor == ChessColor.White ? ChessColor.Black : ChessColor.White);
+            ChessPiece oppKing = (myColor == ChessColor.White ? ChessPiece.BlackKing : ChessPiece.WhiteKing);
             List<ChessMove> maxMoves = new List<ChessMove>();
             int max = 0;
             foreach (ChessMove m in validMoves) //find the max score of moves
@@ -900,7 +905,8 @@ namespace StudentAI
                     max = 1000;
                     m.ValueOfMove = 1000;
                 }
-                else if (m.ValueOfMove > max)
+                else
+                if (m.ValueOfMove > max)
                 {
                     max = m.ValueOfMove;
                 }
@@ -930,7 +936,8 @@ namespace StudentAI
         {
             List<ChessMove> allMoves = GetAllMoves(board, myColor);
             List<ChessMove> validMoves = setFlags(allMoves, board, myColor);
-            ChessMove chosenMove = Logic(validMoves, board, myColor);
+            setMoveValues(validMoves, board, myColor);
+            ChessMove chosenMove = chooseMove(validMoves, board, myColor);
             return chosenMove;
         }
 
