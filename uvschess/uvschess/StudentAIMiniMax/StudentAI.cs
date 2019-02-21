@@ -809,7 +809,6 @@ namespace StudentAI
             return validMoves;
         }
 
-
         public int InCheck(ChessMove move, ChessBoard board, ChessColor testColor, bool ckMate)
         {
             ChessBoard tempBoard = board.Clone();
@@ -837,67 +836,6 @@ namespace StudentAI
             }
             return 0;
         }
-
-        //public void AddAllPossibleMovesToDecisionTree(List<ChessMove> validMoves, ChessMove myChosenMove, ChessBoard currentBoard, ChessColor myColor)
-        //{
-        //    Random random = new Random();
-
-        //    // Create the decision tree object
-        //    DecisionTree dt = new DecisionTree(currentBoard);
-
-        //    // Tell UvsChess about the decision tree object
-        //    SetDecisionTree(dt);
-        //    dt.BestChildMove = myChosenMove;
-
-        //    // Go through all of my moves, add them to the decision tree
-        //    // Then go through each of these moves and generate all of my
-        //    // opponents moves and add those to the decision tree as well.
-        //    for (int i = 0; i < validMoves.Count; i++)
-        //    {
-        //        ChessMove myCurMove = validMoves[i];
-        //        ChessBoard boardAfterMyCurMove = currentBoard.Clone();
-        //        boardAfterMyCurMove.MakeMove(myCurMove);
-
-        //        // Add the new move and board to the decision tree
-        //        dt.AddChild(boardAfterMyCurMove, myCurMove);
-
-        //        // Descend the decision tree to the last child added so we can 
-        //        // add all of the opponents response moves to our move.
-        //        dt = dt.LastChild;
-
-        //        // Get all of the opponents response moves to my move
-        //        ChessColor oppColor = (myColor == ChessColor.White ? ChessColor.Black : ChessColor.White);
-        //        List<ChessMove> posOppMoves = GetAllMoves(boardAfterMyCurMove, oppColor);
-        //        List<ChessMove> allOppMoves = setFlags(posOppMoves, boardAfterMyCurMove, oppColor);
-
-        //        // Go through all of my opponent moves and add them to the decision tree
-        //        foreach (ChessMove oppCurMove in allOppMoves)
-        //        {
-        //            ChessBoard boardAfterOppCurMove = boardAfterMyCurMove.Clone();
-        //            boardAfterOppCurMove.MakeMove(oppCurMove);
-        //            dt.AddChild(boardAfterOppCurMove, oppCurMove);
-
-        //            // Setting all of the opponents eventual move values to 0 (see below).
-        //            dt.LastChild.EventualMoveValue = evaluateBoard(boardAfterOppCurMove, oppColor).ToString();
-        //        }
-
-        //        if (allOppMoves.Count > 0)
-        //        {
-        //            // Tell the decision tree which move we think our opponent will choose.
-        //            int chosenOppMoveNumber = random.Next(allOppMoves.Count);
-        //            dt.BestChildMove = allOppMoves[chosenOppMoveNumber];
-        //        }
-
-        //        // Tell the decision tree what this moves eventual value will be.
-        //        // Since this AI can't evaulate anything, I'm just going to set this
-        //        // value to 0.
-        //        dt.EventualMoveValue = evaluateBoard(currentBoard, myColor).ToString();
-
-        //        // All of the opponents response moves have been added to this childs move, 
-        //        // so return to the parent so we can do the loop again for our next move.
-        //        dt = dt.Parent;
-        //    }
-        //}
 
         public double evaluateBoard(ChessMove m, ChessBoard board, ChessColor myColor)
         {
@@ -961,7 +899,6 @@ namespace StudentAI
             return sum;
         }
 
-   
         public ChessMove minimax(ChessMove m, int depthLimit, ChessBoard board, ChessColor color)
         {
             return maxMove(m, depthLimit, 0, board, color);
@@ -989,8 +926,7 @@ namespace StudentAI
             }
             return bestMove;
         }
-
-
+        
         public ChessMove maxMove(ChessMove m, int depthLimit, int currDepth, ChessBoard board, ChessColor color)
         {
             ChessMove bestMove = null;
