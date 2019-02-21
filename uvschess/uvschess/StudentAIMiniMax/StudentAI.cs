@@ -901,6 +901,10 @@ namespace StudentAI
 
         public double evaluateBoard(ChessMove m, ChessBoard board, ChessColor myColor)
         {
+            if(m == null)
+            {
+                return 0;
+            }
             ChessColor oppColor = (myColor == ChessColor.White ? ChessColor.Black : ChessColor.White);
             int mult = (myColor == ChessColor.White ? 1 : -1); //sets negative or positive for values
             ChessBoard newBoard = board.Clone();
@@ -1023,7 +1027,9 @@ namespace StudentAI
         /// <returns> Returns the best chess move the player has for the given chess board</returns>
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
         {
-            ChessMove chosenMove = minimax(null, 3, board, myColor);
+            List<ChessMove> moves = GetAllMoves(board, myColor);
+            List<ChessMove> validMoves = setFlags(moves, board, myColor);
+            ChessMove chosenMove = minimax(validMoves[0], 3, board, myColor);
             return chosenMove;
         }
 
