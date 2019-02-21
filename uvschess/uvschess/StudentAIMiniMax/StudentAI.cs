@@ -957,17 +957,16 @@ namespace StudentAI
         }
 
    
-        public ChessMove minimax(int depthLimit, ChessBoard board, ChessColor color)
+        public ChessMove minimax(int depthLimit, ChessBoard board, ChessColor color, HashSet<ChessMove> prevMoves)
         {
-            System.Console.WriteLine("minimax");
             ChessMove bestMove = null;
             ChessMove goodMove = null;
             ChessMove move = null;
             List<ChessMove> moves = GetAllMoves(board, color);
             foreach (ChessMove mv in setFlags(moves, board, color))
             {
-                move = minMove(mv, depthLimit, 1, board, color);
-                if (bestMove == null || evaluateBoard(move, board, color) > evaluateBoard(bestMove, board, color))
+                move = minMove(mv, depthLimit, 1, board, color, prevMoves);
+                if ((bestMove == null || evaluateBoard(move, board, color) > evaluateBoard(bestMove, board, color)) && !prevMoves.Contains(mv))
                 {
                     goodMove = move;
                     bestMove = mv;
@@ -976,9 +975,8 @@ namespace StudentAI
             return bestMove;
         }
 
-        public ChessMove minMove(ChessMove m, int depthLimit, int currDepth, ChessBoard board, ChessColor color)
+        public ChessMove minMove(ChessMove m, int depthLimit, int currDepth, ChessBoard board, ChessColor color, HashSet<ChessMove> prevMoves)
         {
-            System.Console.WriteLine("minMove");
             ChessMove bestMove = null;
             ChessMove goodMove = null;
             ChessMove move = null;
@@ -990,9 +988,10 @@ namespace StudentAI
             List<ChessMove> moves = GetAllMoves(board, color);
             foreach (ChessMove mv in setFlags(moves, board, color))
             {
-                move = maxMove(mv, depthLimit, currDepth + 1, board, color);
-                if (bestMove == null || evaluateBoard(move, board, color)
-                < evaluateBoard(bestMove, board, color))
+
+                move = maxMove(mv, depthLimit, currDepth + 1, board, color, prevMoves);
+                if ((bestMove == null || evaluateBoard(move, board, color)
+                < evaluateBoard(bestMove, board, color)) && !prevMoves.Contains(mv) && !prevMoves.Contains(move))
                 {
                     goodMove = move;
                     bestMove = mv;
@@ -1002,9 +1001,8 @@ namespace StudentAI
         }
 
 
-        public ChessMove maxMove(ChessMove m, int depthLimit, int currDepth, ChessBoard board, ChessColor color)
+        public ChessMove maxMove(ChessMove m, int depthLimit, int currDepth, ChessBoard board, ChessColor color, HashSet<ChessMove> prevMoves)
         {
-            System.Console.WriteLine("maxMove");
             ChessMove bestMove = null;
             ChessMove goodMove = null;
             ChessMove move = null;
@@ -1018,9 +1016,10 @@ namespace StudentAI
                 List<ChessMove> moves = GetAllMoves(board, color);
                 foreach (ChessMove mv in setFlags(moves, board, color))
                 {
-                    move = minMove(mv, depthLimit, currDepth + 1, board, color);
-                    if (bestMove == null || evaluateBoard(move, board, color)
-                    > evaluateBoard(bestMove, board, color))
+
+                    move = minMove(mv, depthLimit, currDepth + 1, board, color, prevMoves);
+                    if ((bestMove == null || evaluateBoard(move, board, color)
+                    > evaluateBoard(bestMove, board, color)) && !prevMoves.Contains(mv) && !prevMoves.Contains(move))
                     {
                         goodMove = move;
                         bestMove = mv;
@@ -1040,10 +1039,13 @@ namespace StudentAI
         /// <returns> Returns the best chess move the player has for the given chess board</returns>
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
         {
-            ChessMove chosenMove = minimax(3, board, myColor);
+            ChessMove chosenMove = minimax(3, board, myColor, prevMoves);
+            prevMoves.Add(chosenMove);
+            System.Console.WriteLine(string.Join(", ", prevMoves));
             return chosenMove;
         }
 
+        public static HashSet<ChessMove> prevMoves = new HashSet<ChessMove> { };
         /// <summary>
         /// Validates a move. The framework uses this to validate the opponents move.
         /// </summary>
