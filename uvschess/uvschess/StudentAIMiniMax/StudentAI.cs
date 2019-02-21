@@ -854,7 +854,7 @@ namespace StudentAI
             int whiteCheck = InCheck(m, board, ChessColor.Black, false);
             if (whiteCheck == 1)
             {
-                sum += 7 * mult;
+                sum += 100 * mult;
             }
             if (whiteCheck == 2)
             {
@@ -862,7 +862,7 @@ namespace StudentAI
             }
             if (blackCheck == 1)
             {
-                sum += -7 * mult;
+                sum += -100 * mult;
             }
             if (blackCheck == 2)
             {
@@ -922,7 +922,7 @@ namespace StudentAI
 
         public ChessMove minimax(ChessMove m, int depthLimit, ChessBoard board, ChessColor color)
         {
-            ChessMove move = maxMove(m, depthLimit, 0, -999999, 999999, board, color);
+            ChessMove move = minMove(m, depthLimit, 0, -999999, 999999, board, color);
             if (move == null)
             {
                 return m;
@@ -943,6 +943,15 @@ namespace StudentAI
                 return m;
             }
             List<ChessMove> moves = GetAllMoves(board, color);
+            for (int i = 0; i < moves.Count; i++)
+            {
+                ChessMove capture = moves[i];
+                if (evaluateBoard(capture, board, color) > evaluateBoard(null, board, color))
+                {
+                    moves.RemoveAt(i);
+                    moves.Insert(0, capture);
+                }
+            }
             foreach (ChessMove mv in setFlags(moves, board, color))
             {
                 int moveVal = evaluateBoard(mv, board, color);
@@ -966,7 +975,7 @@ namespace StudentAI
                 }
                 move = maxMove(mv, depthLimit, currDepth + 1, alpha, beta, board, color);
                
-                if (bestMove == null || evaluateBoard(move, board, color == ChessColor.White ? ChessColor.Black : ChessColor.White)
+                if (bestMove == null || evaluateBoard(move, board, color)
                 < bestVal)
                 {
                     goodMove = move;
@@ -989,9 +998,18 @@ namespace StudentAI
             else
             {
                 List<ChessMove> moves = GetAllMoves(board, color);
+                for (int i = 0; i < moves.Count; i++)
+                {
+                    ChessMove capture = moves[i];
+                    if (evaluateBoard(capture, board, color) > evaluateBoard(null, board, color))
+                    {
+                        moves.RemoveAt(i);
+                        moves.Insert(0, capture);
+                    }
+                }
                 foreach (ChessMove mv in setFlags(moves, board, color))
                 {
-                    int moveVal = evaluateBoard(mv, board, color == ChessColor.White ? ChessColor.Black : ChessColor.White);
+                    int moveVal = evaluateBoard(mv, board, color);
                     int bestVal;
                     if (bestMove == null)
                     {
@@ -1037,7 +1055,7 @@ namespace StudentAI
 
             List<ChessMove> moves = GetAllMoves(board, myColor);
             List<ChessMove> validMoves = setFlags(moves, board, myColor);
-            ChessMove chosenMove = minimax(validMoves[0], 4, board, myColor);
+            ChessMove chosenMove = minimax(validMoves[0], 3, board, myColor);
             prevMoves.Add(chosenMove);
 
             return chosenMove;
