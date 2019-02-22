@@ -150,6 +150,7 @@ namespace StudentAI
                 new List<int>() { 0, 0, 0, 0, 0, 0, 0, 0 }
             },
         };
+        private static readonly Random random = new Random();
 
         public List<ChessMove> GetAllMoves(ChessBoard board, ChessColor color)
         {
@@ -947,7 +948,7 @@ namespace StudentAI
             tempBoard.MakeMove(move);
             ChessPiece myKing = (testColor == ChessColor.White ? ChessPiece.WhiteKing : ChessPiece.BlackKing);
             ChessColor oppColor = (testColor == ChessColor.White ? ChessColor.Black : ChessColor.White);
-            
+
             foreach (ChessMove tempMove in GetAllMoves(tempBoard, oppColor))  //what moves can opposition make?
             {
                 if (tempBoard[tempMove.To] == myKing) //but we don't want to move right next to the king. How to fix?
@@ -1005,34 +1006,34 @@ namespace StudentAI
                     switch (newBoard[i,j])
                     {
                         case ChessPiece.WhitePawn:
-                            sum += 1 * mult;
+                            sum += 1 * mult * positionVals[ChessPiece.WhitePawn][i][j];
                             break;
                         case ChessPiece.WhiteRook:
-                            sum += 5 * mult;
+                            sum += 5 * mult * positionVals[ChessPiece.WhiteRook][i][j];
                             break;
                         case ChessPiece.WhiteKnight:
-                            sum += 3 * mult;
+                            sum += 3 * mult * positionVals[ChessPiece.WhiteKnight][i][j];
                             break;
                         case ChessPiece.WhiteBishop:
-                            sum += 3 * mult;
+                            sum += 3 * mult * positionVals[ChessPiece.WhiteBishop][i][j];
                             break;
                         case ChessPiece.WhiteQueen:
-                            sum += 9 * mult;
+                            sum += 9 * mult * positionVals[ChessPiece.WhiteQueen][i][j];
                             break;
                         case ChessPiece.WhiteKing:
-                            sum += 4 * mult;
+                            sum += 4 * mult * positionVals[ChessPiece.WhiteKing][i][j];
                             break;
                         case ChessPiece.BlackPawn:
-                            sum += -1 * mult;
+                            sum += -1 * mult * positionVals[ChessPiece.BlackPawn][i][j];
                             break;
                         case ChessPiece.BlackRook:
-                            sum += -5 * mult;
+                            sum += -5 * mult * positionVals[ChessPiece.BlackRook][i][j];
                             break;
                         case ChessPiece.BlackKnight:
-                            sum += -3 * mult;
+                            sum += -3 * mult * positionVals[ChessPiece.BlackKnight][i][j];
                             break;
                         case ChessPiece.BlackBishop:
-                            sum += -3 * mult;
+                            sum += -3 * mult * positionVals[ChessPiece.BlackBishop][i][j];
                             break;
                         case ChessPiece.BlackQueen:
                             sum += -9 * mult * positionVals[ChessPiece.BlackQueen][i][j];
@@ -1049,12 +1050,17 @@ namespace StudentAI
             return sum;
         }
         
-        public ChessMove minimax(ChessMove m, int depthLimit, ChessBoard board, ChessColor color)
+        public ChessMove minimaxAB(List<ChessMove> moves, int depthLimit, ChessBoard board, ChessColor color)
         {
-            ChessMove move = maxMove(m, depthLimit, 0, -999999, 999999, board, color);
+            ChessMove move = null;
+            ChessMove begin = moves[random.Next(moves.Count)];
+            for (int dl = 1; dl <= depthLimit; dl++)
+            {
+                move = maxMoveAB(begin, dl, 0, -999999, 999999, board, color);
+            }
             if (move == null)
             {
-                return m;
+                return begin;
             }
             else
             {
@@ -1062,65 +1068,78 @@ namespace StudentAI
             }
         }
 
-        public ChessMove minMove(ChessMove m, int depthLimit, int currDepth, int alpha, int beta, ChessBoard board, ChessColor color)
+        public ChessMove minMoveAB(ChessMove m, int depthLimit, int currDepth, int alpha, int beta, ChessBoard board, ChessColor color)
         {
             ChessMove bestMove = null;
-            ChessMove goodMove = null;
+            //ChessMove goodMove = null;
             ChessMove move = null;
-            if (currDepth == depthLimit)
+            TimeSpan sofar = DateTime.Now - start;
+            if (currDepth >= depthLimit)
             {
                 return m;
             }
-            List<ChessMove> moves = GetAllMoves(board, color);
-            foreach (ChessMove mv in setFlags(moves, board, color))
-            {
-                int moveVal = evaluateBoard(mv, board, color);
-                int bestVal;
-                if (bestMove == null)
-                {
-                    bestVal = 999999;
-                }
-                else
-                {
-                    bestVal = evaluateBoard(bestMove, board, color);
-                }
-                beta = Math.Min(beta, bestVal);
-                if (beta <= alpha)
-                {
-                    continue;
-                }
-                if (prevMoves.Contains(mv))
-                {
-                    continue;
-                }
-                move = maxMove(mv, depthLimit, currDepth + 1, alpha, beta, board, color);
-               
-                if (bestMove == null || evaluateBoard(move, board, color == ChessColor.White ? ChessColor.Black : ChessColor.White)
-                < bestVal)
-                {
-                    goodMove = move;
-                    bestMove = mv;
-                }
-                
-            }
-            return bestMove;
-        }
-
-        public ChessMove maxMove(ChessMove m, int depthLimit, int currDepth, int alpha, int beta, ChessBoard board, ChessColor color)
-        {
-            ChessMove bestMove = null;
-            ChessMove goodMove = null;
-            ChessMove move = null;
-            if (currDepth == depthLimit)
-            {
-                return m;
-            }
+            else if (DateTime.Now - start > timeLimit)
+            { return bestMove; }
             else
             {
                 List<ChessMove> moves = GetAllMoves(board, color);
-                foreach (ChessMove mv in setFlags(moves, board, color))
+                List<ChessMove> validMoves = setFlags(moves, board, color);
+                for (int i = random.Next(validMoves.Count); i < validMoves.Count; i++)
                 {
-                    int moveVal = evaluateBoard(mv, board, color == ChessColor.White ? ChessColor.Black : ChessColor.White);
+                    validMoves[i].ValueOfMove = evaluateBoard(validMoves[i], board, color == ChessColor.White ? ChessColor.Black : ChessColor.White);
+                    int bestVal;
+                    if (bestMove == null)
+                    {
+                        bestVal = 999999;
+                    }
+                    else
+                    {
+                        bestVal = bestMove.ValueOfMove;
+                    }
+                    beta = Math.Min(beta, bestVal);
+                    if (beta <= alpha)
+                    {
+                        continue;
+                    }
+                    if (prevMoves.Contains(validMoves[i]))
+                    {
+                        continue;
+                    }
+                    move = maxMoveAB(validMoves[i], depthLimit, currDepth + 1, alpha, beta, board, color);
+
+                    if (bestMove == null || evaluateBoard(move, board, color == ChessColor.White ? ChessColor.Black : ChessColor.White)
+                    < bestVal)
+                    {
+                        //goodMove = move;
+                        bestMove = validMoves[i];
+                    }
+                }
+                if (bestMove == null)
+                { return m; }
+                else
+                { return bestMove; }
+            }
+        }
+
+        public ChessMove maxMoveAB(ChessMove m, int depthLimit, int currDepth, int alpha, int beta, ChessBoard board, ChessColor color)
+        {
+            ChessMove bestMove = null;
+            //ChessMove goodMove = null;
+            ChessMove move = null;
+            TimeSpan sofar = DateTime.Now - start;
+            if (currDepth >= depthLimit)
+            {
+                return m;
+            }
+            else if (DateTime.Now - start > timeLimit)
+            { return bestMove; }
+            else
+            {
+                List<ChessMove> moves = GetAllMoves(board, color);
+                List<ChessMove> validMoves = setFlags(moves, board, color);
+                for (int i = random.Next(validMoves.Count); i<validMoves.Count; i++)
+                {
+                    validMoves[i].ValueOfMove = evaluateBoard(validMoves[i], board, color == ChessColor.White ? ChessColor.Black : ChessColor.White);
                     int bestVal;
                     if (bestMove == null)
                     {
@@ -1128,32 +1147,34 @@ namespace StudentAI
                     }
                     else
                     {
-                        bestVal = evaluateBoard(bestMove, board, color);
+                        bestVal = bestMove.ValueOfMove;
                     }
                     alpha = Math.Max(alpha, bestVal);
                     if (beta <= alpha)
                     {
                         continue;
                     }
-                    if (prevMoves.Contains(mv))
+                    if (prevMoves.Contains(validMoves[i]))
                     {
                         continue;
                     }
-                    move = minMove(mv, depthLimit, currDepth + 1, alpha, beta, board, color);
+                    move = minMoveAB(validMoves[i], depthLimit, currDepth + 1, alpha, beta, board, color);
                     
-                    if (bestMove == null || evaluateBoard(move,board,color)
+                    if (bestMove == null || move.ValueOfMove
                     > bestVal)
                     {
-                        goodMove = move;
-                        bestMove = mv;
-                    }
-                   
+                        bestMove = validMoves[i];
+                    } 
                 }
-                return bestMove;
+                if (bestMove == null)
+                { return m; }
+                else
+                { return bestMove; }
             }
         }
-        
-       
+
+        public static DateTime start;
+        public static TimeSpan timeLimit = TimeSpan.FromSeconds(40);
         /// <summary>
         /// Evaluates the chess board and decided which move to make. This is the main method of the AI.
         /// The framework will call this method when it's your turn.
@@ -1163,9 +1184,10 @@ namespace StudentAI
         /// <returns> Returns the best chess move the player has for the given chess board</returns>
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
         {
+            start = DateTime.Now;
             List<ChessMove> moves = GetAllMoves(board, myColor);
             List<ChessMove> validMoves = setFlags(moves, board, myColor);
-            ChessMove chosenMove = minimax(validMoves[0], 4, board, myColor);
+            ChessMove chosenMove = minimaxAB(validMoves, 4, board, myColor);
             prevMoves.Add(chosenMove);
 
             return chosenMove;
