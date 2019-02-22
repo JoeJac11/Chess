@@ -33,8 +33,8 @@ namespace UvsChess.Framework
     internal class ChessState
     {
         #region Members
-        //public const string FenStartState = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-        public const string FenStartState = "3k4/5QR1/8/8/8/8/8/8 w KQkq - 0 2";
+        public const string FenStartState = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+        //public const string FenStartState = "3k4/5QR1/8/8/8/8/8/8 w KQkq - 0 2";
         private ChessBoard _currentBoard;
         private ChessBoard _previousBoard;
         private ChessMove _previousMove;
