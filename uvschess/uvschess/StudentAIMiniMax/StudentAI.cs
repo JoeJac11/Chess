@@ -868,6 +868,10 @@ namespace StudentAI
             {
                 sum += -1000 * mult;
             }
+            if (board[m.From] == ChessPiece.BlackKing || board[m.From] == ChessPiece.WhiteKing)
+            {
+                sum -= 5;
+            }
             for (int i=0; i<= 7; i++)
             {
                 for (int j=0; j<=7; j++)
@@ -922,7 +926,7 @@ namespace StudentAI
 
         public ChessMove minimax(ChessMove m, int depthLimit, ChessBoard board, ChessColor color)
         {
-            ChessMove move = minMove(m, depthLimit, 0, -999999, 999999, board, color);
+            ChessMove move = maxMove(m, depthLimit, 0, -999999, 999999, board, color);
             if (move == null)
             {
                 return m;
@@ -1052,7 +1056,14 @@ namespace StudentAI
         /// <returns> Returns the best chess move the player has for the given chess board</returns>
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
         {
-
+            if (board[1,5] == ChessPiece.BlackPawn && myColor == ChessColor.Black)
+            {
+                return new ChessMove(new ChessLocation(4, 1), new ChessLocation(4, 2));
+            }
+            if (board[4, 6] == ChessPiece.WhitePawn && myColor == ChessColor.White)
+            {
+                return new ChessMove(new ChessLocation(4, 6), new ChessLocation(4, 5));
+            }
             List<ChessMove> moves = GetAllMoves(board, myColor);
             List<ChessMove> validMoves = setFlags(moves, board, myColor);
             ChessMove chosenMove = minimax(validMoves[0], 3, board, myColor);
