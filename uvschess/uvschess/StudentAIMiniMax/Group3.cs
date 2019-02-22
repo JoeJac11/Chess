@@ -15,11 +15,142 @@ namespace StudentAI
         public string Name
         {
 #if DEBUG
-            get { return "JEK (Debug) Minimax"; }
+            get { return "Group 3 JEK Minimax"; }
 #else
             get { return "JEK"; }
 #endif
         }
+
+        static Dictionary<ChessPiece, List<List<int>>> positionVals = new Dictionary<ChessPiece, List<List<int>>>()
+        {
+            [ChessPiece.BlackKing] = new List<List<int>>()
+                { new List<int>() { 4, 6, 2, 0, 0, 2, 6, 4 },
+                new List<int>() { 4, 4, 0, 0, 0, 0, 4, 4 },
+                new List<int>() {-2, -4, -4, -4, -4, -4, -4, -2 },
+                new List<int>() {-4, -6, -6, -8, -8, -6, -6, -4 },
+                new List<int>() {-6, -8, -8, -10, -10, -8, -8, -6 },
+                new List<int>() {-6, -8, -8, -10, -10, -8, -8, -6 },
+                new List<int>() {-6, -8, -8, -10, -10, -8, -8, -6 },
+                new List<int>() {-6, -8, -8, -10, -10, -8, -8, -6 }
+                },
+            [ChessPiece.BlackQueen] = new List<List<int>>()
+            {
+                new List<int>() { -4, -2, -2, -1, -1, -2, -2, -4 },
+                new List<int>() { -2, 0, 0, 0, 0, 1, 0, -2 },
+                new List<int>() { -2, 0, 1, 1, 1, 1, 1, -2 },
+                new List<int>() { -1, 0, 1, 1, 1, 1, 0, 0 },
+                new List<int>() { -1, 0, 1, 1, 1, 1, 0, -1 },
+                new List<int>() { -2, 0, 1, 1, 1, 1, 0, -2},
+                new List<int>() { -2, 0, 0, 0, 0, 0, 0, -2 },
+                new List<int>() { -4, -2, -2, -1, -1, -2, -2, -4 }
+            },
+            [ChessPiece.BlackRook] = new List<List<int>>()
+                { new List<int>() { 0, 0, 0, 1, 1, 0, 0, 0 },
+                new List<int>() {-1, 0, 0, 0, 0, 0, 0, -1 },
+                new List<int>() {-1, 0, 0, 0, 0, 0, 0, -1 },
+                new List<int>() {-1, 0, 0, 0, 0, 0, 0, -1 },
+                new List<int>() {-1, 0, 0, 0, 0, 0, 0, -1 },
+                new List<int>() {-1, 0, 0, 0, 0, 0, 0, -1 },
+                new List<int>() {1, 2, 2, 2, 2, 2, 2, 1 },
+                new List<int>() {0, 0, 0, 0, 0, 0, 0, 0}
+                },
+            [ChessPiece.BlackBishop] = new List<List<int>>()
+            {
+                new List<int>() { -4, -2, -2, -2, -2, -2, -2, -4 },
+                new List<int>() { -2, 1, 0, 0, 0, 0, 1, -2 },
+                new List<int>() {-2, 2, 2, 2, 2, 2, 2, -2},
+                new List<int>() { -2, 0, 2, 2, 2, 2, 0, -2 },
+                new List<int>() { -2, 1, 1, 2, 2, 1, 1, -2 },
+                new List<int>() { -2, 0, 1, 2, 2, 1, 0, -2 },
+                new List<int>() { -2, 0, 0, 0, 0, 0, 0, -2 },
+                new List<int>() { -4, -2, -2, -2, -2, -2, -2, -4 }
+            },
+            [ChessPiece.BlackKnight] = new List<List<int>>()
+                { new List<int>() {-10, -8, -6, -6, -6, -6, -8, -10 },
+                new List<int>() { -8, -4, 0, 1, 1, 0, -4, -8},
+                new List<int>() {-6, 1, 2, 3, 3, 2, 1, -6},
+                new List<int>() {-6, 0, 3, 4, 4, 3, 0, -6},
+                new List<int>() {-6, 1, 3, 4, 4, 3, 1, -6},
+                new List<int>() {-6, 0, 2, 3, 3, 2, 0, -6},
+                new List<int>() {-8, -4, 0, 0, 0, 0, -4, -8},
+                new List<int>() {-1, -8, -6, -6, -6, -6, -8, -10}
+                },
+            [ChessPiece.BlackPawn] = new List<List<int>>()
+            {
+                new List<int>() { 0, 0, 0, 0, 0, 0, 0, 0 },
+                new List<int>() { 1, 2, 2, -4, -4, 2, 2, 1 },
+                new List<int>() { 1, -1, -2, 0, 0, -2, -1, 1 },
+                new List<int>() { 0, 0, 0, 4, 4, 0, 0, 0 },
+                new List<int>() { 1, 1, 2, 5, 5, 2, 1, 1 },
+                new List<int>() {2, 2, 4, 6, 6, 4, 2, 2 },
+                new List<int>() { 10, 10, 10, 10, 10, 10, 10, 10 },
+                new List<int>() { 0, 0, 0, 0, 0, 0, 0, 0 }
+            },
+            [ChessPiece.WhiteKing] = new List<List<int>>()
+                { new List<int>() { -6, -8, -8, -10, -10, -8, -8, -6 },
+                new List<int>() {-6, -8, -8, -10, -10, -8, -8, -6 },
+                new List<int>() {-6, -8, -8, -10, -10, -8, -8, -6 },
+                new List<int>() {-6, -8, -8, -10, -10, -8, -8, -6},
+                new List<int>() { -4, -6, -6, -8, -8, -6, -6, -4},
+                new List<int>() { -2, -4, -4, -4, -4, -4, -4, -2 },
+                new List<int>() {4, 4, 0, 0, 0, 0, 4, 4 },
+                new List<int>() {4, 6, 2, 0, 0, 2, 6, 4 },
+                },
+            [ChessPiece.WhiteQueen] = new List<List<int>>()
+            {
+                new List<int>() { -4, -2, -2, -1, -1, -2, -2, -4 },
+                new List<int>() { -2, 0, 0, 0, 0, 0, 0, -2 },
+                new List<int>() { -2, 0, 1, 1, 1, 1, 0, -2 },
+                new List<int>() { -1, 0, 1, 1, 1, 1, 0, -1},
+                new List<int>() { 0, 0, 1, 1, 1, 1, 0, -1},
+                new List<int>() { -2, 1, 1, 1, 1, 1, 0, -2},
+                new List<int>() { -2, 0, 1, 0, 0, 0, 0, -2 },
+                new List<int>() { -4, -2, -2, -1, -1, -2, -2, -4 }
+            },
+            [ChessPiece.WhiteRook] = new List<List<int>>()
+                { new List<int>() { 0, 0, 0, 0, 0, 0, 0, 0},
+                new List<int>() { 1, 2, 2, 2, 2, 2, 2, 1 },
+                new List<int>() {-1, 0, 0, 0, 0, 0, 0, -1 },
+                new List<int>() {-1, 0, 0, 0, 0, 0, 0, -1 },
+                new List<int>() {-1, 0, 0, 0, 0, 0, 0, -1},
+                new List<int>() {-1, 0, 0, 0, 0, 0, 0, -1},
+                new List<int>() {-1, 0, 0, 0, 0, 0, 0, -1},
+                new List<int>() {0, 0, 0, 1, 1, 0, 0, 0}
+                },
+            [ChessPiece.WhiteBishop] = new List<List<int>>()
+            {
+                new List<int>() { -4, -2, -2, -2, -2, -2, -2, -4 },
+                new List<int>() { -2, 0, 0, 0, 0, 0, 0, -2 },
+                new List<int>() { -2, 0, 1, 2, 2, 1, 0, -2},
+                new List<int>() { -2, 1, 1, 2, 2, 1, 1, -2 },
+                new List<int>() { -2, 0, 2, 2, 2, 2, 0, -2 },
+                new List<int>() { -2, 2, 2, 2, 2, 2, 2, -2 },
+                new List<int>() { -2, 1, 0, 0, 0, 0, 1, -2 },
+                new List<int>() { -4, -2, -2, -2, -2, -2, -2, -4 }
+            },
+            [ChessPiece.WhiteKnight] = new List<List<int>>()
+                { new List<int>() { -10, -8, -6, -6, -6, -6, -8, -10 },
+                new List<int>() { -8, -4, 0, 0, 0, 0, -4, -8 },
+                new List<int>() {-6, 0, 2, 3, 3, 2, 0, -6 },
+                new List<int>() {-6, 1, 3, 4, 4, 3, 1, -6},
+                new List<int>() { -6, 0, 3, 4, 4, 3, 0, -6 },
+                new List<int>() {-6, 1, 2, 3, 3, 2, 1, -6 },
+                new List<int>() {-8, -4, 0, 1, 1, 0, -4, -8 },
+                new List<int>() {-10, -8, -6, -6, -6, -6, -8, -10}
+                },
+            [ChessPiece.WhitePawn] = new List<List<int>>()
+            {
+                new List<int>() { 0, 0, 0, 0, 0, 0, 0, 0 },
+                new List<int>() {1, 1, 1, 1, 1, 1, 1, 1 },
+                new List<int>() { 2, 2, 4, 6, 6, 4, 2, 2 },
+                new List<int>() { 1, 1, 2, 3, 3, 2, 1, 1},
+                new List<int>() { 0, 0, 0, 4, 4, 0, 0, 0 },
+                new List<int>() { 1, -1, -2, 0, 0, -2, -1, 1 },
+                new List<int>() { 1, 2, 2, -4, -4, 2, 2, 1 },
+                new List<int>() { 0, 0, 0, 0, 0, 0, 0, 0 }
+            },
+        };
+
         public List<ChessMove> GetAllMoves(ChessBoard board, ChessColor color)
         {
             List<ChessMove> allMoves = new List<ChessMove>();
@@ -406,7 +537,6 @@ namespace StudentAI
                         switch (board[i, j])
                         {
                             case ChessPiece.WhitePawn:
-
                                 //white pawn up 2
                                 if (j == 6)
                                 {
@@ -905,10 +1035,10 @@ namespace StudentAI
                             sum += -3 * mult;
                             break;
                         case ChessPiece.BlackQueen:
-                            sum += -9 * mult;
+                            sum += -9 * mult * positionVals[ChessPiece.BlackQueen][i][j];
                             break;
                         case ChessPiece.BlackKing:
-                            sum += -4 * mult;
+                            sum += -4 * mult * positionVals[ChessPiece.BlackKing][i][j];
                             break;
                         case ChessPiece.Empty:
                             sum += 0;
@@ -918,8 +1048,7 @@ namespace StudentAI
             }
             return sum;
         }
-
-
+        
         public ChessMove minimax(ChessMove m, int depthLimit, ChessBoard board, ChessColor color)
         {
             ChessMove move = maxMove(m, depthLimit, 0, -999999, 999999, board, color);
@@ -1034,7 +1163,6 @@ namespace StudentAI
         /// <returns> Returns the best chess move the player has for the given chess board</returns>
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
         {
-
             List<ChessMove> moves = GetAllMoves(board, myColor);
             List<ChessMove> validMoves = setFlags(moves, board, myColor);
             ChessMove chosenMove = minimax(validMoves[0], 4, board, myColor);
