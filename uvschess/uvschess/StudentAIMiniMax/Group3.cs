@@ -22,7 +22,7 @@ namespace StudentAI
         }
 
         static Dictionary<ChessPiece, List<List<int>>> positionVals = new Dictionary<ChessPiece, List<List<int>>>()
-        {
+        {   // the order as listed is in the shape of the board as we look at it
             [ChessPiece.BlackKing] = new List<List<int>>()
                 { new List<int>() { 4, 6, 2, 0, 0, 2, 6, 4 },
                 new List<int>() { 4, 4, 0, 0, 0, 0, 4, 4 },
@@ -942,6 +942,64 @@ namespace StudentAI
             return validMoves;
         }
 
+        public void AddAllPossibleMovesToDecisionTree(List<ChessMove> allMyMoves, ChessMove myChosenMove,
+                                                      ChessBoard currentBoard, ChessColor myColor)
+        {
+            // Create the decision tree object
+            DecisionTree dt = new DecisionTree(currentBoard);
+
+            // Tell UvsChess about the decision tree object
+            SetDecisionTree(dt);
+            dt.BestChildMove = myChosenMove;
+
+            // Go through all of my moves, add them to the decision tree
+            // Then go through each of these moves and generate all of my
+            // opponents moves and add those to the decision tree as well.
+            for (int ix = 0; ix < allMyMoves.Count; ix++)
+            {
+                ChessMove myCurMove = allMyMoves[ix];
+                ChessBoard boardAfterMyCurMove = currentBoard.Clone();
+                boardAfterMyCurMove.MakeMove(myCurMove);
+
+                // Add the new move and board to the decision tree
+                dt.AddChild(boardAfterMyCurMove, myCurMove);
+
+                // Descend the decision tree to the last child added so we can 
+                // add all of the opponents response moves to our move.
+                dt = dt.LastChild;
+
+                // Get all of the opponents response moves to my move
+                ChessColor oppColor = (myColor == ChessColor.White ? ChessColor.Black : ChessColor.White);
+                List<ChessMove> allOppMoves = GetAllMoves(boardAfterMyCurMove, oppColor);
+
+                // Go through all of my opponent moves and add them to the decision tree
+                foreach (ChessMove oppCurMove in allOppMoves)
+                {
+                    ChessBoard boardAfterOppCurMove = boardAfterMyCurMove.Clone();
+                    boardAfterOppCurMove.MakeMove(oppCurMove);
+                    dt.AddChild(boardAfterOppCurMove, oppCurMove);
+
+                    // Setting all of the opponents eventual move values to 0 (see below).
+                    dt.LastChild.EventualMoveValue = "0";
+                }
+
+                if (allOppMoves.Count > 0)
+                {
+                    // Tell the decision tree which move we think our opponent will choose.
+                    int chosenOppMoveNumber = random.Next(allOppMoves.Count);
+                    dt.BestChildMove = allOppMoves[chosenOppMoveNumber];
+                }
+
+                // Tell the decision tree what this moves eventual value will be.
+                // Since this AI can't evaulate anything, I'm just going to set this
+                // value to 0.
+                dt.EventualMoveValue = evaluateBoard(myChosenMove, boardAfterMyCurMove, myColor).ToString();
+
+                // All of the opponents response moves have been added to this childs move, 
+                // so return to the parent so we can do the loop again for our next move.
+                dt = dt.Parent;
+            }
+        }
         public int InCheck(ChessMove move, ChessBoard board, ChessColor testColor, bool ckMate)
         {
             ChessBoard tempBoard = board.Clone();
@@ -1003,43 +1061,43 @@ namespace StudentAI
             {
                 for (int j=0; j<=7; j++)
                 {
-                    switch (newBoard[i,j])
+                    switch (newBoard[i,j])//the order we access our board in is col, row, hence the [j][i] below
                     {
                         case ChessPiece.WhitePawn:
-                            sum += 1 * mult * positionVals[ChessPiece.WhitePawn][i][j];
+                            sum += 1 * mult * positionVals[ChessPiece.WhitePawn][j][i];
                             break;
                         case ChessPiece.WhiteRook:
-                            sum += 5 * mult * positionVals[ChessPiece.WhiteRook][i][j];
+                            sum += 5 * mult * positionVals[ChessPiece.WhiteRook][j][i];
                             break;
                         case ChessPiece.WhiteKnight:
-                            sum += 3 * mult * positionVals[ChessPiece.WhiteKnight][i][j];
+                            sum += 3 * mult * positionVals[ChessPiece.WhiteKnight][j][i];
                             break;
                         case ChessPiece.WhiteBishop:
-                            sum += 3 * mult * positionVals[ChessPiece.WhiteBishop][i][j];
+                            sum += 3 * mult * positionVals[ChessPiece.WhiteBishop][j][i];
                             break;
                         case ChessPiece.WhiteQueen:
-                            sum += 9 * mult * positionVals[ChessPiece.WhiteQueen][i][j];
+                            sum += 9 * mult * positionVals[ChessPiece.WhiteQueen][j][i];
                             break;
                         case ChessPiece.WhiteKing:
-                            sum += 4 * mult * positionVals[ChessPiece.WhiteKing][i][j];
+                            sum += 4 * mult * positionVals[ChessPiece.WhiteKing][j][i];
                             break;
                         case ChessPiece.BlackPawn:
-                            sum += -1 * mult * positionVals[ChessPiece.BlackPawn][i][j];
+                            sum += -1 * mult * positionVals[ChessPiece.BlackPawn][j][i];
                             break;
                         case ChessPiece.BlackRook:
-                            sum += -5 * mult * positionVals[ChessPiece.BlackRook][i][j];
+                            sum += -5 * mult * positionVals[ChessPiece.BlackRook][j][i];
                             break;
                         case ChessPiece.BlackKnight:
-                            sum += -3 * mult * positionVals[ChessPiece.BlackKnight][i][j];
+                            sum += -3 * mult * positionVals[ChessPiece.BlackKnight][j][i];
                             break;
                         case ChessPiece.BlackBishop:
-                            sum += -3 * mult * positionVals[ChessPiece.BlackBishop][i][j];
+                            sum += -3 * mult * positionVals[ChessPiece.BlackBishop][j][i];
                             break;
                         case ChessPiece.BlackQueen:
-                            sum += -9 * mult * positionVals[ChessPiece.BlackQueen][i][j];
+                            sum += -9 * mult * positionVals[ChessPiece.BlackQueen][j][i];
                             break;
                         case ChessPiece.BlackKing:
-                            sum += -4 * mult * positionVals[ChessPiece.BlackKing][i][j];
+                            sum += -4 * mult * positionVals[ChessPiece.BlackKing][j][i];
                             break;
                         case ChessPiece.Empty:
                             sum += 0;
@@ -1074,17 +1132,23 @@ namespace StudentAI
             //ChessMove goodMove = null;
             ChessMove move = null;
             TimeSpan sofar = DateTime.Now - start;
+            Console.WriteLine(sofar);
             if (currDepth >= depthLimit)
             {
                 return m;
             }
             else if (DateTime.Now - start > timeLimit)
-            { return bestMove; }
+            {
+                return bestMove;
+            }
             else
             {
                 List<ChessMove> moves = GetAllMoves(board, color);
                 List<ChessMove> validMoves = setFlags(moves, board, color);
-                for (int i = random.Next(validMoves.Count); i < validMoves.Count; i++)
+                int choiceInd = random.Next(validMoves.Count);
+                ChessMove choice = validMoves[choiceInd];
+                AddAllPossibleMovesToDecisionTree(validMoves, choice, board, color);
+                for (int i = choiceInd; i < validMoves.Count; i++)
                 {
                     validMoves[i].ValueOfMove = evaluateBoard(validMoves[i], board, color == ChessColor.White ? ChessColor.Black : ChessColor.White);
                     int bestVal;
@@ -1137,7 +1201,10 @@ namespace StudentAI
             {
                 List<ChessMove> moves = GetAllMoves(board, color);
                 List<ChessMove> validMoves = setFlags(moves, board, color);
-                for (int i = random.Next(validMoves.Count); i<validMoves.Count; i++)
+                int choiceInd = random.Next(validMoves.Count);
+                ChessMove choice = validMoves[choiceInd];
+                AddAllPossibleMovesToDecisionTree(validMoves, choice, board, color);
+                for (int i = choiceInd; i<validMoves.Count; i++)
                 {
                     validMoves[i].ValueOfMove = evaluateBoard(validMoves[i], board, color == ChessColor.White ? ChessColor.Black : ChessColor.White);
                     int bestVal;
