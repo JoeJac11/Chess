@@ -1030,14 +1030,8 @@ namespace StudentAI
 
         public int evaluateBoard(ChessMove m, ChessBoard board, ChessColor myColor)
         {
-            if(m == null)
-            {
-                return 0;
-            }
             ChessColor oppColor = (myColor == ChessColor.White ? ChessColor.Black : ChessColor.White);
             int mult = (myColor == ChessColor.White ? 1 : -1); //sets negative or positive for values
-            ChessBoard newBoard = board.Clone();
-            newBoard.MakeMove(m);
             int sum = 0;
             int blackCheck = InCheck(m, board, ChessColor.White, false);
             int whiteCheck = InCheck(m, board, ChessColor.Black, false);
@@ -1057,11 +1051,12 @@ namespace StudentAI
             {
                 sum += -1000 * mult;
             }
+            board.MakeMove(m);
             for (int i=0; i<= 7; i++)
             {
                 for (int j=0; j<=7; j++)
                 {
-                    switch (newBoard[i,j])//the order we access our board in is col, row, hence the [j][i] below
+                    switch (board[i,j])//the order we access our board in is col, row, hence the [j][i] below
                     {
                         case ChessPiece.WhitePawn:
                             sum += 1 * mult + positionVals[ChessPiece.WhitePawn][j][i];
@@ -1108,83 +1103,152 @@ namespace StudentAI
             return sum;
         }
 
-        const int RETURN_TIME = 5000;
-        const int ALPHA = -99999;
-        const int BETA = 99999;
-        public ChessMove minimaxAB(List<ChessMove> moves, int depthLimit, ChessBoard board, ChessColor color)
+
+        public List<ChessMove> SortedMoves(List<ChessMove> moves, ChessBoard board, ChessColor myColor)
         {
-            ChessMove orig = new ChessMove(new ChessLocation(0, 6), new ChessLocation(0, 6));
-            ChessMove alpha = new ChessMove(null, null);
-            alpha.ValueOfMove = ALPHA;
-            ChessMove beta = new ChessMove(null, null);
-            beta.ValueOfMove = BETA;
-            ChessMove move = maxMoveAB(orig, depthLimit, 0, alpha, beta, board, color);
+            foreach (ChessMove m in moves)
+            {
+                m.ValueOfMove = evaluateBoard(m, board, myColor);
+            }
+            moves.Sort();
+            return moves;
+        }
+
+        // Static Members for MiniMax
+        static int dLimit = 20;
+        static int rTime = 5000;
+        public ChessMove MiniMax(List<ChessMove> moves, ChessBoard board, ChessColor color)
+        {
+            // Variable Declarations
+            DecisionTree dt = new DecisionTree(board);
+            double alpha = Double.NegativeInfinity;
+            double beta = Double.PositiveInfinity;
+            double v = Double.NegativeInfinity;
+            ChessColor oppColor = (color == ChessColor.White ? ChessColor.Black : ChessColor.White);
+            ChessMove move = null;
+
+            // Get the first MaxValue()
+            List<ChessMove> sMoves = SortedMoves(moves, board, color);
+            foreach (ChessMove mv in sMoves)
+            {
+                // Previous MaxValue
+                double prevMax = v;
+                ChessBoard tempBoard = board.Clone();
+
+                // Create decision tree and grab the largest value
+                tempBoard.MakeMove(mv);
+                dt.AddChild(tempBoard, mv);
+                v = Math.Max(MinValue(dt, board, mv, oppColor, alpha, beta, 1), v);
+
+                // Check if previous max is < v
+                if (prevMax < v)
+                {
+                    move = mv;
+                }
+
+                // Check to see if v >= beta for Alpha-Beta Pruning
+                if (v >= beta)
+                {
+                    break;
+                }
+
+                alpha = Math.Max(alpha, v);
+            }
+
+            // Return the best move
+            dt.BestChildMove = move;
             return move;
         }
-        
-        public ChessMove maxMoveAB(ChessMove m, int depthLimit, int currDepth, ChessMove alpha, ChessMove beta, ChessBoard board, ChessColor color)
+
+        public double MaxValue(DecisionTree dt, ChessBoard board, ChessMove mv, ChessColor color, double alpha, double beta, int depth)
         {
-            ChessMove v = null;
-            if (currDepth == depthLimit/* || timer.ElapsedMilliseconds > RETURN_TIME*/)
+            // Terminating Cases
+            if (depth == dLimit || timer.ElapsedMilliseconds > rTime) //TODO: Add timer
             {
-                alpha.ValueOfMove = evaluateBoard(alpha, board, color);
-                return alpha;
+                Debug.WriteLine(timer.ElapsedMilliseconds);
+                Debug.WriteLine(depth);
+                return evaluateBoard(mv, board, color);
             }
-            ChessBoard tempBoard = board.Clone();
-            tempBoard.MakeMove(m);
-            Debug.WriteLine(tempBoard.ToPartialFenBoard());
+
+            // Generate all moves for the current board
             ChessColor oppColor = (color == ChessColor.White ? ChessColor.Black : ChessColor.White);
-            List<ChessMove> moves = GetAllMoves(tempBoard, color);
-            foreach (ChessMove mv in setFlags(moves, tempBoard, color))
+            List<ChessMove> allMoves = GetAllMoves(board, oppColor);
+            List<ChessMove> moves = setFlags(allMoves, board, oppColor);
+            List<ChessMove> sMoves = SortedMoves(moves, board, oppColor);
+            double v = mv.ValueOfMove;
+            foreach (ChessMove nm in moves)
             {
-                Debug.WriteLine("Called min on {0}\n current depth {1}", mv.ToString(), currDepth);
-                v = minMoveAB(mv, depthLimit, currDepth + 1, alpha, beta, tempBoard, oppColor).Clone();
-                if (alpha.CompareTo(v)<= 0)
-                //if (alpha.ValueOfMove <= (v = minMoveAB(mv, depthLimit, currDepth + 1, alpha, beta, tempBoard, oppColor)).ValueOfMove)
+                // Previous MaxValue and oppcolor to pass into MinValue
+                double prevMax = v;
+                ChessBoard tempBoard = board.Clone();
+
+                // Create decision tree and grab the largest value
+                tempBoard.MakeMove(nm);
+                dt.AddChild(tempBoard, nm);
+                v = Math.Max(MinValue(dt, board, nm, oppColor, alpha, beta, depth + 1), v);
+
+                // Check if previous max is < v
+                if (prevMax < v)
                 {
-                    Debug.WriteLine("New alpha: {0}\n", v.ValueOfMove);
-                    alpha = v.Clone();
-                    Debug.WriteLine(v);
+                    dt.BestChildMove = nm;
                 }
-                if (v.ValueOfMove < beta.ValueOfMove) 
+
+                // Check to see if v >= beta for Alpha-Beta Pruning
+                if (v >= beta)
                 {
-                    beta = v.Clone();
+                    break;
                 }
+
+                alpha = Math.Max(alpha, v);
             }
             return v;
         }
 
-        public ChessMove minMoveAB(ChessMove m, int depthLimit, int currDepth, ChessMove alpha, ChessMove beta, ChessBoard board, ChessColor color)
+        public double MinValue(DecisionTree dt, ChessBoard board, ChessMove mv, ChessColor color, double alpha, double beta, int depth)
         {
-            ChessMove v = null;
-            if (currDepth == depthLimit/* || timer.ElapsedMilliseconds > RETURN_TIME*/)
+            // Terminating Cases
+            if (depth == dLimit || timer.ElapsedMilliseconds > rTime) //TODO: Add timer
             {
-                beta.ValueOfMove = evaluateBoard(beta, board, color);
-                return beta;
+                Debug.WriteLine(timer.ElapsedMilliseconds);
+                Debug.WriteLine(depth);
+                return evaluateBoard(mv, board, color);
             }
-            ChessBoard tempBoard = board.Clone();
-            tempBoard.MakeMove(m);
-            Debug.WriteLine(tempBoard.ToPartialFenBoard());
+
+            // Generate all moves for the current board
             ChessColor oppColor = (color == ChessColor.White ? ChessColor.Black : ChessColor.White);
-            List<ChessMove> moves = GetAllMoves(tempBoard, color);
-            foreach (ChessMove mv in setFlags(moves, tempBoard, color))
+            List<ChessMove> allMoves = GetAllMoves(board, oppColor);
+            List<ChessMove> moves = setFlags(allMoves, board, oppColor);
+            List<ChessMove> sMoves = SortedMoves(moves, board, oppColor);
+            double v = mv.ValueOfMove;
+            foreach (ChessMove nm in moves)
             {
-                Debug.WriteLine("Called max on {0}\n current depth {1}", mv.ToString(), currDepth);
-                v = maxMoveAB(mv, depthLimit, currDepth + 1, alpha, beta, tempBoard, oppColor).Clone();
-                if (beta.CompareTo(v)>=0)
-                //if (beta.ValueOfMove >= (v = maxMoveAB(mv, depthLimit, currDepth + 1, alpha, beta, tempBoard, oppColor)).ValueOfMove)
-                    {
-                    Debug.WriteLine("new beta: {0}\n", v.ValueOfMove);
-                    beta = v.Clone();
-                    Debug.WriteLine(v);
-                    }
-                    if (v.ValueOfMove > alpha.ValueOfMove)
-                    {
-                        alpha = v.Clone();
-                    }
+                // Previous MinValue and oppcolor to pass into MaxValue
+                double prevMin = v;
+                ChessBoard tempBoard = board.Clone();
+
+                // Create decision tree and grab the largest value
+                tempBoard.MakeMove(nm);
+                dt.AddChild(tempBoard, nm);
+                v = Math.Min(MaxValue(dt, board, nm, oppColor, alpha, beta, depth + 1), v);
+
+                // Check if previous max is < v
+                if (prevMin > v)
+                {
+                    dt.BestChildMove = nm;
                 }
+
+                // Check to see if v >= beta for Alpha-Beta Pruning
+                if (v <= beta)
+                {
+                    break;
+                }
+
+                beta = Math.Min(beta, v);
+            }
             return v;
         }
+
+
 
         /// <summary>
         /// Evaluates the chess board and decided which move to make. This is the main method of the AI.
@@ -1193,19 +1257,16 @@ namespace StudentAI
         /// <param name="board">Current chess board</param>
         /// <param name="yourColor">Your color</param>
         /// <returns> Returns the best chess move the player has for the given chess board</returns>
-        const int DEPTHLIMIT = 2;
         public static Stopwatch timer;
         public static HashSet<ChessMove> prevMoves = new HashSet<ChessMove> { };
-        public static List<TimeSpan> times = new List<TimeSpan>();
         public static HashSet<ChessBoard> transposition = new HashSet<ChessBoard>();
 
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
-        {  
+        {
             List<ChessMove> moves = GetAllMoves(board, myColor);
             List<ChessMove> validMoves = setFlags(moves, board, myColor);
-            //timer = Stopwatch.StartNew();
-            ChessMove chosenMove = minimaxAB(validMoves, DEPTHLIMIT, board, myColor);
-            //times.Add(timer.Elapsed);
+            timer = Stopwatch.StartNew();
+            ChessMove chosenMove = MiniMax(validMoves, board, myColor);
             prevMoves.Add(chosenMove);
             return chosenMove;
         }
