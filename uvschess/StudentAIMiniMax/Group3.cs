@@ -150,6 +150,7 @@ namespace StudentAI
                 new List<int>() { 0, 0, 0, 0, 0, 0, 0, 0 }
             },
         };
+
         private static readonly Random random = new Random();
 
         public List<ChessMove> GetAllMoves(ChessBoard board, ChessColor color)
@@ -267,7 +268,7 @@ namespace StudentAI
                                     allMoves.Add(move);
                                     ri--;
                                 }
-                                if (ri - 1 >= 0 && board[ri - 1, j] > ChessPiece.Empty)
+                                if (ri - 1 >= 0 && board[ri - 1, j] >= ChessPiece.Empty)
                                 {
                                     ChessMove move = new ChessMove(from, new ChessLocation(ri - 1, j));
                                     allMoves.Add(move);
@@ -297,7 +298,7 @@ namespace StudentAI
                                     bi--;
                                     bj--;
                                 }
-                                if ((bi - 1 >= 0) && (bj - 1 >= 0) && board[bi - 1, bj - 1] > ChessPiece.Empty)
+                                if ((bi - 1 >= 0) && (bj - 1 >= 0) && board[bi - 1, bj - 1] >= ChessPiece.Empty)
                                 {
                                     ChessMove move = new ChessMove(from, new ChessLocation(bi - 1, bj - 1));
                                     allMoves.Add(move);
@@ -312,7 +313,7 @@ namespace StudentAI
                                     bi--;
                                     bj++;
                                 }
-                                if ((bi - 1 >= 0) && (bj + 1 <= 7) && board[bi - 1, bj + 1] > ChessPiece.Empty)
+                                if ((bi - 1 >= 0) && (bj + 1 <= 7) && board[bi - 1, bj + 1] >= ChessPiece.Empty)
                                 {
                                     ChessMove move = new ChessMove(from, new ChessLocation(bi - 1, bj + 1));
                                     allMoves.Add(move);
@@ -327,7 +328,7 @@ namespace StudentAI
                                     bi++;
                                     bj--;
                                 }
-                                if ((bi + 1 <= 7) && (bj - 1 >= 0) && board[bi + 1, bj - 1] > ChessPiece.Empty)
+                                if ((bi + 1 <= 7) && (bj - 1 >= 0) && board[bi + 1, bj - 1] >= ChessPiece.Empty)
                                 {
                                     ChessMove move = new ChessMove(from, new ChessLocation(bi + 1, bj - 1));
                                     allMoves.Add(move);
@@ -397,7 +398,7 @@ namespace StudentAI
                                     bi++;
                                     bj++;
                                 }
-                                if ((bi + 1 <= 7) && (bj + 1 <= 7) && board[bi + 1, bj + 1] > ChessPiece.Empty)
+                                if ((bi + 1 <= 7) && (bj + 1 <= 7) && board[bi + 1, bj + 1] >= ChessPiece.Empty)
                                 {
                                     ChessMove move = new ChessMove(from, new ChessLocation(bi + 1, bj + 1));
                                     allMoves.Add(move);
@@ -412,7 +413,7 @@ namespace StudentAI
                                     bi--;
                                     bj--;
                                 }
-                                if ((bi - 1 >= 0) && (bj - 1 >= 0) && board[bi - 1, bj - 1] > ChessPiece.Empty)
+                                if ((bi - 1 >= 0) && (bj - 1 >= 0) && board[bi - 1, bj - 1] >= ChessPiece.Empty)
                                 {
                                     ChessMove move = new ChessMove(from, new ChessLocation(bi - 1, bj - 1));
                                     allMoves.Add(move);
@@ -427,7 +428,7 @@ namespace StudentAI
                                     bi--;
                                     bj++;
                                 }
-                                if ((bi - 1 >= 0) && (bj + 1 <= 7) && board[bi - 1, bj + 1] > ChessPiece.Empty)
+                                if ((bi - 1 >= 0) && (bj + 1 <= 7) && board[bi - 1, bj + 1] >= ChessPiece.Empty)
                                 {
                                     ChessMove move = new ChessMove(from, new ChessLocation(bi - 1, bj + 1));
                                     allMoves.Add(move);
@@ -442,7 +443,7 @@ namespace StudentAI
                                     bi++;
                                     bj--;
                                 }
-                                if ((bi + 1 <= 7) && (bj - 1 >= 0) && board[bi + 1, bj - 1] > ChessPiece.Empty)
+                                if ((bi + 1 <= 7) && (bj - 1 >= 0) && board[bi + 1, bj - 1] >= ChessPiece.Empty)
                                 {
                                     ChessMove move = new ChessMove(from, new ChessLocation(bi + 1, bj - 1));
                                     allMoves.Add(move);
@@ -457,7 +458,7 @@ namespace StudentAI
                                     allMoves.Add(move);
                                     rj++;
                                 }
-                                if ((rj + 1 <= 7) && board[i, rj + 1] > ChessPiece.Empty)
+                                if ((rj + 1 <= 7) && board[i, rj + 1] >= ChessPiece.Empty)
                                 {
                                     ChessMove move = new ChessMove(from, new ChessLocation(i, rj + 1));
                                     allMoves.Add(move);
@@ -470,7 +471,7 @@ namespace StudentAI
                                     allMoves.Add(move);
                                     ri++;
                                 }
-                                if (ri + 1 <= 7 && board[ri + 1, j] > ChessPiece.Empty)
+                                if (ri + 1 <= 7 && board[ri + 1, j] >= ChessPiece.Empty)
                                 {
                                     ChessMove move = new ChessMove(from, new ChessLocation(ri + 1, j));
                                     allMoves.Add(move);
@@ -483,7 +484,7 @@ namespace StudentAI
                                     allMoves.Add(move);
                                     rj--;
                                 }
-                                if (rj - 1 >= 0 && board[i, rj - 1] > ChessPiece.Empty)
+                                if (rj - 1 >= 0 && board[i, rj - 1] >= ChessPiece.Empty)
                                 {
                                     ChessMove move = new ChessMove(from, new ChessLocation(i, rj - 1));
                                     allMoves.Add(move);
@@ -496,7 +497,7 @@ namespace StudentAI
                                     allMoves.Add(move);
                                     ri--;
                                 }
-                                if (ri - 1 >= 0 && board[ri - 1, j] > ChessPiece.Empty)
+                                if (ri - 1 >= 0 && board[ri - 1, j] >= ChessPiece.Empty)
                                 {
                                     ChessMove move = new ChessMove(from, new ChessLocation(ri - 1, j));
                                     allMoves.Add(move);
@@ -578,7 +579,7 @@ namespace StudentAI
                                     bi++;
                                     bj++;
                                 }
-                                if ((bi + 1 <= 7) && (bj + 1 <= 7) && board[bi + 1, bj + 1] < ChessPiece.Empty)
+                                if ((bi + 1 <= 7) && (bj + 1 <= 7) && board[bi + 1, bj + 1] <= ChessPiece.Empty)
                                 {
                                     ChessMove move = new ChessMove(from, new ChessLocation(bi + 1, bj + 1));
                                     allMoves.Add(move);
@@ -594,7 +595,7 @@ namespace StudentAI
                                     bi--;
                                     bj--;
                                 }
-                                if ((bi - 1 >= 0) && (bj - 1 >= 0) && board[bi - 1, bj - 1] < ChessPiece.Empty)
+                                if ((bi - 1 >= 0) && (bj - 1 >= 0) && board[bi - 1, bj - 1] <= ChessPiece.Empty)
                                 {
                                     ChessMove move = new ChessMove(from, new ChessLocation(bi - 1, bj - 1));
                                     allMoves.Add(move);
@@ -609,7 +610,7 @@ namespace StudentAI
                                     bi--;
                                     bj++;
                                 }
-                                if ((bi - 1 >= 0) && (bj + 1 <= 7) && board[bi - 1, bj + 1] < ChessPiece.Empty)
+                                if ((bi - 1 >= 0) && (bj + 1 <= 7) && board[bi - 1, bj + 1] <= ChessPiece.Empty)
                                 {
                                     ChessMove move = new ChessMove(from, new ChessLocation(bi - 1, bj + 1));
                                     allMoves.Add(move);
@@ -624,7 +625,7 @@ namespace StudentAI
                                     bi++;
                                     bj--;
                                 }
-                                if ((bi + 1 <= 7) && (bj - 1 >= 0) && board[bi + 1, bj - 1] < ChessPiece.Empty)
+                                if ((bi + 1 <= 7) && (bj - 1 >= 0) && board[bi + 1, bj - 1] <= ChessPiece.Empty)
                                 {
                                     ChessMove move = new ChessMove(from, new ChessLocation(bi + 1, bj - 1));
                                     allMoves.Add(move);
@@ -691,7 +692,7 @@ namespace StudentAI
                                     allMoves.Add(move);
                                     rj++;
                                 }
-                                if ((rj + 1 <= 7) && board[i, rj + 1] < ChessPiece.Empty)
+                                if ((rj + 1 <= 7) && board[i, rj + 1] <= ChessPiece.Empty)
                                 {
                                     ChessMove move = new ChessMove(from, new ChessLocation(i, rj + 1));
                                     allMoves.Add(move);
@@ -704,7 +705,7 @@ namespace StudentAI
                                     allMoves.Add(move);
                                     ri++;
                                 }
-                                if (ri + 1 <= 7 && board[ri + 1, j] < ChessPiece.Empty)
+                                if (ri + 1 <= 7 && board[ri + 1, j] <= ChessPiece.Empty)
                                 {
                                     ChessMove move = new ChessMove(from, new ChessLocation(ri + 1, j));
                                     allMoves.Add(move);
@@ -717,7 +718,7 @@ namespace StudentAI
                                     allMoves.Add(move);
                                     rj--;
                                 }
-                                if (rj - 1 >= 0 && board[i, rj - 1] < ChessPiece.Empty)
+                                if (rj - 1 >= 0 && board[i, rj - 1] <= ChessPiece.Empty)
                                 {
                                     ChessMove move = new ChessMove(from, new ChessLocation(i, rj - 1));
                                     allMoves.Add(move);
@@ -745,7 +746,7 @@ namespace StudentAI
                                     bi++;
                                     bj++;
                                 }
-                                if ((bi + 1 <= 7) && (bj + 1 <= 7) && board[bi + 1, bj + 1] < ChessPiece.Empty)
+                                if ((bi + 1 <= 7) && (bj + 1 <= 7) && board[bi + 1, bj + 1] <= ChessPiece.Empty)
                                 {
                                     ChessMove move = new ChessMove(from, new ChessLocation(bi + 1, bj + 1));
                                     allMoves.Add(move);
@@ -760,7 +761,7 @@ namespace StudentAI
                                     bi--;
                                     bj--;
                                 }
-                                if ((bi - 1 >= 0) && (bj - 1 >= 0) && board[bi - 1, bj - 1] < ChessPiece.Empty)
+                                if ((bi - 1 >= 0) && (bj - 1 >= 0) && board[bi - 1, bj - 1] <= ChessPiece.Empty)
                                 {
                                     ChessMove move = new ChessMove(from, new ChessLocation(bi - 1, bj - 1));
                                     allMoves.Add(move);
@@ -775,7 +776,7 @@ namespace StudentAI
                                     bi--;
                                     bj++;
                                 }
-                                if ((bi - 1 >= 0) && (bj + 1 <= 7) && board[bi - 1, bj + 1] < ChessPiece.Empty)
+                                if ((bi - 1 >= 0) && (bj + 1 <= 7) && board[bi - 1, bj + 1] <= ChessPiece.Empty)
                                 {
                                     ChessMove move = new ChessMove(from, new ChessLocation(bi - 1, bj + 1));
                                     allMoves.Add(move);
@@ -790,7 +791,7 @@ namespace StudentAI
                                     bi++;
                                     bj--;
                                 }
-                                if ((bi + 1 <= 7) && (bj - 1 >= 0) && board[bi + 1, bj - 1] < ChessPiece.Empty)
+                                if ((bi + 1 <= 7) && (bj - 1 >= 0) && board[bi + 1, bj - 1] <= ChessPiece.Empty)
                                 {
                                     ChessMove move = new ChessMove(from, new ChessLocation(bi + 1, bj - 1));
                                     allMoves.Add(move);
@@ -806,7 +807,7 @@ namespace StudentAI
                                     allMoves.Add(move);
                                     rj++;
                                 }
-                                if ((rj + 1 <= 7) && board[i, rj + 1] < ChessPiece.Empty)
+                                if ((rj + 1 <= 7) && board[i, rj + 1] <= ChessPiece.Empty)
                                 {
                                     ChessMove move = new ChessMove(from, new ChessLocation(i, rj + 1));
                                     allMoves.Add(move);
@@ -819,7 +820,7 @@ namespace StudentAI
                                     allMoves.Add(move);
                                     ri++;
                                 }
-                                if (ri + 1 <= 7 && board[ri + 1, j] < ChessPiece.Empty)
+                                if (ri + 1 <= 7 && board[ri + 1, j] <= ChessPiece.Empty)
                                 {
                                     ChessMove move = new ChessMove(from, new ChessLocation(ri + 1, j));
                                     allMoves.Add(move);
@@ -832,7 +833,7 @@ namespace StudentAI
                                     allMoves.Add(move);
                                     rj--;
                                 }
-                                if (rj - 1 >= 0 && board[i, rj - 1] < ChessPiece.Empty)
+                                if (rj - 1 >= 0 && board[i, rj - 1] <= ChessPiece.Empty)
                                 {
                                     ChessMove move = new ChessMove(from, new ChessLocation(i, rj - 1));
                                     allMoves.Add(move);
@@ -845,7 +846,7 @@ namespace StudentAI
                                     allMoves.Add(move);
                                     ri--;
                                 }
-                                if (ri - 1 >= 0 && board[ri - 1, j] < ChessPiece.Empty)
+                                if (ri - 1 >= 0 && board[ri - 1, j] <= ChessPiece.Empty)
                                 {
                                     ChessMove move = new ChessMove(from, new ChessLocation(ri - 1, j));
                                     allMoves.Add(move);
@@ -925,9 +926,18 @@ namespace StudentAI
             //check to see if any of these possible moves are invalid because they put me in check
             foreach (ChessMove move in allMoves)
             {
-                if (InCheck(move, board, color, false) == 0)//make sure I'm not in check or mate
+                int inCheck = InCheck(move, board, color, 0);
+                if (inCheck == 1)
                 {
-                    int checkTest = InCheck(move, board, oppColor, false);
+                    int stillInCheck = InCheck(move, board, color, 1); //1 is check 0 is out
+                    if (stillInCheck == 0)
+                    {
+                        validMoves.Add(move);
+                    }
+                }
+                else if (inCheck == 0)//make sure I'm not in check or mate
+                {
+                    int checkTest = InCheck(move, board, oppColor, 0);
                     if (checkTest == 1) //set flag if I put opp in check
                     {
                         move.Flag = ChessFlag.Check;
@@ -942,65 +952,8 @@ namespace StudentAI
             return validMoves;
         }
 
-        public void AddAllPossibleMovesToDecisionTree(List<ChessMove> allMyMoves, ChessMove myChosenMove,
-                                                      ChessBoard currentBoard, ChessColor myColor)
-        {
-            // Create the decision tree object
-            DecisionTree dt = new DecisionTree(currentBoard);
 
-            // Tell UvsChess about the decision tree object
-            SetDecisionTree(dt);
-            dt.BestChildMove = myChosenMove;
-
-            // Go through all of my moves, add them to the decision tree
-            // Then go through each of these moves and generate all of my
-            // opponents moves and add those to the decision tree as well.
-            for (int ix = 0; ix < allMyMoves.Count; ix++)
-            {
-                ChessMove myCurMove = allMyMoves[ix];
-                ChessBoard boardAfterMyCurMove = currentBoard.Clone();
-                boardAfterMyCurMove.MakeMove(myCurMove);
-
-                // Add the new move and board to the decision tree
-                dt.AddChild(boardAfterMyCurMove, myCurMove);
-
-                // Descend the decision tree to the last child added so we can 
-                // add all of the opponents response moves to our move.
-                dt = dt.LastChild;
-
-                // Get all of the opponents response moves to my move
-                ChessColor oppColor = (myColor == ChessColor.White ? ChessColor.Black : ChessColor.White);
-                List<ChessMove> allOppMoves = GetAllMoves(boardAfterMyCurMove, oppColor);
-
-                // Go through all of my opponent moves and add them to the decision tree
-                foreach (ChessMove oppCurMove in allOppMoves)
-                {
-                    ChessBoard boardAfterOppCurMove = boardAfterMyCurMove.Clone();
-                    boardAfterOppCurMove.MakeMove(oppCurMove);
-                    dt.AddChild(boardAfterOppCurMove, oppCurMove);
-
-                    // Setting all of the opponents eventual move values to 0 (see below).
-                    dt.LastChild.EventualMoveValue = "0";
-                }
-
-                if (allOppMoves.Count > 0)
-                {
-                    // Tell the decision tree which move we think our opponent will choose.
-                    int chosenOppMoveNumber = random.Next(allOppMoves.Count);
-                    dt.BestChildMove = allOppMoves[chosenOppMoveNumber];
-                }
-
-                // Tell the decision tree what this moves eventual value will be.
-                // Since this AI can't evaulate anything, I'm just going to set this
-                // value to 0.
-                dt.EventualMoveValue = evaluateBoard(myChosenMove, boardAfterMyCurMove, myColor).ToString();
-
-                // All of the opponents response moves have been added to this childs move, 
-                // so return to the parent so we can do the loop again for our next move.
-                dt = dt.Parent;
-            }
-        }
-        public int InCheck(ChessMove move, ChessBoard board, ChessColor testColor, bool ckMate)
+        public int InCheck(ChessMove move, ChessBoard board, ChessColor testColor, int depth)
         {
             ChessBoard tempBoard = board.Clone();
             tempBoard.MakeMove(move);
@@ -1011,14 +964,16 @@ namespace StudentAI
             {
                 if (tempBoard[tempMove.To] == myKing) //but we don't want to move right next to the king. How to fix?
                 {
-                    if (ckMate)
+                    if (depth > 1)
                     {
+                        Debug.WriteLine("Depth > 1 incheck called {0}", tempMove);
                         return 1;
                     }
                     foreach (ChessMove kMove in GetAllMoves(tempBoard, testColor))// can you make a move that will get you out of check
                     {
-                        if (InCheck(kMove, tempBoard, testColor, true) == 0)
+                        if (InCheck(kMove, tempBoard, testColor, depth + 1) == 0)
                         {
+                            Debug.WriteLine("Interior incheck called {0}", tempBoard);
                             return 1; //check, not mate
                         }
                     }
@@ -1033,21 +988,12 @@ namespace StudentAI
             ChessColor oppColor = (myColor == ChessColor.White ? ChessColor.Black : ChessColor.White);
             int mult = (myColor == ChessColor.White ? 1 : -1); //sets negative or positive for values
             int sum = 0;
-            int blackCheck = InCheck(m, board, ChessColor.White, false);
-            int whiteCheck = InCheck(m, board, ChessColor.Black, false);
-            if (whiteCheck == 1)
-            {
-                sum += 100 * mult;
-            }
-            if (whiteCheck == 2)
-            {
-                sum += 1000 * mult;
-            }
-            if (blackCheck == 1)
+            int inCheck = InCheck(m, board, myColor, 0);
+            if (inCheck == 1)
             {
                 sum += -100 * mult;
             }
-            if (blackCheck == 2)
+            if (inCheck == 2)
             {
                 sum += -1000 * mult;
             }
@@ -1059,40 +1005,40 @@ namespace StudentAI
                     switch (board[i,j])//the order we access our board in is col, row, hence the [j][i] below
                     {
                         case ChessPiece.WhitePawn:
-                            sum += 1 * mult + positionVals[ChessPiece.WhitePawn][j][i];
+                            sum += 1 * mult;
                             break;
                         case ChessPiece.WhiteRook:
-                            sum += 5 * mult + positionVals[ChessPiece.WhiteRook][j][i];
+                            sum += 5 * mult;
                             break;
                         case ChessPiece.WhiteKnight:
-                            sum += 3 * mult + positionVals[ChessPiece.WhiteKnight][j][i];
+                            sum += 3 * mult;
                             break;
                         case ChessPiece.WhiteBishop:
-                            sum += 3 * mult + positionVals[ChessPiece.WhiteBishop][j][i];
+                            sum += 3 * mult;
                             break;
                         case ChessPiece.WhiteQueen:
-                            sum += 9 * mult + positionVals[ChessPiece.WhiteQueen][j][i];
+                            sum += 9 * mult;
                             break;
                         case ChessPiece.WhiteKing:
-                            sum += 4 * mult + positionVals[ChessPiece.WhiteKing][j][i];
+                            sum += 4 * mult;
                             break;
                         case ChessPiece.BlackPawn:
-                            sum += -1 * mult + positionVals[ChessPiece.BlackPawn][j][i];
+                            sum += -1 * mult;
                             break;
                         case ChessPiece.BlackRook:
-                            sum += -5 * mult + positionVals[ChessPiece.BlackRook][j][i];
+                            sum += -5 * mult;
                             break;
                         case ChessPiece.BlackKnight:
-                            sum += -3 * mult + positionVals[ChessPiece.BlackKnight][j][i];
+                            sum += -3 * mult;
                             break;
                         case ChessPiece.BlackBishop:
-                            sum += -3 * mult + positionVals[ChessPiece.BlackBishop][j][i];
+                            sum += -3 * mult;
                             break;
                         case ChessPiece.BlackQueen:
-                            sum += -9 * mult + positionVals[ChessPiece.BlackQueen][j][i];
+                            sum += -9 * mult;
                             break;
                         case ChessPiece.BlackKing:
-                            sum += -4 * mult + positionVals[ChessPiece.BlackKing][j][i];
+                            sum += -4 * mult;
                             break;
                         case ChessPiece.Empty:
                             sum += 0;
@@ -1112,6 +1058,79 @@ namespace StudentAI
             }
             moves.Sort();
             return moves;
+        }
+        const int depthLimit = 5;
+        const int RETURN_TIME = 5000;
+        const int ALPHA = -99999;
+        const int BETA = 99999;
+        public ChessMove MiniMaxAB(int depthLimit, ChessBoard board, ChessColor color)
+        {
+            int alpha = ALPHA;
+            int beta = BETA;
+            ChessMove bestMove = new ChessMove(null, null);
+            bestMove.ValueOfMove = ALPHA;
+            ChessColor oppColor = (color == ChessColor.White ? ChessColor.Black : ChessColor.White);
+            List<ChessMove> allOppMoves = GetAllMoves(board, color);
+            List<ChessMove> moves = setFlags(allOppMoves, board, color);
+            foreach (ChessMove mv in SortedMoves(allOppMoves, board, color))
+            {
+                mv.ValueOfMove = maxMoveAB(mv, depthLimit, 0, alpha, beta, board, color);
+                Debug.WriteLine("{0}  {1}", mv, mv.ValueOfMove);
+                if (mv.ValueOfMove > bestMove.ValueOfMove)
+                {
+                    bestMove = mv;
+                }
+            }
+            return bestMove;
+        }
+
+
+        public int maxMoveAB(ChessMove m, int depthLimit, int currDepth, int alpha, int beta, ChessBoard board, ChessColor color)
+        {//looking for the highest minimum value of opposite color
+            int v = alpha;
+            if (currDepth == depthLimit || timer.ElapsedMilliseconds > RETURN_TIME)
+            {
+                v = evaluateBoard(m, board, color);
+                return v;
+            }
+            ChessColor oppColor = (color == ChessColor.White ? ChessColor.Black : ChessColor.White);
+            List<ChessMove> allOppMoves = GetAllMoves(board, oppColor);
+            List<ChessMove> moves = setFlags(allOppMoves, board, oppColor);
+            foreach (ChessMove mv in SortedMoves(moves, board, color))
+            {
+                v = minMoveAB(mv, depthLimit, currDepth + 1, alpha, beta, board, oppColor);
+                if (alpha < v)
+                {
+                    Debug.WriteLine("New alpha: {0}\n", v);
+                    alpha = v;
+                }
+                return v;
+            }
+            return v;
+        }
+
+        public int minMoveAB(ChessMove m, int depthLimit, int currDepth, int alpha, int beta, ChessBoard board, ChessColor color)
+        {//looking for the minimum value of the max values of opposing player
+            int v = beta;
+            if (currDepth == depthLimit || timer.ElapsedMilliseconds > RETURN_TIME)
+            {
+                v = evaluateBoard(m, board, color);
+                return v;
+            }
+            ChessColor oppColor = (color == ChessColor.White ? ChessColor.Black : ChessColor.White);
+            List<ChessMove> allOppMoves = GetAllMoves(board, oppColor);
+            List<ChessMove> moves = setFlags(allOppMoves, board, oppColor);
+            foreach (ChessMove mv in SortedMoves(moves, board, oppColor))
+            {
+                v = maxMoveAB(mv, depthLimit, currDepth + 1, alpha, beta, board, oppColor);
+                if (v < beta)
+                {
+                    Debug.WriteLine("New beta: {0}\n", v);
+                    beta = v;
+                }
+                return v;
+            }
+            return v;
         }
 
         // Static Members for MiniMax
@@ -1266,7 +1285,7 @@ namespace StudentAI
             List<ChessMove> moves = GetAllMoves(board, myColor);
             List<ChessMove> validMoves = setFlags(moves, board, myColor);
             timer = Stopwatch.StartNew();
-            ChessMove chosenMove = MiniMax(validMoves, board, myColor);
+            ChessMove chosenMove = MiniMaxAB(depthLimit, board, myColor);
             prevMoves.Add(chosenMove);
             return chosenMove;
         }
