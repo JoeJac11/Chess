@@ -982,8 +982,15 @@ namespace StudentAI
                             {
                                 outOfChecks.Add(kMove);
                             }
-                            return 1; //check, not mate
+                            else
+                            {
+                                return 1;
+                            }//check, not mate
                         }
+                    }
+                    if (outOfChecks.Count != 0)
+                    {
+                        return 1;
                     }
                     return 2;
                 }
