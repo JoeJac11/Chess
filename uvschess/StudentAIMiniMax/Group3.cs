@@ -911,8 +911,17 @@ namespace StudentAI
             return allMoves;
         }
 
+
+        static List<ChessMove> outOfChecks = new List<ChessMove>();
+        
         public List<ChessMove> setFlags(List<ChessMove> allMoves, ChessBoard board, ChessColor color)
         {
+            ChessMove fake = new ChessMove(new ChessLocation(0, 0), new ChessLocation(0, 0));
+            int alreadyInCheck = InCheck(fake, board, color, 0);
+            if (alreadyInCheck != 0)
+            {
+                allMoves = outOfChecks;
+            }
             List<ChessMove> validMoves = new List<ChessMove>();
             ChessColor oppColor;
             if (color == ChessColor.White)
@@ -927,15 +936,8 @@ namespace StudentAI
             foreach (ChessMove move in allMoves)
             {
                 int inCheck = InCheck(move, board, color, 0);
-                if (inCheck == 1)
-                {
-                    int stillInCheck = InCheck(move, board, color, 1); //1 is check 0 is out
-                    if (stillInCheck == 0)
-                    {
-                        validMoves.Add(move);
-                    }
-                }
-                else if (inCheck == 0)//make sure I'm not in check or mate
+                Debug.WriteLine("Move is {0}  inCheck returned {1}", move, inCheck);
+                if (inCheck == 0)//make sure I'm not in check or mate
                 {
                     int checkTest = InCheck(move, board, oppColor, 0);
                     if (checkTest == 1) //set flag if I put opp in check
@@ -949,12 +951,14 @@ namespace StudentAI
                     validMoves.Add(move.Clone());
                 }
             }
+            outOfChecks.Clear();
             return validMoves;
         }
 
 
         public int InCheck(ChessMove move, ChessBoard board, ChessColor testColor, int depth)
         {
+            ChessMove saveMoves = new ChessMove(new ChessLocation(0, 0), new ChessLocation(0, 0));
             ChessBoard tempBoard = board.Clone();
             tempBoard.MakeMove(move);
             ChessPiece myKing = (testColor == ChessColor.White ? ChessPiece.WhiteKing : ChessPiece.BlackKing);
@@ -962,7 +966,7 @@ namespace StudentAI
 
             foreach (ChessMove tempMove in GetAllMoves(tempBoard, oppColor))  //what moves can opposition make?
             {
-                if (tempBoard[tempMove.To] == myKing) //but we don't want to move right next to the king. How to fix?
+                if (tempBoard[tempMove.To] == myKing)
                 {
                     if (depth > 1)
                     {
@@ -973,7 +977,11 @@ namespace StudentAI
                     {
                         if (InCheck(kMove, tempBoard, testColor, depth + 1) == 0)
                         {
-                            Debug.WriteLine("Interior incheck called {0}", tempBoard);
+                            Debug.WriteLine("Interior incheck called {0}", kMove);
+                            if (move == saveMoves)
+                            {
+                                outOfChecks.Add(kMove);
+                            }
                             return 1; //check, not mate
                         }
                     }
@@ -1072,7 +1080,7 @@ namespace StudentAI
             ChessColor oppColor = (color == ChessColor.White ? ChessColor.Black : ChessColor.White);
             List<ChessMove> allOppMoves = GetAllMoves(board, color);
             List<ChessMove> moves = setFlags(allOppMoves, board, color);
-            foreach (ChessMove mv in SortedMoves(allOppMoves, board, color))
+            foreach (ChessMove mv in SortedMoves(moves, board, color))
             {
                 mv.ValueOfMove = maxMoveAB(mv, depthLimit, 0, alpha, beta, board, color);
                 Debug.WriteLine("{0}  {1}", mv, mv.ValueOfMove);
