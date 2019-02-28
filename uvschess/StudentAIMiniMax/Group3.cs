@@ -1294,7 +1294,6 @@ namespace StudentAI
         public static Stopwatch timer;
         public static HashSet<ChessMove> prevMoves = new HashSet<ChessMove> { };
         public static HashSet<ChessBoard> transposition = new HashSet<ChessBoard>();
-
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
         {
             List<ChessMove> moves = GetAllMoves(board, myColor);
