@@ -243,14 +243,14 @@ namespace UvsChess.Framework
 
             if (_isGetNextMoveCall)
             {
-                try
-                {
+                //try
+                //{
                     _moveToReturn = this.AI.GetNextMove(_currentBoard, this.Color);
-                }
-                catch (Exception e)
-                {
-                    throw (new Exception("StudentAI.GetNextMove() threw exception: " + e.Message));
-                }
+                //}
+                //catch (Exception e)
+                //{
+                //    throw (new Exception("StudentAI.GetNextMove() threw exception: " + e.Message));
+                //}
             }
             else
             {
