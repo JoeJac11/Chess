@@ -912,112 +912,62 @@ namespace StudentAI
         }
 
 
-        static List<ChessMove> outOfChecks = new List<ChessMove>();
-        
-        public List<ChessMove> setFlags(List<ChessMove> allMoves, ChessBoard board, ChessColor color)
+        // Static Initialize of Capture Values
+        static Dictionary<ChessPiece, int> BlackPieces = new Dictionary<ChessPiece, int>()
         {
-            ChessMove fake = new ChessMove(new ChessLocation(0, 0), new ChessLocation(0, 0));
-            int alreadyInCheck = InCheck(fake, board, color, 0);
-            if (alreadyInCheck != 0)
+            { ChessPiece.BlackQueen, 10 },
+            { ChessPiece.BlackBishop, 7 },
+            { ChessPiece.BlackRook, 5 },
+            { ChessPiece.BlackKnight, 3 },
+            { ChessPiece.BlackPawn, 1 }
+        };
+        static Dictionary<ChessPiece, int> WhitePieces = new Dictionary<ChessPiece, int>()
+        {
+            { ChessPiece.WhiteQueen, 10 },
+            { ChessPiece.WhiteBishop, 7 },
+            { ChessPiece.WhiteRook, 5 },
+            { ChessPiece.WhiteKnight, 3 },
+            { ChessPiece.WhitePawn, 1 }
+        };
+        public int evaluateBoard(ChessBoard board, ChessBoard pBoard, ChessMove mv, ChessColor myColor)
+        {
+            // Declare needed variables
+            ChessColor oppColor = (myColor == ChessColor.White ? ChessColor.Black : ChessColor.White);
+            int mult = (myColor == ChessColor.White ? 1 : -1); // Forces us to always be positive
+            int sum = 0;
+
+            // Determine if the player is in check, if so, adjust score accordingly.
+            if (mv.Flag == ChessFlag.Checkmate)
             {
-                allMoves = outOfChecks;
+                sum += 1000 * mult;
             }
-            List<ChessMove> validMoves = new List<ChessMove>();
-            ChessColor oppColor;
-            if (color == ChessColor.White)
+            else if (mv.Flag == ChessFlag.Check)
             {
-                oppColor = ChessColor.Black;
+                sum += 100 * mult;
+            }
+
+            // Check to see if the move is going to take a piece
+            if (oppColor == ChessColor.Black)
+            {
+                if (BlackPieces.ContainsKey(pBoard[mv.To]))
+                {
+                    sum += BlackPieces[pBoard[mv.To]] * mult;
+                }
             }
             else
             {
-                oppColor = ChessColor.White;
-            }
-            //check to see if any of these possible moves are invalid because they put me in check
-            foreach (ChessMove move in allMoves)
-            {
-                int inCheck = InCheck(move, board, color, 0);
-                Debug.WriteLine("Move is {0}  inCheck returned {1}", move, inCheck);
-                if (inCheck == 0)//make sure I'm not in check or mate
+                if (WhitePieces.ContainsKey(pBoard[mv.To]))
                 {
-                    int checkTest = InCheck(move, board, oppColor, 0);
-                    if (checkTest == 1) //set flag if I put opp in check
-                    {
-                        move.Flag = ChessFlag.Check;
-                    }
-                    else if (checkTest == 2) //set flag if I put opp in checkmate
-                    {
-                        move.Flag = ChessFlag.Checkmate;
-                    }
-                    validMoves.Add(move.Clone());
+                    sum += WhitePieces[pBoard[mv.To]] * mult;
                 }
             }
-            outOfChecks.Clear();
-            return validMoves;
-        }
 
-
-        public int InCheck(ChessMove move, ChessBoard board, ChessColor testColor, int depth)
-        {
-            ChessMove saveMoves = new ChessMove(new ChessLocation(0, 0), new ChessLocation(0, 0));
-            ChessBoard tempBoard = board.Clone();
-            tempBoard.MakeMove(move);
-            ChessPiece myKing = (testColor == ChessColor.White ? ChessPiece.WhiteKing : ChessPiece.BlackKing);
-            ChessColor oppColor = (testColor == ChessColor.White ? ChessColor.Black : ChessColor.White);
-
-            foreach (ChessMove tempMove in GetAllMoves(tempBoard, oppColor))  //what moves can opposition make?
+            // Total up all the pieces on the board
+            for (int i = 0; i <= 7; i++)
             {
-                if (tempBoard[tempMove.To] == myKing)
+                for (int j = 0; j <= 7; j++)
                 {
-                    if (depth > 1)
-                    {
-                        Debug.WriteLine("Depth > 1 incheck called {0}", tempMove);
-                        return 1;
-                    }
-                    foreach (ChessMove kMove in GetAllMoves(tempBoard, testColor))// can you make a move that will get you out of check
-                    {
-                        if (InCheck(kMove, tempBoard, testColor, depth + 1) == 0)
-                        {
-                            Debug.WriteLine("Interior incheck called {0}", kMove);
-                            if (move == saveMoves)
-                            {
-                                outOfChecks.Add(kMove);
-                            }
-                            else
-                            {
-                                return 1;
-                            }//check, not mate
-                        }
-                    }
-                    if (outOfChecks.Count != 0)
-                    {
-                        return 1;
-                    }
-                    return 2;
-                }
-            }
-            return 0;
-        }
-
-        public int evaluateBoard(ChessMove m, ChessBoard board, ChessColor myColor)
-        {
-            ChessColor oppColor = (myColor == ChessColor.White ? ChessColor.Black : ChessColor.White);
-            int mult = (myColor == ChessColor.White ? 1 : -1); //sets negative or positive for values
-            int sum = 0;
-            int inCheck = InCheck(m, board, myColor, 0);
-            if (inCheck == 1)
-            {
-                sum += -100 * mult;
-            }
-            if (inCheck == 2)
-            {
-                sum += -1000 * mult;
-            }
-            board.MakeMove(m);
-            for (int i=0; i<= 7; i++)
-            {
-                for (int j=0; j<=7; j++)
-                {
-                    switch (board[i,j])//the order we access our board in is col, row, hence the [j][i] below
+                    switch (board[i, j])//the order we access our board in is col, row, hence the [j][i] below
                     {
                         case ChessPiece.WhitePawn:
                             sum += 1 * mult;
@@ -1029,7 +979,7 @@ namespace StudentAI
                             sum += 3 * mult;
                             break;
                         case ChessPiece.WhiteBishop:
-                            sum += 3 * mult;
+                            sum += 4 * mult;
                             break;
                         case ChessPiece.WhiteQueen:
                             sum += 9 * mult;
@@ -1047,7 +997,7 @@ namespace StudentAI
                             sum += -3 * mult;
                             break;
                         case ChessPiece.BlackBishop:
-                            sum += -3 * mult;
+                            sum += -4 * mult;
                             break;
                         case ChessPiece.BlackQueen:
                             sum += -9 * mult;
@@ -1055,8 +1005,7 @@ namespace StudentAI
                         case ChessPiece.BlackKing:
                             sum += -4 * mult;
                             break;
-                        case ChessPiece.Empty:
-                            sum += 0;
+                        default:
                             break;
                     }
                 }
@@ -1065,93 +1014,146 @@ namespace StudentAI
         }
 
 
-        public List<ChessMove> SortedMoves(List<ChessMove> moves, ChessBoard board, ChessColor myColor)
+        public List<ChessMove> OpponentCheckMoves(ChessBoard board, ChessColor oppColor, ChessLocation kingLocation) 
         {
-            foreach (ChessMove m in moves)
+            // Needed variables
+            ChessPiece MyKing = (oppColor == ChessColor.White ? ChessPiece.WhiteKing : ChessPiece.BlackKing);
+            ChessColor TheirColor = (oppColor == ChessColor.White ? ChessColor.Black : ChessColor.White);
+            ChessPiece TheirKing = (oppColor == ChessColor.White ? ChessPiece.BlackKing : ChessPiece.WhiteKing);
+
+            // Determine how many available moves the king has to get out of check
+            List<ChessMove> oppMoves = GetAllMoves(board, oppColor);
+            for(int i = 0; i < oppMoves.Count; i++)
             {
-                m.ValueOfMove = evaluateBoard(m, board, myColor);
+                //Clone the board, make the move
+                ChessBoard tempBoard = board.Clone();
+                tempBoard.MakeMove(oppMoves[i]);
+
+                //Determine if the opponent is still in check
+                Tuple<ChessLocation, ChessLocation> kings = FindKings(tempBoard, MyKing, TheirKing);
+                if (KingInCheck(tempBoard, TheirColor, kings.Item1))
+                {
+                    oppMoves.Remove(oppMoves[i]);
+                }
             }
-            moves.Sort();
-            return moves;
+
+            return oppMoves;
         }
-        const int depthLimit = 5;
-        const int RETURN_TIME = 5000;
-        const int ALPHA = -99999;
-        const int BETA = 99999;
-        public ChessMove MiniMaxAB(int depthLimit, ChessBoard board, ChessColor color)
+
+
+        // Used to determine if the given player color is incheck or not
+        // Return false: King not in Check
+        // Return true: King in Check
+        public bool KingInCheck(ChessBoard board, ChessColor oppColor, ChessLocation kingLocation)
         {
-            int alpha = ALPHA;
-            int beta = BETA;
-            ChessMove bestMove = new ChessMove(null, null);
-            bestMove.ValueOfMove = ALPHA;
-            ChessColor oppColor = (color == ChessColor.White ? ChessColor.Black : ChessColor.White);
-            List<ChessMove> allOppMoves = GetAllMoves(board, color);
-            List<ChessMove> moves = setFlags(allOppMoves, board, color);
-            foreach (ChessMove mv in SortedMoves(moves, board, color))
+            // Determine if the king is in check
+            List<ChessMove> oppMoves = GetAllMoves(board, oppColor);
+            bool check = false;
+            foreach (ChessMove mv in oppMoves)
             {
-                mv.ValueOfMove = maxMoveAB(mv, depthLimit, 0, alpha, beta, board, color);
-                Debug.WriteLine("{0}  {1}", mv, mv.ValueOfMove);
-                if (mv.ValueOfMove > bestMove.ValueOfMove)
+                if (mv.To == kingLocation)
                 {
-                    bestMove = mv;
+                    check = true;
+                    break;
                 }
             }
-            return bestMove;
+            return check;
+        }
+
+        public Tuple<ChessLocation, ChessLocation> FindKings(ChessBoard board, ChessPiece myKing, ChessPiece theirKing)
+        {
+            ChessLocation myKingLocation = new ChessLocation(0, 0);
+            ChessLocation theirKingLocation = new ChessLocation(0, 0);
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    if (board[i, j] == myKing)
+                    {
+                        myKingLocation = new ChessLocation(i, j);
+                    }
+                    else if (board[i, j] == theirKing)
+                    {
+                        theirKingLocation = new ChessLocation(i, j);
+                    }
+                }
+            }
+
+            return Tuple.Create(myKingLocation, theirKingLocation);
         }
 
 
-        public int maxMoveAB(ChessMove m, int depthLimit, int currDepth, int alpha, int beta, ChessBoard board, ChessColor color)
-        {//looking for the highest minimum value of opposite color
-            int v = alpha;
-            if (currDepth == depthLimit || timer.ElapsedMilliseconds > RETURN_TIME)
+        // Returns a list of moves that will get the player out of check
+        public List<ChessMove> GetAllValidMoves(ChessBoard board, ChessColor myColor)
+        {
+            //Needed Variables
+            ChessColor opponentColor = (myColor == ChessColor.White ? ChessColor.Black : ChessColor.White);
+
+            // Find both kings on the board
+            // Note: Item1 = MyKing, Item2 = TheirKing
+            ChessPiece MyKing = (myColor == ChessColor.White ? ChessPiece.WhiteKing : ChessPiece.BlackKing);
+            ChessPiece TheirKing = (myColor == ChessColor.White ? ChessPiece.BlackKing : ChessPiece.WhiteKing);
+            Tuple<ChessLocation, ChessLocation> KingLocations = FindKings(board, MyKing, TheirKing);
+
+            // Filter out all moves that don't get us out of check, or move us into check
+            List<ChessMove> allMyMoves = GetAllMoves(board, myColor);
+            List<ChessMove> filteredMoves = new List<ChessMove>();
+            if (KingInCheck(board, opponentColor, KingLocations.Item1))
             {
-                v = evaluateBoard(m, board, color);
-                return v;
-            }
-            ChessColor oppColor = (color == ChessColor.White ? ChessColor.Black : ChessColor.White);
-            List<ChessMove> allOppMoves = GetAllMoves(board, oppColor);
-            List<ChessMove> moves = setFlags(allOppMoves, board, oppColor);
-            foreach (ChessMove mv in SortedMoves(moves, board, color))
-            {
-                v = minMoveAB(mv, depthLimit, currDepth + 1, alpha, beta, board, oppColor);
-                if (alpha < v)
+                for(int i = 0; i < allMyMoves.Count; i++)
                 {
-                    Debug.WriteLine("New alpha: {0}\n", v);
-                    alpha = v;
+                    // Check to see if the king is moving
+                    ChessLocation kingLoc = KingLocations.Item1;
+                    if (allMyMoves[i].From == kingLoc)
+                    {
+                        kingLoc = allMyMoves[i].To;
+                    }
+
+                    // Remove all moves that keep us in check
+                    ChessBoard tempBoard = board.Clone();
+                    tempBoard.MakeMove(allMyMoves[i]);
+                    if (!KingInCheck(tempBoard, opponentColor, kingLoc))
+                    {
+                        filteredMoves.Add(allMyMoves[i]);
+                    }
                 }
-                return v;
             }
-            return v;
+            else
+            {
+                filteredMoves = allMyMoves;
+            }
+
+
+            // Determine which moves place my opponent in check or checkmate
+            foreach(ChessMove mv in filteredMoves)
+            {
+                // Clone the Board and make the move
+                ChessBoard tempBoard = board.Clone();
+                tempBoard.MakeMove(mv);
+                if (KingInCheck(tempBoard, myColor, KingLocations.Item2))
+                {
+                    // Determine if it is checkmate
+                    if (OpponentCheckMoves(tempBoard, opponentColor, KingLocations.Item2).Count == 0)
+                    {
+                        mv.Flag = ChessFlag.Checkmate;
+                    } 
+                    else
+                    {
+                        mv.Flag = ChessFlag.Check;
+                    }
+                }
+            }
+
+            // Return all the valid moves
+            return filteredMoves;
         }
 
-        public int minMoveAB(ChessMove m, int depthLimit, int currDepth, int alpha, int beta, ChessBoard board, ChessColor color)
-        {//looking for the minimum value of the max values of opposing player
-            int v = beta;
-            if (currDepth == depthLimit || timer.ElapsedMilliseconds > RETURN_TIME)
-            {
-                v = evaluateBoard(m, board, color);
-                return v;
-            }
-            ChessColor oppColor = (color == ChessColor.White ? ChessColor.Black : ChessColor.White);
-            List<ChessMove> allOppMoves = GetAllMoves(board, oppColor);
-            List<ChessMove> moves = setFlags(allOppMoves, board, oppColor);
-            foreach (ChessMove mv in SortedMoves(moves, board, oppColor))
-            {
-                v = maxMoveAB(mv, depthLimit, currDepth + 1, alpha, beta, board, oppColor);
-                if (v < beta)
-                {
-                    Debug.WriteLine("New beta: {0}\n", v);
-                    beta = v;
-                }
-                return v;
-            }
-            return v;
-        }
 
         // Static Members for MiniMax
-        static int dLimit = 20;
-        static int rTime = 5000;
-        public ChessMove MiniMax(List<ChessMove> moves, ChessBoard board, ChessColor color)
+        static int dLimit = 3;
+        static Random rnd = new Random();
+        static ChessBoard prevBoard = new ChessBoard();
+        public ChessMove MiniMax(ChessBoard board, ChessColor color)
         {
             // Variable Declarations
             DecisionTree dt = new DecisionTree(board);
@@ -1159,81 +1161,85 @@ namespace StudentAI
             double beta = Double.PositiveInfinity;
             double v = Double.NegativeInfinity;
             ChessColor oppColor = (color == ChessColor.White ? ChessColor.Black : ChessColor.White);
-            ChessMove move = null;
+            List<ChessMove> moves = GetAllValidMoves(board, color);
 
-            // Get the first MaxValue()
-            List<ChessMove> sMoves = SortedMoves(moves, board, color);
-            foreach (ChessMove mv in sMoves)
+            //Loop over list of moves
+            ChessMove move = new ChessMove(new ChessLocation(0,0), new ChessLocation(0,1));
+            foreach (ChessMove mv in moves)
             {
                 // Previous MaxValue
-                double prevMax = v;
+                prevBoard = board;
                 ChessBoard tempBoard = board.Clone();
 
                 // Create decision tree and grab the largest value
                 tempBoard.MakeMove(mv);
                 dt.AddChild(tempBoard, mv);
-                v = Math.Max(MinValue(dt, board, mv, oppColor, alpha, beta, 1), v);
+                v = Math.Max(MinValue(dt, tempBoard, mv, oppColor, alpha, beta, 1), v);
 
                 // Check if previous max is < v
-                if (prevMax < v)
+                if (v > alpha)
                 {
                     move = mv;
                 }
 
+                alpha = Math.Max(alpha, v);
+
                 // Check to see if v >= beta for Alpha-Beta Pruning
-                if (v >= beta)
+                if (beta <= alpha)
                 {
                     break;
                 }
 
-                alpha = Math.Max(alpha, v);
+                v = 0;
             }
 
             // Return the best move
             dt.BestChildMove = move;
+            Debug.WriteLine($"{v}, {move}");
             return move;
         }
 
         public double MaxValue(DecisionTree dt, ChessBoard board, ChessMove mv, ChessColor color, double alpha, double beta, int depth)
         {
             // Terminating Cases
-            if (depth == dLimit || timer.ElapsedMilliseconds > rTime) //TODO: Add timer
+            if (depth == dLimit) //TODO: Add timer
             {
-                Debug.WriteLine(timer.ElapsedMilliseconds);
-                Debug.WriteLine(depth);
-                return evaluateBoard(mv, board, color);
+                // Evaluate the given board
+                ChessColor tryColor = (color == ChessColor.White ? ChessColor.Black : ChessColor.White);
+                int eval = evaluateBoard(board, prevBoard, mv, tryColor);
+                return eval;
             }
 
             // Generate all moves for the current board
             ChessColor oppColor = (color == ChessColor.White ? ChessColor.Black : ChessColor.White);
-            List<ChessMove> allMoves = GetAllMoves(board, oppColor);
-            List<ChessMove> moves = setFlags(allMoves, board, oppColor);
-            List<ChessMove> sMoves = SortedMoves(moves, board, oppColor);
-            double v = mv.ValueOfMove;
+            List<ChessMove> moves = GetAllValidMoves(board, color);
+            double v = Double.NegativeInfinity;
+            double localAlpha = Double.NegativeInfinity;
             foreach (ChessMove nm in moves)
             {
                 // Previous MaxValue and oppcolor to pass into MinValue
+                prevBoard = board;
                 double prevMax = v;
                 ChessBoard tempBoard = board.Clone();
 
                 // Create decision tree and grab the largest value
                 tempBoard.MakeMove(nm);
                 dt.AddChild(tempBoard, nm);
-                v = Math.Max(MinValue(dt, board, nm, oppColor, alpha, beta, depth + 1), v);
+                v = Math.Max(MinValue(dt, tempBoard, nm, oppColor, localAlpha, beta, depth + 1), v);
 
                 // Check if previous max is < v
-                if (prevMax < v)
+                if (v > prevMax)
                 {
                     dt.BestChildMove = nm;
                 }
 
+                localAlpha = Math.Max(alpha, v);
+
                 // Check to see if v >= beta for Alpha-Beta Pruning
-                if (v >= beta)
+                if (beta <= localAlpha)
                 {
                     break;
                 }
-
-                alpha = Math.Max(alpha, v);
             }
             return v;
         }
@@ -1241,43 +1247,44 @@ namespace StudentAI
         public double MinValue(DecisionTree dt, ChessBoard board, ChessMove mv, ChessColor color, double alpha, double beta, int depth)
         {
             // Terminating Cases
-            if (depth == dLimit || timer.ElapsedMilliseconds > rTime) //TODO: Add timer
+            if (depth == dLimit) //TODO: Add timer
             {
-                Debug.WriteLine(timer.ElapsedMilliseconds);
-                Debug.WriteLine(depth);
-                return evaluateBoard(mv, board, color);
+                // Evaluate the given board
+                ChessColor tryColor = (color == ChessColor.White ? ChessColor.Black : ChessColor.White);
+                int eval = evaluateBoard(board, prevBoard, mv, tryColor);
+                return eval;
             }
 
             // Generate all moves for the current board
             ChessColor oppColor = (color == ChessColor.White ? ChessColor.Black : ChessColor.White);
-            List<ChessMove> allMoves = GetAllMoves(board, oppColor);
-            List<ChessMove> moves = setFlags(allMoves, board, oppColor);
-            List<ChessMove> sMoves = SortedMoves(moves, board, oppColor);
-            double v = mv.ValueOfMove;
+            List<ChessMove> moves = GetAllValidMoves(board, color);
+            double v = Double.PositiveInfinity;
+            double localBeta = Double.PositiveInfinity;
             foreach (ChessMove nm in moves)
             {
                 // Previous MinValue and oppcolor to pass into MaxValue
+                prevBoard = board;
                 double prevMin = v;
                 ChessBoard tempBoard = board.Clone();
 
                 // Create decision tree and grab the largest value
                 tempBoard.MakeMove(nm);
                 dt.AddChild(tempBoard, nm);
-                v = Math.Min(MaxValue(dt, board, nm, oppColor, alpha, beta, depth + 1), v);
+                v = Math.Min(MaxValue(dt, tempBoard, nm, oppColor, alpha, localBeta, depth + 1), v);
 
                 // Check if previous max is < v
-                if (prevMin > v)
+                if (v > prevMin)
                 {
                     dt.BestChildMove = nm;
                 }
 
+                localBeta = Math.Min(beta, v);
+
                 // Check to see if v >= beta for Alpha-Beta Pruning
-                if (v <= beta)
+                if (localBeta <= alpha)
                 {
                     break;
                 }
-
-                beta = Math.Min(beta, v);
             }
             return v;
         }
@@ -1297,10 +1304,7 @@ namespace StudentAI
 
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
         {
-            List<ChessMove> moves = GetAllMoves(board, myColor);
-            List<ChessMove> validMoves = setFlags(moves, board, myColor);
-            timer = Stopwatch.StartNew();
-            ChessMove chosenMove = MiniMaxAB(depthLimit, board, myColor);
+            ChessMove chosenMove = MiniMax(board, myColor); // Minimax gets all the moves
             prevMoves.Add(chosenMove);
             return chosenMove;
         }
@@ -1314,8 +1318,7 @@ namespace StudentAI
         /// <returns>Returns true if the move was valid</returns>
         public bool IsValidMove(ChessBoard boardBeforeMove, ChessMove moveToCheck, ChessColor colorOfPlayerMoving)
         {
-            List<ChessMove> allMoves = GetAllMoves(boardBeforeMove, colorOfPlayerMoving);
-            List<ChessMove> validMoves = setFlags(allMoves, boardBeforeMove, colorOfPlayerMoving);
+            List<ChessMove> validMoves = GetAllValidMoves(boardBeforeMove, colorOfPlayerMoving);
             if (validMoves.Contains(moveToCheck))
             {
                 return true;
