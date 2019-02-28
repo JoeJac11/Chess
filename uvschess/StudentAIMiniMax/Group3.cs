@@ -84,7 +84,7 @@ namespace StudentAI
                 new List<int>() { 1, 1, 2, 5, 5, 2, 1, 1 },
                 new List<int>() {2, 2, 4, 6, 6, 4, 2, 2 },
                 new List<int>() { 10, 10, 10, 10, 10, 10, 10, 10 },
-                new List<int>() { 0, 0, 0, 0, 0, 0, 0, 0 }
+                new List<int>() { 10, 10, 10, 10, 10, 10, 10, 10 }
             },
             [ChessPiece.WhiteKing] = new List<List<int>>()
                 { new List<int>() { -6, -8, -8, -10, -10, -8, -8, -6 },
@@ -140,8 +140,8 @@ namespace StudentAI
                 },
             [ChessPiece.WhitePawn] = new List<List<int>>()
             {
-                new List<int>() { 0, 0, 0, 0, 0, 0, 0, 0 },
-                new List<int>() {1, 1, 1, 1, 1, 1, 1, 1 },
+                new List<int>() { 10, 10, 10, 10, 10, 10, 10, 10 },
+                new List<int>() {10, 10, 10, 10, 10, 10, 10, 10 },
                 new List<int>() { 2, 2, 4, 6, 6, 4, 2, 2 },
                 new List<int>() { 1, 1, 2, 3, 3, 2, 1, 1},
                 new List<int>() { 0, 0, 0, 4, 4, 0, 0, 0 },
@@ -935,6 +935,8 @@ namespace StudentAI
             ChessColor oppColor = (myColor == ChessColor.White ? ChessColor.Black : ChessColor.White);
             int mult = (myColor == ChessColor.White ? 1 : -1); // Forces us to always be positive
             int sum = 0;
+            sum += positionVals[pBoard[mv.From]][mv.To.X][mv.To.Y];
+
 
             // Determine if the player is in check, if so, adjust score accordingly.
             if (mv.Flag == ChessFlag.Checkmate)
@@ -1305,6 +1307,23 @@ namespace StudentAI
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
         {
             ChessMove chosenMove = MiniMax(board, myColor); // Minimax gets all the moves
+            if (chosenMove == null || prevMoves.Contains(chosenMove))
+            {
+                List<ChessMove> moves = GetAllValidMoves(board, myColor);
+                foreach(ChessMove move in moves)
+                {
+                    if (move.Flag == ChessFlag.Checkmate)
+                    {
+                        return move;
+                    }
+                    if (move.Flag == ChessFlag.Check)
+                    {
+                        return move;
+                    }
+                    Random rand = new Random();
+                    return moves[rand.Next(0, moves.Count)];
+                }
+            }
             prevMoves.Add(chosenMove);
             return chosenMove;
         }
