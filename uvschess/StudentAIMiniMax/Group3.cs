@@ -24,7 +24,7 @@ namespace StudentAI
         static Dictionary<ChessPiece, List<List<int>>> positionVals = new Dictionary<ChessPiece, List<List<int>>>()
         {   // the order as listed is in the shape of the board as we look at it
             [ChessPiece.BlackKing] = new List<List<int>>()
-                { new List<int>() { 4, 6, 2, 0, 0, 2, 6, 4 },
+                { new List<int>() { 4, 6, 2, 2,2, 2, 6, 4 },
                 new List<int>() { 4, 4, 0, 0, 0, 0, 4, 4 },
                 new List<int>() {-2, -4, -4, -4, -4, -4, -4, -2 },
                 new List<int>() {-4, -6, -6, -8, -8, -6, -6, -4 },
@@ -83,8 +83,8 @@ namespace StudentAI
                 new List<int>() { 0, 0, 0, 4, 4, 0, 0, 0 },
                 new List<int>() { 1, 1, 2, 5, 5, 2, 1, 1 },
                 new List<int>() {2, 2, 4, 6, 6, 4, 2, 2 },
-                new List<int>() { 10, 10, 10, 10, 10, 10, 10, 10 },
-                new List<int>() { 0, 0, 0, 0, 0, 0, 0, 0 }
+                new List<int>() { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+                new List<int>() { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5}
             },
             [ChessPiece.WhiteKing] = new List<List<int>>()
                 { new List<int>() { -6, -8, -8, -10, -10, -8, -8, -6 },
@@ -94,7 +94,7 @@ namespace StudentAI
                 new List<int>() { -4, -6, -6, -8, -8, -6, -6, -4},
                 new List<int>() { -2, -4, -4, -4, -4, -4, -4, -2 },
                 new List<int>() {4, 4, 0, 0, 0, 0, 4, 4 },
-                new List<int>() {4, 6, 2, 0, 0, 2, 6, 4 },
+                new List<int>() {4, 6, 2, 2,2, 2, 6, 4 },
                 },
             [ChessPiece.WhiteQueen] = new List<List<int>>()
             {
@@ -140,7 +140,7 @@ namespace StudentAI
                 },
             [ChessPiece.WhitePawn] = new List<List<int>>()
             {
-                new List<int>() { 0, 0, 0, 0, 0, 0, 0, 0 },
+                new List<int>() { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 },
                 new List<int>() {1, 1, 1, 1, 1, 1, 1, 1 },
                 new List<int>() { 2, 2, 4, 6, 6, 4, 2, 2 },
                 new List<int>() { 1, 1, 2, 3, 3, 2, 1, 1},
@@ -912,14 +912,31 @@ namespace StudentAI
         }
 
 
-        static List<ChessMove> outOfChecks = new List<ChessMove>();
-        
+        //static List<ChessMove> outOfChecks = new List<ChessMove>();
+
+        ChessFlag Capturable = new ChessFlag();
+
         public List<ChessMove> setFlags(List<ChessMove> allMoves, ChessBoard board, ChessColor color)
         {
             List<ChessMove> validMoves = new List<ChessMove>();
             ChessColor oppColor = (color == ChessColor.White ? ChessColor.Black : ChessColor.White);
             foreach (ChessMove move in allMoves)
             {
+                if (color == ChessColor.White)
+                {
+                    if (board[move.To] < ChessPiece.Empty)
+                    {
+                        move.Flag = Capturable;
+                    }
+                }
+                else
+                {
+                    if (board[move.To] > ChessPiece.Empty)
+                    {
+                        move.Flag = Capturable;
+                    }
+                }
+
                 int inCheck = InCheck(move, board, color, 0);
                 if (inCheck == 0)//don't move into check or mate
                 {
@@ -940,7 +957,6 @@ namespace StudentAI
 
         public int InCheck(ChessMove move, ChessBoard board, ChessColor testColor, int depth)
         {
-            //ChessMove saveMoves = new ChessMove(new ChessLocation(0, 0), new ChessLocation(0, 0));
             ChessBoard tempBoard = board.Clone();
             tempBoard.MakeMove(move);
             ChessPiece myKing = (testColor == ChessColor.White ? ChessPiece.WhiteKing : ChessPiece.BlackKing);
@@ -960,10 +976,6 @@ namespace StudentAI
                         if (InCheck(kMove, tempBoard, testColor, depth + 1) == 0)
                         {
                             Debug.WriteLine("Interior incheck called {0}", kMove);
-                            //if (move == saveMoves)
-                            //{
-                            //    outOfChecks.Add(kMove);
-                            //}
                             return 1; //check, not mate
                         }
                     }
@@ -978,16 +990,28 @@ namespace StudentAI
             ChessColor oppColor = (myColor == ChessColor.White ? ChessColor.Black : ChessColor.White);
             int mult = (myColor == ChessColor.White ? 1 : -1); //sets negative or positive for values
             int sum = 0;
-            int inCheck = InCheck(m, board, myColor, 0);
-            if (inCheck == 1)
+            if (m.Flag == ChessFlag.Checkmate)
             {
-                sum += -100 * mult;
+                sum += 2000 * mult;
+                Debug.WriteLine("m.Flag is Checkmate {0}", sum);
             }
-            if (inCheck == 2)
+            else if (m.Flag == ChessFlag.Check)
             {
-                sum += -1000 * mult;
+                sum += 100 * mult;
+                Debug.WriteLine("m.Flag is Check {0}", sum);
+
+            }
+            if (board[m.To] != ChessPiece.Empty)
+            {
+                sum += 100;
+                Debug.WriteLine("m.To is not empty {0}", mult);
+            }
+            if (m.Flag == Capturable)
+            {
+                sum -= 150;
             }
             board.MakeMove(m);
+
             for (int i=0; i<= 7; i++)
             {
                 for (int j=0; j<=7; j++)
@@ -995,50 +1019,75 @@ namespace StudentAI
                     switch (board[i,j])//the order we access our board in is col, row, hence the [j][i] below
                     {
                         case ChessPiece.WhitePawn:
-                            sum += 1 * mult;
+                            sum += (1 + positionVals[ChessPiece.WhitePawn][j][i]) * mult;
+                            //sum += 1 * mult;
+                            Debug.WriteLine("WhitePawn {0}", sum);
                             break;
                         case ChessPiece.WhiteRook:
-                            sum += 5 * mult;
+                            sum += (5 + positionVals[ChessPiece.WhiteRook][j][i]) * mult;
+                            //sum += 5 * mult;
+                            Debug.WriteLine("WhiteRook {0}", sum);
                             break;
                         case ChessPiece.WhiteKnight:
-                            sum += 3 * mult;
+                            sum += (3 + positionVals[ChessPiece.WhiteKnight][j][i]) *mult;
+                            //sum += 3 * mult;
+                            Debug.WriteLine("WhiteKnight {0}", sum);
                             break;
                         case ChessPiece.WhiteBishop:
-                            sum += 3 * mult;
+                            sum += (3 + positionVals[ChessPiece.WhiteBishop][j][i]) * mult;
+                            //sum += 3 * mult;
+                            Debug.WriteLine("WhiteBishop {0}", sum);
                             break;
                         case ChessPiece.WhiteQueen:
-                            sum += 9 * mult;
+                            sum += (15 + positionVals[ChessPiece.WhiteQueen][j][i]) * mult;
+                            //sum += 9 * mult;
+                            Debug.WriteLine("WhiteQueen {0}", sum);
                             break;
                         case ChessPiece.WhiteKing:
-                            sum += 4 * mult;
+                            sum += (10 + positionVals[ChessPiece.WhiteKing][j][i]) * mult;
+                            //sum += 4 * mult;
+                            Debug.WriteLine("WhiteKing {0}", sum);
                             break;
                         case ChessPiece.BlackPawn:
-                            sum += -1 * mult;
+                            sum += (-1 + positionVals[ChessPiece.BlackPawn][j][i]) * mult;
+                            //sum += -1 * mult;
+                            Debug.WriteLine("BlackPawn {0}", sum);
                             break;
                         case ChessPiece.BlackRook:
-                            sum += -5 * mult;
+                            sum += (-5 + positionVals[ChessPiece.BlackRook][j][i]) * mult;
+                            //sum += -5 * mult;
+                            Debug.WriteLine("BlackRook {0}", sum);
                             break;
                         case ChessPiece.BlackKnight:
-                            sum += -3 * mult;
+                            sum += (-3 + positionVals[ChessPiece.BlackKnight][j][i]) * mult;
+                            //sum += -3 * mult;
+                            Debug.WriteLine("BlackKnight {0}", sum);
                             break;
                         case ChessPiece.BlackBishop:
-                            sum += -3 * mult;
+                            sum += (-3 + positionVals[ChessPiece.BlackBishop][j][i]) * mult;
+                            //sum += -3 * mult;
+                            Debug.WriteLine("BlackBishop {0}", sum);
                             break;
                         case ChessPiece.BlackQueen:
-                            sum += -9 * mult;
+                            sum += (-15 + positionVals[ChessPiece.BlackQueen][j][i]) * mult;
+                            //sum += -9 * mult;
+                            Debug.WriteLine("BlackQueen {0}", sum);
                             break;
                         case ChessPiece.BlackKing:
-                            sum += -4 * mult;
+                            sum += (-10 + positionVals[ChessPiece.BlackKing][j][i]) * mult;
+                            //sum += -4 * mult;
+                            Debug.WriteLine("BlackKing {0}", sum);
                             break;
                         case ChessPiece.Empty:
                             sum += 0;
+                            Debug.WriteLine("Empty {0}", sum);
                             break;
                     }
                 }
             }
+            Debug.WriteLine(sum);
             return sum;
         }
-
 
         public List<ChessMove> SortedMoves(List<ChessMove> moves, ChessBoard board, ChessColor myColor)
         {
@@ -1047,10 +1096,14 @@ namespace StudentAI
                 m.ValueOfMove = evaluateBoard(m, board, myColor);
             }
             moves.Sort();
+            moves.Reverse();
             return moves;
         }
-        const int depthLimit = 5;
-        const int RETURN_TIME = 4500;
+
+        const int depthLimit = 4;
+        const int MOVE_TIME = 5000;
+        const int CHECK_TIME = 700;
+        int returnTime;
         const int ALPHA = -99999;
         const int BETA = 99999;
         public ChessMove MiniMaxAB(int depthLimit, ChessBoard board, ChessColor color)
@@ -1072,29 +1125,28 @@ namespace StudentAI
                     bestMove = mv;
                 }
             }
-            if (bestMove == null)
+            if(bestMove.ValueOfMove == ALPHA)
             {
-                return sortedMoves[random.Next(sortedMoves.Count)];
+                bestMove = sortedMoves[random.Next(sortedMoves.Count)];
             }
-            else
-            {
-                return bestMove;
-            }
+            return bestMove;
         }
 
 
         public int maxMoveAB(ChessMove m, int depthLimit, int currDepth, int alpha, int beta, ChessBoard board, ChessColor color)
         {//looking for the highest minimum value of opposite color
             int v = alpha;
-            if (currDepth == depthLimit || timer.ElapsedMilliseconds > RETURN_TIME)
+            if (currDepth == depthLimit || timer.ElapsedMilliseconds > returnTime)
             {
+                Debug.WriteLine("Evaluating {0}", color);
                 v = evaluateBoard(m, board, color);
                 return v;
             }
             ChessColor oppColor = (color == ChessColor.White ? ChessColor.Black : ChessColor.White);
             List<ChessMove> allOppMoves = GetAllMoves(board, oppColor);
             List<ChessMove> moves = setFlags(allOppMoves, board, oppColor);
-            foreach (ChessMove mv in SortedMoves(moves, board, color))
+            List<ChessMove> sortedMoves = SortedMoves(moves, board, color);
+            foreach (ChessMove mv in sortedMoves)
             {
                 v = minMoveAB(mv, depthLimit, currDepth + 1, alpha, beta, board, oppColor);
                 if (alpha < v)
@@ -1110,15 +1162,17 @@ namespace StudentAI
         public int minMoveAB(ChessMove m, int depthLimit, int currDepth, int alpha, int beta, ChessBoard board, ChessColor color)
         {//looking for the minimum value of the max values of opposing player
             int v = beta;
-            if (currDepth == depthLimit || timer.ElapsedMilliseconds > RETURN_TIME)
+            if (currDepth == depthLimit || timer.ElapsedMilliseconds > returnTime)
             {
+                Debug.WriteLine("Evaluating {0}", color);
                 v = evaluateBoard(m, board, color);
                 return v;
             }
             ChessColor oppColor = (color == ChessColor.White ? ChessColor.Black : ChessColor.White);
             List<ChessMove> allOppMoves = GetAllMoves(board, oppColor);
             List<ChessMove> moves = setFlags(allOppMoves, board, oppColor);
-            foreach (ChessMove mv in SortedMoves(moves, board, oppColor))
+            List<ChessMove> sortedMoves = SortedMoves(moves, board, oppColor);
+            foreach (ChessMove mv in sortedMoves)
             {
                 v = maxMoveAB(mv, depthLimit, currDepth + 1, alpha, beta, board, oppColor);
                 if (v < beta)
@@ -1145,10 +1199,13 @@ namespace StudentAI
 
         public ChessMove GetNextMove(ChessBoard board, ChessColor myColor)
         {
+            ChessMove fake = new ChessMove(new ChessLocation(0, 0), new ChessLocation(0, 0));
             List<ChessMove> moves = GetAllMoves(board, myColor);
             List<ChessMove> validMoves = setFlags(moves, board, myColor);
             timer = Stopwatch.StartNew();
+            returnTime = InCheck(fake, board, myColor, 0) > 0 ? CHECK_TIME : MOVE_TIME;
             ChessMove chosenMove = MiniMaxAB(depthLimit, board, myColor);
+            Debug.WriteLine("Chosen Move: {0}", chosenMove);
             prevMoves.Add(chosenMove);
             return chosenMove;
         }
