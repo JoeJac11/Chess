@@ -1100,7 +1100,7 @@ namespace StudentAI
             return moves;
         }
 
-        const int depthLimit = 4;
+        const int depthLimit = 5;
         const int MOVE_TIME = 5000;
         const int CHECK_TIME = 700;
         int returnTime;
